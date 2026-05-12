@@ -49,6 +49,7 @@ function Game() {
     contactId: string;
     nodeId: string;
     linesShown: number;
+    visitedNodes: string[];
   } | null>(null);
   const [cassettePlayback, setCassettePlayback] = useState<{
     contactId: string;
@@ -295,26 +296,35 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
   } else if (obj.type === 'inspect') {
     Audio.playTypewriter();
     addLog(`[${obj.label}] ${obj.description}`);
-  } else if (obj.type === 'phone_call') {
-    if (obj.phoneCallId) {
-      const contact = PHONE_CONTACTS[obj.phoneCallId];
-      if (contact) {
+      } else if (obj.type === 'phone_call') {
+      if (obj.phoneCallId) {
+        const contact = PHONE_CONTACTS[obj.phoneCallId];
+        if (!contact) return;
         discoverContact(obj.phoneCallId);
+        if (calledContacts.has(obj.phoneCallId)) {
+          if (inventory.includes('gravador_cassete')) {
+            Audio.playTerminal();
+            addLog(`[FITA] A fita cassete captou a conversa com ${contact.name}. Use a agenda para ouvir.`);
+          } else {
+            Audio.playDenied();
+            addLog(`[TELEFONE] Linha ocupada. ${contact.name} não atende.`);
+          }
+          return;
+        }
         if (obj.phoneCallId === 'seu_jonas') {
           Audio.playTypewriter();
         } else {
           Audio.playTerminal();
         }
-        setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0 });
+        setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
         addLog(obj.phoneCallId === 'seu_jonas'
           ? `[CARTA] Lendo carta de ${contact.name}...`
           : `[TELEFONE] Ligando para ${contact.name}...`);
+      } else {
+        Audio.playTerminal();
+        setPhoneAgendaOpen(true);
+        addLog('[TELEFONE] Abrindo agenda telefônica...');
       }
-    } else {
-      Audio.playTerminal();
-      setPhoneAgendaOpen(true);
-      addLog('[TELEFONE] Abrindo agenda telefônica...');
-    }
   }
 
   if (obj.id.startsWith('puzzle_hint_')) {
@@ -512,35 +522,60 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
         {discoveredContacts.size === 0 ? (
           <p className="text-zinc-600 text-xs text-center py-8 tracking-widest">NENHUM CONTATO CONHECIDO</p>
         ) : (
-(Array.from(discoveredContacts) as string[]).map((contactId) => {
-    const contact = PHONE_CONTACTS[contactId];
-    if (!contact) return null;
-    const isLetter = contactId === 'seu_jonas';
-            return (
-              <button
-                key={contactId}
-                onClick={() => {
-                  Audio.playTerminal();
-                  setPhoneAgendaOpen(false);
-                  setActivePhoneCall({ contactId, nodeId: 'initial', linesShown: 0 });
-                  addLog(isLetter
-                    ? `[CARTA] Lendo carta de ${contact.name}...`
-                    : `[TELEFONE] Ligando para ${contact.name} (${contact.number})...`);
-                }}
-                onMouseEnter={() => Audio.playHover()}
-                className="w-full bg-zinc-900 border border-zinc-800 hover:border-noir-amber p-3 flex items-center gap-4 text-left transition-colors group"
-              >
-                <div className="w-10 h-10 border border-zinc-700 group-hover:border-noir-amber flex items-center justify-center bg-black">
-                  {isLetter ? <Mail size={18} className="text-zinc-500 group-hover:text-noir-amber" /> : <PhoneCall size={18} className="text-zinc-500 group-hover:text-noir-amber" />}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-zinc-300 text-xs font-bold tracking-wider truncate group-hover:text-noir-amber transition-colors">{contact.name}</p>
-                  <p className="text-zinc-600 text-[10px] tracking-wide">{isLetter ? 'CARTA NO BECO' : contact.number}</p>
-                </div>
-                <span className="text-[9px] text-zinc-700 group-hover:text-zinc-400 tracking-widest">{isLetter ? 'LER' : 'LIGAR'}</span>
-              </button>
-            );
-          })
+                (Array.from(discoveredContacts) as string[]).map((contactId) => {
+                  const contact = PHONE_CONTACTS[contactId];
+                  if (!contact) return null;
+                  const isLetter = contactId === 'seu_jonas';
+                  const wasCalled = calledContacts.has(contactId);
+                  const hasRecorder = inventory.includes('gravador_cassete');
+                  const hasRecording = !!phoneRecordings[contactId];
+                  return (
+                    <button
+                      key={contactId}
+                      onClick={() => {
+                        if (wasCalled) {
+                          if (hasRecorder && hasRecording) {
+                            Audio.playTerminal();
+                            setPhoneAgendaOpen(false);
+                            setCassettePlayback({ contactId, lines: phoneRecordings[contactId] });
+                            addLog(isLetter
+                              ? `[FITA] Reouvido gravação da carta de ${contact.name}...`
+                              : `[FITA] Reouvindo gravação de ${contact.name}...`);
+                          } else {
+                            Audio.playDenied();
+                            addLog(`[TELEFONE] ${isLetter ? 'Carta já lida.' : 'Linha ocupada.'} ${hasRecorder ? '' : 'Gravador cassete necessário para gravar conversas.'}`);
+                          }
+                          return;
+                        }
+                        Audio.playTerminal();
+                        setPhoneAgendaOpen(false);
+                        setActivePhoneCall({ contactId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
+                        addLog(isLetter
+                          ? `[CARTA] Lendo carta de ${contact.name}...`
+                          : `[TELEFONE] Ligando para ${contact.name} (${contact.number})...`);
+                      }}
+                      onMouseEnter={() => Audio.playHover()}
+                      className={`w-full bg-zinc-900 border border-zinc-800 hover:border-noir-amber p-3 flex items-center gap-4 text-left transition-colors group ${wasCalled && !hasRecording ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <div className="w-10 h-10 border border-zinc-700 group-hover:border-noir-amber flex items-center justify-center bg-black">
+                        {wasCalled && hasRecording && hasRecorder ? (
+                          <Play size={18} className="text-noir-amber" />
+                        ) : isLetter ? (
+                          <Mail size={18} className="text-zinc-500 group-hover:text-noir-amber" />
+                        ) : (
+                          <PhoneCall size={18} className="text-zinc-500 group-hover:text-noir-amber" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-zinc-300 text-xs font-bold tracking-wider truncate group-hover:text-noir-amber transition-colors">{contact.name}</p>
+                        <p className="text-zinc-600 text-[10px] tracking-wide">{isLetter ? 'CARTA NO BECO' : contact.number}</p>
+                      </div>
+                      <span className={`text-[9px] tracking-widest ${wasCalled && hasRecording && hasRecorder ? 'text-noir-amber' : wasCalled ? 'text-zinc-700' : 'text-zinc-700 group-hover:text-zinc-400'}`}>
+                        {wasCalled && hasRecording && hasRecorder ? 'OUVIR FITA' : wasCalled ? (isLetter ? 'GELESEN' : 'GETRENNT') : (isLetter ? 'LER' : 'LIGAR')}
+                      </span>
+                    </button>
+                  );
+                })
         )}
       </div>
 
@@ -561,22 +596,27 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
   const isLetter = activePhoneCall.contactId === 'seu_jonas';
   const isCallEnded = node.choices.length === 0;
 
-  const handleChoice = (choice: { text: string; goto: string; hint: boolean }) => {
-    if (choice.hint) {
-      setReadHints(prev => { const next = new Set(prev); next.add(`phone_${activePhoneCall.contactId}_${choice.goto}`); return next; });
-    }
-    if (choice.goto === 'reveal_dra_cunha' || activePhoneCall.contactId === 'zeca' && choice.text.includes('Dra. Cunha')) {
-      discoverContact('dra_cunha');
-    }
-    Audio.playTypewriter();
-    setActivePhoneCall(prev => prev ? { ...prev, nodeId: choice.goto, linesShown: 0 } : null);
-  };
+      const handleChoice = (choice: { text: string; goto: string; hint: boolean }) => {
+        if (choice.hint) {
+          setReadHints(prev => { const next = new Set(prev); next.add(`phone_${activePhoneCall.contactId}_${choice.goto}`); return next; });
+        }
+        if (choice.goto === 'reveal_dra_cunha' || activePhoneCall.contactId === 'zeca' && choice.text.includes('Dra. Cunha')) {
+          discoverContact('dra_cunha');
+        }
+        Audio.playTypewriter();
+        setActivePhoneCall(prev => prev ? { ...prev, nodeId: choice.goto, linesShown: 0, visitedNodes: [...prev.visitedNodes, prev.nodeId] } : null);
+      };
 
     const handleClose = () => {
       Audio.playHover();
       Audio.stopSpeak();
       if (!calledContacts.has(activePhoneCall.contactId)) {
-        const recording = buildRecording(contact, activePhoneCall.nodeId);
+        const allNodes = [...activePhoneCall.visitedNodes, activePhoneCall.nodeId];
+        const recording: { speaker: string; lines: string[] }[] = [];
+        for (const nid of allNodes) {
+          const n = contact.dialogue[nid];
+          if (n) recording.push({ speaker: n.speaker, lines: n.lines });
+        }
         setCalledContacts(prev => { const next = new Set(prev); next.add(activePhoneCall.contactId); return next; });
         setPhoneRecordings(prev => ({ ...prev, [activePhoneCall.contactId]: recording }));
       }
@@ -650,7 +690,64 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
       </div>
     </div>
   );
-})()}
+              })()}
+
+              {/* Cassette Playback Modal */}
+              {cassettePlayback && (() => {
+                const contact = PHONE_CONTACTS[cassettePlayback.contactId];
+                if (!contact) return null;
+                const isLetter = cassettePlayback.contactId === 'seu_jonas';
+                return (
+                  <div className="absolute inset-0 bg-black/95 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="border border-noir-amber bg-zinc-950 w-full max-w-xl max-h-full flex flex-col shadow-[0_0_30px_rgba(212,168,71,0.15)] relative">
+                      <div className="border-b border-noir-amber p-4 bg-black flex justify-between items-center">
+                        <h2 className="text-noir-amber font-bold text-sm tracking-widest flex items-center gap-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+                          <Play size={18} />
+                          {isLetter ? `FITA — CARTA DE ${contact.name.toUpperCase()}` : `FITA — ${contact.number}`}
+                        </h2>
+                        <button
+                          onClick={() => { Audio.playHover(); setCassettePlayback(null); }}
+                          onMouseEnter={() => Audio.playHover()}
+                          className="text-white hover:text-noir-amber bg-zinc-900 px-4 py-1 text-sm border border-zinc-700 flex items-center gap-2"
+                        >
+                          <X size={16} /> PARAR
+                        </button>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto p-6 space-y-4 min-h-[200px] max-h-[50vh]">
+                        {cassettePlayback.contactId !== 'seu_jonas' && (
+                          <p className="text-zinc-600 text-xs italic tracking-wide border-b border-zinc-800 pb-3">
+                            *estática* ... gravação recuperada da fita cassete ...
+                          </p>
+                        )}
+                        {cassettePlayback.lines.map((block, i) => (
+                          <div key={i} className="space-y-2">
+                            <p className="text-noir-amber text-[10px] font-bold tracking-widest border-b border-zinc-900 pb-1">
+                              {block.speaker.toUpperCase()}:
+                            </p>
+                            {block.lines.map((line, j) => (
+                              <p key={j} className="text-zinc-400 text-sm tracking-wide leading-relaxed pl-2 border-l-2 border-zinc-800 italic">
+                                {line}
+                              </p>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="border-t border-noir-amber p-4 bg-black/50">
+                        <p className="text-amber-800 text-xs tracking-widest text-center">
+                          — FIM DA FITA —
+                        </p>
+                      </div>
+
+                      <div className="h-8 bg-black border-t border-noir-amber text-noir-amber text-xs flex items-center px-4 justify-between">
+                        <span>KASSETTE</span>
+                        <span className="animate-pulse">ABGESPIELT</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
 
 </div>
 <button

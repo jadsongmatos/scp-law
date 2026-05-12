@@ -69,6 +69,7 @@ import imgFotografia from './assets/images/noir/items/item_fotografia.png';
 import imgIsqueiro from './assets/images/noir/items/item_isqueiro.png';
 import imgFitaMagnetica from './assets/images/noir/items/item_fita_magnetica.png';
 import imgCedula500 from './assets/images/noir/items/item_cedula_500.png';
+import imgGravadorCassete from './assets/images/noir/items/item_gravador_cassete.png';
 
 export const ITEM_IMAGES: Record<string, string> = {
   chave_escritorio: imgChaveEscritorio,
@@ -77,6 +78,7 @@ export const ITEM_IMAGES: Record<string, string> = {
   isqueiro: imgIsqueiro,
   fita_magnetica: imgFitaMagnetica,
   cedula_500: imgCedula500,
+  gravador_cassete: imgGravadorCassete,
 };
 
 export const ITEM_NAMES: Record<string, string> = gameData.ITEM_NAMES;
