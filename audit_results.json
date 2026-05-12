@@ -1,0 +1,2736 @@
+{
+  "escritorio": {
+    "room_description": "A dimly lit, grimy detective's office on a rainy night, with a cluttered wooden desk in the foreground and a single bare bulb illuminating water stains on the ceiling. The atmosphere is classic noir, suggesting a worn-down, busy, and perhaps lonely existence.",
+    "visible_elements": [
+      {
+        "name": "wooden desk",
+        "x": 50,
+        "y": 80,
+        "width": 100,
+        "height": 40,
+        "notes": "Occupies the foreground, made of dark wood, appears worn."
+      },
+      {
+        "name": "window with rain",
+        "x": 25,
+        "y": 45,
+        "width": 40,
+        "height": 80,
+        "notes": "Large, multi-pane window on the left, covered in rain streaks, showing neon lights and buildings outside."
+      },
+      {
+        "name": "ceiling light bulb",
+        "x": 50,
+        "y": 15,
+        "width": 3,
+        "height": 5,
+        "notes": "A single bare incandescent bulb hanging from the ceiling, emitting a warm glow."
+      },
+      {
+        "name": "ceiling water stains",
+        "x": 50,
+        "y": 15,
+        "width": 40,
+        "height": 20,
+        "notes": "Irregular, brownish-yellow stains on the ceiling, centered around the light fixture."
+      },
+      {
+        "name": "desk lamp",
+        "x": 70,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Brass-colored banker's lamp with a green shade (appears orange due to light), illuminating the right side of the desk."
+      },
+      {
+        "name": "filing cabinet",
+        "x": 90,
+        "y": 65,
+        "width": 15,
+        "height": 40,
+        "notes": "Dark grey, metal filing cabinet with two open drawers on the right side of the room, stacked with papers on top."
+      },
+      {
+        "name": "stack of files on desk (left)",
+        "x": 20,
+        "y": 80,
+        "width": 20,
+        "height": 15,
+        "notes": "Several manila folders stacked neatly on the left side of the desk, near the window."
+      },
+      {
+        "name": "stack of files on desk (center)",
+        "x": 45,
+        "y": 85,
+        "width": 20,
+        "height": 10,
+        "notes": "A smaller stack of manila folders in the center of the desk."
+      },
+      {
+        "name": "open file on desk (right)",
+        "x": 60,
+        "y": 85,
+        "width": 15,
+        "height": 10,
+        "notes": "A single manila folder lying open or flat on the right side of the desk."
+      },
+      {
+        "name": "bottle of liquor",
+        "x": 60,
+        "y": 75,
+        "width": 5,
+        "height": 15,
+        "notes": "A clear glass bottle, partially filled with amber liquid (likely whiskey or bourbon), on the desk."
+      },
+      {
+        "name": "ashtray with cigarette butts",
+        "x": 85,
+        "y": 90,
+        "width": 10,
+        "height": 5,
+        "notes": "A ceramic or stone ashtray filled with numerous cigarette butts and ashes on the far right of the desk."
+      },
+      {
+        "name": "leather armchair",
+        "x": 35,
+        "y": 65,
+        "width": 20,
+        "height": 30,
+        "notes": "A dark brown, worn leather armchair positioned behind the desk, facing the viewer."
+      },
+      {
+        "name": "door with frosted glass",
+        "x": 50,
+        "y": 45,
+        "width": 20,
+        "height": 40,
+        "notes": "A door in the back wall with a frosted glass panel, showing reversed text 'W. J. MURPHY PRIVATE INVESTIGATOR'."
+      },
+      {
+        "name": "city lights outside window",
+        "x": 25,
+        "y": 60,
+        "width": 30,
+        "height": 40,
+        "notes": "Blurred neon signs and building lights visible through the rainy window."
+      },
+      {
+        "name": "stack of papers on filing cabinet",
+        "x": 90,
+        "y": 45,
+        "width": 10,
+        "height": 10,
+        "notes": "A tall stack of papers or files on top of the filing cabinet."
+      },
+      {
+        "name": "small object on desk (left)",
+        "x": 35,
+        "y": 85,
+        "width": 3,
+        "height": 2,
+        "notes": "A small, indistinct object (possibly a matchbook or lighter) on the desk to the left of the central files."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "door with frosted glass",
+        "x": 50,
+        "y": 45,
+        "width": 20,
+        "height": 40,
+        "notes": "Located in the back wall, with reversed text 'W. J. MURPHY PRIVATE INVESTIGATOR' on its frosted glass panel."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "window with rain",
+        "x": 25,
+        "y": 45,
+        "width": 40,
+        "height": 80,
+        "notes": "Large, multi-pane window on the left wall, showing a rainy city street outside."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "wooden desk",
+        "x": 50,
+        "y": 80,
+        "width": 100,
+        "height": 40,
+        "notes": "Main work surface in the foreground."
+      },
+      {
+        "name": "leather armchair",
+        "x": 35,
+        "y": 65,
+        "width": 20,
+        "height": 30,
+        "notes": "Behind the desk, appears worn."
+      },
+      {
+        "name": "filing cabinet",
+        "x": 90,
+        "y": 65,
+        "width": 15,
+        "height": 40,
+        "notes": "Metal, dark grey, on the right side of the room."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "door with frosted glass",
+        "x": 50,
+        "y": 45,
+        "width": 20,
+        "height": 40,
+        "notes": "In the back wall."
+      },
+      {
+        "name": "window with rain",
+        "x": 25,
+        "y": 45,
+        "width": 40,
+        "height": 80,
+        "notes": "On the left wall."
+      }
+    ],
+    "floor_items": [],
+    "room_id": "escritorio"
+  },
+  "rua_chuva": {
+    "room_description": "A dark, rainy city street at night, lined with old brick buildings featuring neon signs and fire escapes. Puddles reflect the colorful lights on the wet pavement, and distant skyscrapers are visible under a gloomy sky.",
+    "visible_elements": [
+      {
+        "name": "Sky",
+        "x": 50,
+        "y": 25,
+        "width": 100,
+        "height": 50,
+        "notes": "Dark, cloudy, and raining."
+      },
+      {
+        "name": "Rain streaks",
+        "x": 50,
+        "y": 50,
+        "width": 100,
+        "height": 100,
+        "notes": "Visible throughout the scene, especially against lights."
+      },
+      {
+        "name": "Distant skyscrapers",
+        "x": 60,
+        "y": 25,
+        "width": 40,
+        "height": 30,
+        "notes": "Silhouetted against the dark sky."
+      },
+      {
+        "name": "Left building facade",
+        "x": 25,
+        "y": 50,
+        "width": 50,
+        "height": 100,
+        "notes": "Brick, dark, with multiple windows and a fire escape."
+      },
+      {
+        "name": "Right building facade",
+        "x": 80,
+        "y": 50,
+        "width": 40,
+        "height": 100,
+        "notes": "Brick, dark, with multiple windows and signs."
+      },
+      {
+        "name": "Street lamp post",
+        "x": 55,
+        "y": 60,
+        "width": 3,
+        "height": 70,
+        "notes": "Tall, dark pole with a light fixture."
+      },
+      {
+        "name": "Street lamp light",
+        "x": 58,
+        "y": 45,
+        "width": 10,
+        "height": 10,
+        "notes": "Yellowish-orange glow emanating from the lamp."
+      },
+      {
+        "name": "Street lamp light cone",
+        "x": 58,
+        "y": 65,
+        "width": 25,
+        "height": 50,
+        "notes": "Bright, conical beam of light illuminating the street."
+      },
+      {
+        "name": "Street pavement",
+        "x": 50,
+        "y": 85,
+        "width": 100,
+        "height": 30,
+        "notes": "Wet, reflective, with puddles."
+      },
+      {
+        "name": "Puddles on street",
+        "x": 50,
+        "y": 88,
+        "width": 100,
+        "height": 25,
+        "notes": "Irregular shapes reflecting neon lights and street lamp."
+      },
+      {
+        "name": "Reflected red/blue light (left puddle)",
+        "x": 25,
+        "y": 90,
+        "width": 20,
+        "height": 10,
+        "notes": "Reflection of the 'FARMÁCIA' sign."
+      },
+      {
+        "name": "Reflected yellow light (center puddle)",
+        "x": 60,
+        "y": 90,
+        "width": 20,
+        "height": 10,
+        "notes": "Reflection of the street lamp."
+      },
+      {
+        "name": "Fire escape (left building)",
+        "x": 25,
+        "y": 45,
+        "width": 20,
+        "height": 40,
+        "notes": "Dark metal structure with stairs and railings."
+      },
+      {
+        "name": "Air conditioning unit (left building)",
+        "x": 10,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Small, rectangular unit below a window."
+      },
+      {
+        "name": "Neon sign 'FARMÁCIA'",
+        "x": 30,
+        "y": 60,
+        "width": 15,
+        "height": 5,
+        "notes": "Bright red and blue neon sign on the left building."
+      },
+      {
+        "name": "Shop window (FARMÁCIA)",
+        "x": 30,
+        "y": 65,
+        "width": 15,
+        "height": 10,
+        "notes": "Large glass window of the pharmacy, displaying some items."
+      },
+      {
+        "name": "Small blue sign (left building)",
+        "x": 45,
+        "y": 60,
+        "width": 5,
+        "height": 3,
+        "notes": "Rectangular sign with illegible text, glowing blue."
+      },
+      {
+        "name": "Trash cans/bins (left sidewalk)",
+        "x": 15,
+        "y": 80,
+        "width": 8,
+        "height": 10,
+        "notes": "Two dark, rectangular bins on the sidewalk."
+      },
+      {
+        "name": "Newspaper (floating)",
+        "x": 48,
+        "y": 75,
+        "width": 8,
+        "height": 8,
+        "notes": "Open newspaper sheet, seemingly blown by wind, in the middle of the street."
+      },
+      {
+        "name": "Neon sign 'BAR VILA NOVA'",
+        "x": 70,
+        "y": 55,
+        "width": 8,
+        "height": 15,
+        "notes": "Vertical blue and red neon sign on the right building."
+      },
+      {
+        "name": "Awning (BAR)",
+        "x": 75,
+        "y": 68,
+        "width": 10,
+        "height": 5,
+        "notes": "Dark, curved awning over the bar entrance."
+      },
+      {
+        "name": "Sign 'LOJA DE PENHORES'",
+        "x": 88,
+        "y": 50,
+        "width": 15,
+        "height": 5,
+        "notes": "Yellow illuminated sign on the right building."
+      },
+      {
+        "name": "Shop window/door (LOJA DE PENHORES)",
+        "x": 88,
+        "y": 70,
+        "width": 15,
+        "height": 15,
+        "notes": "Dark, possibly shuttered, entrance of the pawn shop."
+      },
+      {
+        "name": "Wooden barrel (right sidewalk)",
+        "x": 70,
+        "y": 78,
+        "width": 3,
+        "height": 5,
+        "notes": "Small, dark wooden barrel near the bar."
+      },
+      {
+        "name": "Sidewalk (left)",
+        "x": 20,
+        "y": 85,
+        "width": 30,
+        "height": 10,
+        "notes": "Wet, dark concrete or stone."
+      },
+      {
+        "name": "Sidewalk (right)",
+        "x": 85,
+        "y": 85,
+        "width": 20,
+        "height": 10,
+        "notes": "Wet, dark concrete or stone."
+      },
+      {
+        "name": "Building in background (center)",
+        "x": 50,
+        "y": 50,
+        "width": 20,
+        "height": 30,
+        "notes": "Dark, indistinct building in the mid-ground, behind the street lamp."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "Door (left building, ground floor)",
+        "x": 20,
+        "y": 75,
+        "width": 5,
+        "height": 10,
+        "notes": "Dark, possibly wooden door next to the pharmacy."
+      },
+      {
+        "name": "Door (left building, ground floor, near pharmacy)",
+        "x": 40,
+        "y": 75,
+        "width": 5,
+        "height": 10,
+        "notes": "Dark door, possibly part of the pharmacy entrance."
+      },
+      {
+        "name": "Door (right building, BAR)",
+        "x": 75,
+        "y": 75,
+        "width": 5,
+        "height": 10,
+        "notes": "Dark door under the awning of the bar."
+      },
+      {
+        "name": "Door (right building, LOJA DE PENHORES)",
+        "x": 90,
+        "y": 75,
+        "width": 8,
+        "height": 10,
+        "notes": "Dark, possibly shuttered, entrance to the pawn shop."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "Window (left building, top left)",
+        "x": 10,
+        "y": 25,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window, dark."
+      },
+      {
+        "name": "Window (left building, upper left)",
+        "x": 10,
+        "y": 40,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window, dark."
+      },
+      {
+        "name": "Window (left building, mid-left)",
+        "x": 10,
+        "y": 55,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window with bars, reflecting some light."
+      },
+      {
+        "name": "Window (left building, ground floor, barred)",
+        "x": 15,
+        "y": 65,
+        "width": 8,
+        "height": 10,
+        "notes": "Window with vertical bars, reflecting some light."
+      },
+      {
+        "name": "Shop window (FARMÁCIA)",
+        "x": 30,
+        "y": 65,
+        "width": 15,
+        "height": 10,
+        "notes": "Large glass window of the pharmacy, displaying some items."
+      },
+      {
+        "name": "Window (right building, top right)",
+        "x": 85,
+        "y": 25,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window, dark."
+      },
+      {
+        "name": "Window (right building, upper right)",
+        "x": 85,
+        "y": 40,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window, dark."
+      },
+      {
+        "name": "Window (right building, mid-right)",
+        "x": 85,
+        "y": 55,
+        "width": 5,
+        "height": 8,
+        "notes": "Rectangular window, dark."
+      },
+      {
+        "name": "Shop window/door (LOJA DE PENHORES)",
+        "x": 88,
+        "y": 70,
+        "width": 15,
+        "height": 15,
+        "notes": "Dark, possibly shuttered, entrance of the pawn shop."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "Wooden barrel",
+        "x": 70,
+        "y": 78,
+        "width": 3,
+        "height": 5,
+        "notes": "Small, dark wooden barrel near the bar."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "Fire escape",
+        "x": 25,
+        "y": 45,
+        "width": 20,
+        "height": 40,
+        "notes": "Attached to the left brick building."
+      },
+      {
+        "name": "Air conditioning unit",
+        "x": 10,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Attached to the left brick building."
+      },
+      {
+        "name": "Neon sign 'FARMÁCIA'",
+        "x": 30,
+        "y": 60,
+        "width": 15,
+        "height": 5,
+        "notes": "Attached to the left brick building."
+      },
+      {
+        "name": "Small blue sign",
+        "x": 45,
+        "y": 60,
+        "width": 5,
+        "height": 3,
+        "notes": "Attached to the left brick building."
+      },
+      {
+        "name": "Neon sign 'BAR VILA NOVA'",
+        "x": 70,
+        "y": 55,
+        "width": 8,
+        "height": 15,
+        "notes": "Attached to the right brick building."
+      },
+      {
+        "name": "Awning",
+        "x": 75,
+        "y": 68,
+        "width": 10,
+        "height": 5,
+        "notes": "Attached to the right brick building, over the bar entrance."
+      },
+      {
+        "name": "Sign 'LOJA DE PENHORES'",
+        "x": 88,
+        "y": 50,
+        "width": 15,
+        "height": 5,
+        "notes": "Attached to the right brick building."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "Trash cans/bins",
+        "x": 15,
+        "y": 80,
+        "width": 8,
+        "height": 10,
+        "notes": "On the left sidewalk."
+      },
+      {
+        "name": "Newspaper",
+        "x": 48,
+        "y": 75,
+        "width": 8,
+        "height": 8,
+        "notes": "Floating/lying in the middle of the wet street."
+      },
+      {
+        "name": "Puddles",
+        "x": 50,
+        "y": 88,
+        "width": 100,
+        "height": 25,
+        "notes": "On the wet street pavement."
+      }
+    ],
+    "room_id": "rua_chuva"
+  },
+  "bar": {
+    "room_description": "A dimly lit, smoky, and atmospheric bar interior, reminiscent of a classic noir setting. The bar features a long wooden counter, bar stools, booths, a jukebox, and a neon sign, with rain visible through a window.",
+    "visible_elements": [
+      {
+        "name": "neon bar sign 'BAR VILA NOVA'",
+        "x": 20,
+        "y": 23,
+        "width": 20,
+        "height": 10,
+        "notes": "Bright orange/red neon sign above the bar shelves."
+      },
+      {
+        "name": "bar counter",
+        "x": 40,
+        "y": 68,
+        "width": 80,
+        "height": 40,
+        "notes": "Long wooden bar counter extending from left to center-right."
+      },
+      {
+        "name": "bar stools",
+        "x": 58,
+        "y": 80,
+        "width": 15,
+        "height": 30,
+        "notes": "Multiple dark leather-topped bar stools lined up along the bar."
+      },
+      {
+        "name": "glass with drink and ice",
+        "x": 35,
+        "y": 58,
+        "width": 4,
+        "height": 6,
+        "notes": "A short glass with amber liquid and ice cubes on the bar counter."
+      },
+      {
+        "name": "ashtray with cigarette butts",
+        "x": 29,
+        "y": 65,
+        "width": 6,
+        "height": 4,
+        "notes": "Dark ashtray filled with cigarette butts on the bar counter."
+      },
+      {
+        "name": "smoke/haze",
+        "x": 50,
+        "y": 45,
+        "width": 80,
+        "height": 60,
+        "notes": "Thick smoke or haze filling the upper and mid-sections of the bar area."
+      },
+      {
+        "name": "bottles on bar shelves (left)",
+        "x": 10,
+        "y": 35,
+        "width": 15,
+        "height": 30,
+        "notes": "Various bottles of liquor on shelves behind the bar."
+      },
+      {
+        "name": "bottles on bar shelves (right)",
+        "x": 35,
+        "y": 35,
+        "width": 15,
+        "height": 30,
+        "notes": "Various bottles of liquor on shelves behind the bar."
+      },
+      {
+        "name": "beer taps/dispensers",
+        "x": 39,
+        "y": 50,
+        "width": 5,
+        "height": 10,
+        "notes": "Shiny metallic beer taps on the bar counter."
+      },
+      {
+        "name": "spotlights on ceiling",
+        "x": 45,
+        "y": 15,
+        "width": 5,
+        "height": 5,
+        "notes": "Recessed spotlights illuminating the bar counter."
+      },
+      {
+        "name": "jukebox",
+        "x": 65,
+        "y": 60,
+        "width": 10,
+        "height": 25,
+        "notes": "Vintage-style jukebox with glowing lights."
+      },
+      {
+        "name": "booth seating (foreground right)",
+        "x": 85,
+        "y": 80,
+        "width": 30,
+        "height": 40,
+        "notes": "Dark leather booth seating in the foreground on the right."
+      },
+      {
+        "name": "booth seating (midground right)",
+        "x": 80,
+        "y": 70,
+        "width": 25,
+        "height": 30,
+        "notes": "Dark leather booth seating with a wooden table."
+      },
+      {
+        "name": "wooden table (booth)",
+        "x": 80,
+        "y": 70,
+        "width": 15,
+        "height": 10,
+        "notes": "Wooden table in front of the midground booth."
+      },
+      {
+        "name": "hanging lamp",
+        "x": 85,
+        "y": 30,
+        "width": 10,
+        "height": 15,
+        "notes": "A single hanging lamp with a wide shade, illuminating the booth area."
+      },
+      {
+        "name": "window with rain",
+        "x": 90,
+        "y": 50,
+        "width": 20,
+        "height": 40,
+        "notes": "Window on the right wall, showing rain streaks."
+      },
+      {
+        "name": "wooden wall paneling",
+        "x": 80,
+        "y": 50,
+        "width": 40,
+        "height": 100,
+        "notes": "Dark wooden paneling covering the walls."
+      },
+      {
+        "name": "doorway",
+        "x": 78,
+        "y": 50,
+        "width": 10,
+        "height": 30,
+        "notes": "A doorway with a frosted glass panel, possibly leading to a back room or restroom."
+      },
+      {
+        "name": "neon sign 'OPEN'",
+        "x": 75,
+        "y": 35,
+        "width": 5,
+        "height": 3,
+        "notes": "Small red neon sign above the doorway."
+      },
+      {
+        "name": "coat rack",
+        "x": 70,
+        "y": 60,
+        "width": 3,
+        "height": 10,
+        "notes": "A simple wooden coat rack near the doorway."
+      },
+      {
+        "name": "pictures/frames on wall",
+        "x": 65,
+        "y": 40,
+        "width": 5,
+        "height": 5,
+        "notes": "Small framed pictures or artwork on the right wall."
+      },
+      {
+        "name": "wooden floorboards",
+        "x": 50,
+        "y": 85,
+        "width": 100,
+        "height": 30,
+        "notes": "Dark wooden floorboards throughout the bar."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "doorway",
+        "x": 78,
+        "y": 50,
+        "width": 10,
+        "height": 30,
+        "notes": "A doorway with a frosted glass panel, possibly leading to a back room or restroom."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "window with rain",
+        "x": 90,
+        "y": 50,
+        "width": 20,
+        "height": 40,
+        "notes": "Window on the right wall, showing rain streaks."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "bar counter",
+        "x": 40,
+        "y": 68,
+        "width": 80,
+        "height": 40,
+        "notes": "Long wooden bar counter."
+      },
+      {
+        "name": "bar stools",
+        "x": 58,
+        "y": 80,
+        "width": 15,
+        "height": 30,
+        "notes": "Multiple dark leather-topped bar stools."
+      },
+      {
+        "name": "jukebox",
+        "x": 65,
+        "y": 60,
+        "width": 10,
+        "height": 25,
+        "notes": "Vintage-style jukebox."
+      },
+      {
+        "name": "booth seating (foreground right)",
+        "x": 85,
+        "y": 80,
+        "width": 30,
+        "height": 40,
+        "notes": "Dark leather booth seating."
+      },
+      {
+        "name": "booth seating (midground right)",
+        "x": 80,
+        "y": 70,
+        "width": 25,
+        "height": 30,
+        "notes": "Dark leather booth seating."
+      },
+      {
+        "name": "wooden table (booth)",
+        "x": 80,
+        "y": 70,
+        "width": 15,
+        "height": 10,
+        "notes": "Wooden table in front of the midground booth."
+      },
+      {
+        "name": "coat rack",
+        "x": 70,
+        "y": 60,
+        "width": 3,
+        "height": 10,
+        "notes": "A simple wooden coat rack."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "neon bar sign 'BAR VILA NOVA'",
+        "x": 20,
+        "y": 23,
+        "width": 20,
+        "height": 10,
+        "notes": "Bright orange/red neon sign above the bar shelves."
+      },
+      {
+        "name": "bottles on bar shelves (left)",
+        "x": 10,
+        "y": 35,
+        "width": 15,
+        "height": 30,
+        "notes": "Various bottles of liquor on shelves behind the bar."
+      },
+      {
+        "name": "bottles on bar shelves (right)",
+        "x": 35,
+        "y": 35,
+        "width": 15,
+        "height": 30,
+        "notes": "Various bottles of liquor on shelves behind the bar."
+      },
+      {
+        "name": "wooden wall paneling",
+        "x": 80,
+        "y": 50,
+        "width": 40,
+        "height": 100,
+        "notes": "Dark wooden paneling covering the walls."
+      },
+      {
+        "name": "neon sign 'OPEN'",
+        "x": 75,
+        "y": 35,
+        "width": 5,
+        "height": 3,
+        "notes": "Small red neon sign above the doorway."
+      },
+      {
+        "name": "pictures/frames on wall",
+        "x": 65,
+        "y": 40,
+        "width": 5,
+        "height": 5,
+        "notes": "Small framed pictures or artwork on the right wall."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "wooden floorboards",
+        "x": 50,
+        "y": 85,
+        "width": 100,
+        "height": 30,
+        "notes": "Dark wooden floorboards throughout the bar."
+      }
+    ],
+    "room_id": "bar"
+  },
+  "escola": {
+    "room_description": "A dimly lit, dilapidated school or office hallway with lockers lining both sides, a bulletin board, and a broken door, suggesting abandonment or a recent disturbance. The floor is wet and stained, and an 'EXIT' sign hangs above a door labeled 'PRINCIPAL'.",
+    "visible_elements": [
+      {
+        "name": "Ceiling fluorescent light (front)",
+        "x": 50,
+        "y": 10,
+        "width": 10,
+        "height": 5,
+        "notes": "Brightly lit, central in the foreground ceiling."
+      },
+      {
+        "name": "Ceiling fluorescent light (middle)",
+        "x": 50,
+        "y": 20,
+        "width": 8,
+        "height": 4,
+        "notes": "Less bright than the front one, further down the hallway."
+      },
+      {
+        "name": "Ceiling fluorescent light (rear)",
+        "x": 50,
+        "y": 30,
+        "width": 6,
+        "height": 3,
+        "notes": "Dimmer, furthest down the hallway."
+      },
+      {
+        "name": "Left row of lockers (foreground)",
+        "x": 15,
+        "y": 55,
+        "width": 20,
+        "height": 70,
+        "notes": "Dark green, metallic, some doors slightly ajar."
+      },
+      {
+        "name": "Left row of lockers (middle)",
+        "x": 35,
+        "y": 60,
+        "width": 10,
+        "height": 50,
+        "notes": "Dark green, metallic, further down the hallway."
+      },
+      {
+        "name": "Right row of lockers (foreground)",
+        "x": 85,
+        "y": 55,
+        "width": 20,
+        "height": 70,
+        "notes": "Dark green, metallic, some doors slightly ajar."
+      },
+      {
+        "name": "Right row of lockers (middle)",
+        "x": 65,
+        "y": 60,
+        "width": 10,
+        "height": 50,
+        "notes": "Dark green, metallic, further down the hallway."
+      },
+      {
+        "name": "Bulletin board",
+        "x": 25,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Wooden frame, covered with curled papers pinned to it."
+      },
+      {
+        "name": "Door (left, near bulletin board)",
+        "x": 35,
+        "y": 65,
+        "width": 10,
+        "height": 40,
+        "notes": "Wooden, with a small window pane at the top."
+      },
+      {
+        "name": "Door (right, broken glass)",
+        "x": 85,
+        "y": 65,
+        "width": 10,
+        "height": 40,
+        "notes": "Wooden, with a large section of its glass pane shattered."
+      },
+      {
+        "name": "Door (end of hallway, 'PRINCIPAL')",
+        "x": 50,
+        "y": 70,
+        "width": 15,
+        "height": 45,
+        "notes": "Wooden, with a small window pane and 'PRINCIPAL' written on it."
+      },
+      {
+        "name": "EXIT sign",
+        "x": 50,
+        "y": 40,
+        "width": 8,
+        "height": 5,
+        "notes": "Red, illuminated, above the 'PRINCIPAL' door."
+      },
+      {
+        "name": "Water cooler/drinking fountain",
+        "x": 75,
+        "y": 80,
+        "width": 10,
+        "height": 20,
+        "notes": "Grey, metallic, with a basin and a grill at the bottom."
+      },
+      {
+        "name": "Broken glass on floor (right)",
+        "x": 85,
+        "y": 95,
+        "width": 15,
+        "height": 10,
+        "notes": "Scattered shards of glass from the broken door."
+      },
+      {
+        "name": "Wet floor stains/puddles",
+        "x": 50,
+        "y": 85,
+        "width": 80,
+        "height": 40,
+        "notes": "Dark, irregular patterns on the tiled floor, reflecting light."
+      },
+      {
+        "name": "Wall trim/baseboard (left)",
+        "x": 25,
+        "y": 90,
+        "width": 40,
+        "height": 5,
+        "notes": "Dark wooden trim along the bottom of the left wall."
+      },
+      {
+        "name": "Wall trim/baseboard (right)",
+        "x": 75,
+        "y": 90,
+        "width": 40,
+        "height": 5,
+        "notes": "Dark wooden trim along the bottom of the right wall."
+      },
+      {
+        "name": "Wall speaker (left)",
+        "x": 30,
+        "y": 35,
+        "width": 5,
+        "height": 5,
+        "notes": "Small, rectangular speaker mounted on the left wall."
+      },
+      {
+        "name": "Wall speaker (right)",
+        "x": 70,
+        "y": 35,
+        "width": 5,
+        "height": 5,
+        "notes": "Small, rectangular speaker mounted on the right wall."
+      },
+      {
+        "name": "Window (left, upper part of door)",
+        "x": 35,
+        "y": 55,
+        "width": 8,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the left door, reflecting light."
+      },
+      {
+        "name": "Window (right, upper part of door)",
+        "x": 85,
+        "y": 55,
+        "width": 8,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the right door, reflecting light."
+      },
+      {
+        "name": "Window (end of hallway, upper part of door)",
+        "x": 50,
+        "y": 60,
+        "width": 10,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the 'PRINCIPAL' door."
+      },
+      {
+        "name": "Wall discoloration/grime",
+        "x": 50,
+        "y": 60,
+        "width": 100,
+        "height": 100,
+        "notes": "General dirty, stained appearance of the walls throughout the hallway."
+      },
+      {
+        "name": "Ceiling tiles",
+        "x": 50,
+        "y": 20,
+        "width": 100,
+        "height": 40,
+        "notes": "Standard grid of ceiling tiles, some appearing discolored."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "Door (left, near bulletin board)",
+        "x": 35,
+        "y": 65,
+        "width": 10,
+        "height": 40,
+        "notes": "Wooden, with a small window pane at the top."
+      },
+      {
+        "name": "Door (right, broken glass)",
+        "x": 85,
+        "y": 65,
+        "width": 10,
+        "height": 40,
+        "notes": "Wooden, with a large section of its glass pane shattered."
+      },
+      {
+        "name": "Door (end of hallway, 'PRINCIPAL')",
+        "x": 50,
+        "y": 70,
+        "width": 15,
+        "height": 45,
+        "notes": "Wooden, with a small window pane and 'PRINCIPAL' written on it."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "Window (left, upper part of door)",
+        "x": 35,
+        "y": 55,
+        "width": 8,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the left door, reflecting light."
+      },
+      {
+        "name": "Window (right, upper part of door)",
+        "x": 85,
+        "y": 55,
+        "width": 8,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the right door, reflecting light."
+      },
+      {
+        "name": "Window (end of hallway, upper part of door)",
+        "x": 50,
+        "y": 60,
+        "width": 10,
+        "height": 10,
+        "notes": "Small, rectangular window in the upper part of the 'PRINCIPAL' door."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "Left row of lockers (foreground)",
+        "x": 15,
+        "y": 55,
+        "width": 20,
+        "height": 70,
+        "notes": "Dark green, metallic, some doors slightly ajar."
+      },
+      {
+        "name": "Left row of lockers (middle)",
+        "x": 35,
+        "y": 60,
+        "width": 10,
+        "height": 50,
+        "notes": "Dark green, metallic, further down the hallway."
+      },
+      {
+        "name": "Right row of lockers (foreground)",
+        "x": 85,
+        "y": 55,
+        "width": 20,
+        "height": 70,
+        "notes": "Dark green, metallic, some doors slightly ajar."
+      },
+      {
+        "name": "Right row of lockers (middle)",
+        "x": 65,
+        "y": 60,
+        "width": 10,
+        "height": 50,
+        "notes": "Dark green, metallic, further down the hallway."
+      },
+      {
+        "name": "Water cooler/drinking fountain",
+        "x": 75,
+        "y": 80,
+        "width": 10,
+        "height": 20,
+        "notes": "Grey, metallic, with a basin and a grill at the bottom."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "Bulletin board",
+        "x": 25,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Wooden frame, covered with curled papers pinned to it."
+      },
+      {
+        "name": "EXIT sign",
+        "x": 50,
+        "y": 40,
+        "width": 8,
+        "height": 5,
+        "notes": "Red, illuminated, above the 'PRINCIPAL' door."
+      },
+      {
+        "name": "Wall speaker (left)",
+        "x": 30,
+        "y": 35,
+        "width": 5,
+        "height": 5,
+        "notes": "Small, rectangular speaker mounted on the left wall."
+      },
+      {
+        "name": "Wall speaker (right)",
+        "x": 70,
+        "y": 35,
+        "width": 5,
+        "height": 5,
+        "notes": "Small, rectangular speaker mounted on the right wall."
+      },
+      {
+        "name": "Wall discoloration/grime",
+        "x": 50,
+        "y": 60,
+        "width": 100,
+        "height": 100,
+        "notes": "General dirty, stained appearance of the walls throughout the hallway."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "Broken glass on floor (right)",
+        "x": 85,
+        "y": 95,
+        "width": 15,
+        "height": 10,
+        "notes": "Scattered shards of glass from the broken door."
+      },
+      {
+        "name": "Wet floor stains/puddles",
+        "x": 50,
+        "y": 85,
+        "width": 80,
+        "height": 40,
+        "notes": "Dark, irregular patterns on the tiled floor, reflecting light."
+      }
+    ],
+    "room_id": "escola"
+  },
+  "diretoria": {
+    "room_description": "A dimly lit, atmospheric office, likely a detective's or lawyer's, with a window showing a rainy, neon-lit city street at night. The room has a vintage, noir aesthetic with wooden furniture, a bookshelf, and framed certificates on the wall.",
+    "visible_elements": [
+      {
+        "name": "window with rain",
+        "x": 25,
+        "y": 45,
+        "width": 40,
+        "height": 70,
+        "notes": "Large window on the left, showing heavy rain and neon lights from buildings outside."
+      },
+      {
+        "name": "window blinds",
+        "x": 25,
+        "y": 25,
+        "width": 40,
+        "height": 20,
+        "notes": "Partially closed horizontal blinds covering the top half of the window."
+      },
+      {
+        "name": "dead plant in pot",
+        "x": 35,
+        "y": 65,
+        "width": 8,
+        "height": 15,
+        "notes": "A small, withered plant in a terracotta pot on the windowsill."
+      },
+      {
+        "name": "wooden desk",
+        "x": 50,
+        "y": 75,
+        "width": 70,
+        "height": 45,
+        "notes": "Large, dark wooden desk occupying the center-right of the foreground."
+      },
+      {
+        "name": "desk lamp",
+        "x": 75,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Vintage-style brass desk lamp with an amber shade, illuminated."
+      },
+      {
+        "name": "bookshelf",
+        "x": 45,
+        "y": 55,
+        "width": 20,
+        "height": 60,
+        "notes": "Tall wooden bookshelf filled with old books, located behind the desk on the left."
+      },
+      {
+        "name": "books on bookshelf (top stack)",
+        "x": 45,
+        "y": 25,
+        "width": 10,
+        "height": 5,
+        "notes": "Small stack of books on top of the bookshelf."
+      },
+      {
+        "name": "books on bookshelf (shelf 1)",
+        "x": 45,
+        "y": 35,
+        "width": 15,
+        "height": 8,
+        "notes": "Row of books on the top shelf of the bookshelf."
+      },
+      {
+        "name": "books on bookshelf (shelf 2)",
+        "x": 45,
+        "y": 45,
+        "width": 15,
+        "height": 8,
+        "notes": "Row of books on the second shelf of the bookshelf."
+      },
+      {
+        "name": "books on bookshelf (shelf 3)",
+        "x": 45,
+        "y": 55,
+        "width": 15,
+        "height": 8,
+        "notes": "Row of books on the third shelf of the bookshelf."
+      },
+      {
+        "name": "books on bookshelf (shelf 4)",
+        "x": 45,
+        "y": 65,
+        "width": 15,
+        "height": 8,
+        "notes": "Row of books on the fourth shelf of the bookshelf."
+      },
+      {
+        "name": "books on bookshelf (shelf 5)",
+        "x": 45,
+        "y": 75,
+        "width": 15,
+        "height": 8,
+        "notes": "Row of books on the bottom shelf of the bookshelf."
+      },
+      {
+        "name": "green office chair",
+        "x": 60,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Leather-upholstered green office chair behind the desk."
+      },
+      {
+        "name": "framed certificate 1",
+        "x": 70,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, top right."
+      },
+      {
+        "name": "framed certificate 2",
+        "x": 80,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, top left."
+      },
+      {
+        "name": "framed certificate 3",
+        "x": 70,
+        "y": 50,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, bottom right, slightly askew."
+      },
+      {
+        "name": "framed certificate 4",
+        "x": 80,
+        "y": 50,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, bottom left."
+      },
+      {
+        "name": "filing cabinet",
+        "x": 90,
+        "y": 65,
+        "width": 15,
+        "height": 40,
+        "notes": "Metal filing cabinet on the far right, with one drawer slightly open."
+      },
+      {
+        "name": "stacked papers on filing cabinet",
+        "x": 90,
+        "y": 45,
+        "width": 10,
+        "height": 10,
+        "notes": "Pile of papers or files on top of the filing cabinet."
+      },
+      {
+        "name": "papers on desk (left stack)",
+        "x": 65,
+        "y": 75,
+        "width": 10,
+        "height": 5,
+        "notes": "Stack of papers on the desk to the right of the desk lamp."
+      },
+      {
+        "name": "papers on desk (center)",
+        "x": 60,
+        "y": 70,
+        "width": 15,
+        "height": 8,
+        "notes": "Scattered papers and documents on the desk in front of the chair."
+      },
+      {
+        "name": "nameplate 'Diretora Elvira Costa'",
+        "x": 65,
+        "y": 75,
+        "width": 10,
+        "height": 3,
+        "notes": "Brass nameplate on the desk, facing the viewer."
+      },
+      {
+        "name": "stack of law books",
+        "x": 30,
+        "y": 75,
+        "width": 10,
+        "height": 10,
+        "notes": "Two large books titled 'LAW' and 'EDUCATION CODES' on the desk to the left."
+      },
+      {
+        "name": "vintage telephone",
+        "x": 45,
+        "y": 70,
+        "width": 8,
+        "height": 5,
+        "notes": "Old-fashioned rotary telephone on the desk behind the law books."
+      },
+      {
+        "name": "wooden side table",
+        "x": 15,
+        "y": 85,
+        "width": 25,
+        "height": 30,
+        "notes": "Small wooden table in the bottom left corner."
+      },
+      {
+        "name": "coffee mug",
+        "x": 15,
+        "y": 85,
+        "width": 5,
+        "height": 8,
+        "notes": "Dirty white coffee mug on the side table."
+      },
+      {
+        "name": "ashtray with cigarette butts",
+        "x": 25,
+        "y": 85,
+        "width": 8,
+        "height": 5,
+        "notes": "Ashtray filled with cigarette butts on the side table."
+      },
+      {
+        "name": "loose cigarettes",
+        "x": 20,
+        "y": 88,
+        "width": 2,
+        "height": 1,
+        "notes": "Two loose cigarettes on the side table near the ashtray."
+      },
+      {
+        "name": "ceiling tiles",
+        "x": 50,
+        "y": 10,
+        "width": 100,
+        "height": 20,
+        "notes": "Grid of acoustic ceiling tiles visible across the top of the room."
+      },
+      {
+        "name": "wall molding",
+        "x": 50,
+        "y": 70,
+        "width": 100,
+        "height": 5,
+        "notes": "Dark wooden molding running along the bottom of the walls."
+      },
+      {
+        "name": "light rays",
+        "x": 40,
+        "y": 50,
+        "width": 20,
+        "height": 50,
+        "notes": "Visible rays of light streaming in from the window, illuminated by dust."
+      },
+      {
+        "name": "neon sign (outside window)",
+        "x": 30,
+        "y": 55,
+        "width": 10,
+        "height": 5,
+        "notes": "Red neon sign 'VACANCY' visible through the window."
+      },
+      {
+        "name": "blue neon sign (outside window)",
+        "x": 35,
+        "y": 65,
+        "width": 5,
+        "height": 3,
+        "notes": "Small blue neon sign visible through the window."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [],
+    "phones": [
+      {
+        "name": "vintage telephone",
+        "x": 45,
+        "y": 70,
+        "width": 8,
+        "height": 5,
+        "notes": "Old-fashioned rotary telephone on the desk behind the law books."
+      }
+    ],
+    "windows": [
+      {
+        "name": "window with rain",
+        "x": 25,
+        "y": 45,
+        "width": 40,
+        "height": 70,
+        "notes": "Large window on the left, showing heavy rain and neon lights from buildings outside."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "wooden desk",
+        "x": 50,
+        "y": 75,
+        "width": 70,
+        "height": 45,
+        "notes": "Large, dark wooden desk."
+      },
+      {
+        "name": "bookshelf",
+        "x": 45,
+        "y": 55,
+        "width": 20,
+        "height": 60,
+        "notes": "Tall wooden bookshelf."
+      },
+      {
+        "name": "green office chair",
+        "x": 60,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Leather-upholstered green office chair."
+      },
+      {
+        "name": "filing cabinet",
+        "x": 90,
+        "y": 65,
+        "width": 15,
+        "height": 40,
+        "notes": "Metal filing cabinet."
+      },
+      {
+        "name": "wooden side table",
+        "x": 15,
+        "y": 85,
+        "width": 25,
+        "height": 30,
+        "notes": "Small wooden table in the bottom left corner."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "framed certificate 1",
+        "x": 70,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, top right."
+      },
+      {
+        "name": "framed certificate 2",
+        "x": 80,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, top left."
+      },
+      {
+        "name": "framed certificate 3",
+        "x": 70,
+        "y": 50,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, bottom right, slightly askew."
+      },
+      {
+        "name": "framed certificate 4",
+        "x": 80,
+        "y": 50,
+        "width": 10,
+        "height": 10,
+        "notes": "Framed certificate on the wall above the desk, bottom left."
+      },
+      {
+        "name": "wall molding",
+        "x": 50,
+        "y": 70,
+        "width": 100,
+        "height": 5,
+        "notes": "Dark wooden molding running along the bottom of the walls."
+      }
+    ],
+    "floor_items": [],
+    "room_id": "diretoria"
+  },
+  "delegacia": {
+    "room_description": "A dimly lit, grimy, and somewhat dilapidated police station or detective office hallway, evoking a noir atmosphere. The floor is wet and reflective, suggesting rain or dampness. Fluorescent lights provide harsh illumination. There's a reception/interview window on the left, an 'Interrogation' room straight ahead, and a waiting area with bulletin boards on the right.",
+    "visible_elements": [
+      {
+        "name": "fluorescent light fixture (left)",
+        "x": 18,
+        "y": 10,
+        "width": 10,
+        "height": 5,
+        "notes": "Emitting a yellow-green glow, partially obscured by the partition."
+      },
+      {
+        "name": "fluorescent light fixture (center)",
+        "x": 50,
+        "y": 10,
+        "width": 20,
+        "height": 5,
+        "notes": "Long, double-tube fixture, emitting a bright yellow glow."
+      },
+      {
+        "name": "fluorescent light fixture (hallway)",
+        "x": 35,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Smaller, single-tube fixture in the distant hallway."
+      },
+      {
+        "name": "reception/interview partition",
+        "x": 18,
+        "y": 50,
+        "width": 30,
+        "height": 80,
+        "notes": "Dark metal frame with glass panels, some with wire mesh."
+      },
+      {
+        "name": "circular speaking hole",
+        "x": 25,
+        "y": 45,
+        "width": 3,
+        "height": 5,
+        "notes": "Small circular opening in the glass partition."
+      },
+      {
+        "name": "counter/shelf on partition",
+        "x": 20,
+        "y": 65,
+        "width": 15,
+        "height": 5,
+        "notes": "A flat surface extending from the partition, likely for transactions or documents."
+      },
+      {
+        "name": "interrogation room doors",
+        "x": 35,
+        "y": 60,
+        "width": 15,
+        "height": 30,
+        "notes": "Double doors with small windows, leading to a room labeled 'INTERROGATION'."
+      },
+      {
+        "name": "interrogation room sign",
+        "x": 38,
+        "y": 40,
+        "width": 10,
+        "height": 3,
+        "notes": "White text on a dark background above the doors."
+      },
+      {
+        "name": "filing cabinet (left)",
+        "x": 50,
+        "y": 70,
+        "width": 8,
+        "height": 25,
+        "notes": "Grey metal, with one drawer slightly ajar revealing papers."
+      },
+      {
+        "name": "filing cabinet (right)",
+        "x": 55,
+        "y": 65,
+        "width": 8,
+        "height": 20,
+        "notes": "Grey metal, stacked with papers on top."
+      },
+      {
+        "name": "stack of papers on cabinet",
+        "x": 57,
+        "y": 55,
+        "width": 5,
+        "height": 5,
+        "notes": "Disorganized pile of documents."
+      },
+      {
+        "name": "water cooler",
+        "x": 65,
+        "y": 75,
+        "width": 5,
+        "height": 20,
+        "notes": "White unit with a large blue water bottle on top."
+      },
+      {
+        "name": "window with rain (upper right)",
+        "x": 75,
+        "y": 15,
+        "width": 20,
+        "height": 20,
+        "notes": "Multiple panes, showing streaks of rain and a faint red glow outside."
+      },
+      {
+        "name": "bulletin board (left)",
+        "x": 70,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Cork board with photos, newspaper clippings, and notes connected by red string. Labeled 'CASE 0SR'."
+      },
+      {
+        "name": "bulletin board (right) - Missing Persons",
+        "x": 85,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Cork board with a grid of 'MISSING PERSON' photos, one circled in red."
+      },
+      {
+        "name": "wooden chair (first from left)",
+        "x": 65,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats, part of a row."
+      },
+      {
+        "name": "wooden chair (second from left)",
+        "x": 70,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (third from left)",
+        "x": 75,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (fourth from left)",
+        "x": 80,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (fifth from left)",
+        "x": 85,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (sixth from left)",
+        "x": 90,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wet floor reflections",
+        "x": 50,
+        "y": 85,
+        "width": 100,
+        "height": 30,
+        "notes": "Reflective puddles and dampness across the entire floor, showing light sources."
+      },
+      {
+        "name": "loose papers on floor",
+        "x": 55,
+        "y": 95,
+        "width": 10,
+        "height": 5,
+        "notes": "Scattered documents near the filing cabinets."
+      },
+      {
+        "name": "ventilation grate",
+        "x": 50,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Dark grate on the wall above the filing cabinets."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "interrogation room doors",
+        "x": 35,
+        "y": 60,
+        "width": 15,
+        "height": 30,
+        "notes": "Double doors with small windows, leading to a room labeled 'INTERROGATION'."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "reception/interview partition glass",
+        "x": 18,
+        "y": 50,
+        "width": 30,
+        "height": 80,
+        "notes": "Glass panels, some with wire mesh, forming a partition."
+      },
+      {
+        "name": "window with rain (upper right)",
+        "x": 75,
+        "y": 15,
+        "width": 20,
+        "height": 20,
+        "notes": "Multiple panes, showing streaks of rain and a faint red glow outside."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "reception/interview partition",
+        "x": 18,
+        "y": 50,
+        "width": 30,
+        "height": 80,
+        "notes": "Dark metal frame with glass panels, some with wire mesh."
+      },
+      {
+        "name": "counter/shelf on partition",
+        "x": 20,
+        "y": 65,
+        "width": 15,
+        "height": 5,
+        "notes": "A flat surface extending from the partition."
+      },
+      {
+        "name": "filing cabinet (left)",
+        "x": 50,
+        "y": 70,
+        "width": 8,
+        "height": 25,
+        "notes": "Grey metal, with one drawer slightly ajar."
+      },
+      {
+        "name": "filing cabinet (right)",
+        "x": 55,
+        "y": 65,
+        "width": 8,
+        "height": 20,
+        "notes": "Grey metal, stacked with papers on top."
+      },
+      {
+        "name": "water cooler",
+        "x": 65,
+        "y": 75,
+        "width": 5,
+        "height": 20,
+        "notes": "White unit with a large blue water bottle on top."
+      },
+      {
+        "name": "wooden chair (first from left)",
+        "x": 65,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (second from left)",
+        "x": 70,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (third from left)",
+        "x": 75,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (fourth from left)",
+        "x": 80,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (fifth from left)",
+        "x": 85,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      },
+      {
+        "name": "wooden chair (sixth from left)",
+        "x": 90,
+        "y": 85,
+        "width": 8,
+        "height": 15,
+        "notes": "Dark wooden chair with slats."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "fluorescent light fixture (left)",
+        "x": 18,
+        "y": 10,
+        "width": 10,
+        "height": 5,
+        "notes": "Emitting a yellow-green glow."
+      },
+      {
+        "name": "fluorescent light fixture (center)",
+        "x": 50,
+        "y": 10,
+        "width": 20,
+        "height": 5,
+        "notes": "Long, double-tube fixture, emitting a bright yellow glow."
+      },
+      {
+        "name": "fluorescent light fixture (hallway)",
+        "x": 35,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Smaller, single-tube fixture in the distant hallway."
+      },
+      {
+        "name": "interrogation room sign",
+        "x": 38,
+        "y": 40,
+        "width": 10,
+        "height": 3,
+        "notes": "White text on a dark background above the doors."
+      },
+      {
+        "name": "ventilation grate",
+        "x": 50,
+        "y": 30,
+        "width": 5,
+        "height": 5,
+        "notes": "Dark grate on the wall above the filing cabinets."
+      },
+      {
+        "name": "bulletin board (left)",
+        "x": 70,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Cork board with photos, newspaper clippings, and notes connected by red string. Labeled 'CASE 0SR'."
+      },
+      {
+        "name": "bulletin board (right) - Missing Persons",
+        "x": 85,
+        "y": 55,
+        "width": 15,
+        "height": 30,
+        "notes": "Cork board with a grid of 'MISSING PERSON' photos, one circled in red."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "wet floor reflections",
+        "x": 50,
+        "y": 85,
+        "width": 100,
+        "height": 30,
+        "notes": "Reflective puddles and dampness across the entire floor, showing light sources."
+      },
+      {
+        "name": "loose papers on floor",
+        "x": 55,
+        "y": 95,
+        "width": 10,
+        "height": 5,
+        "notes": "Scattered documents near the filing cabinets."
+      }
+    ],
+    "room_id": "delegacia"
+  },
+  "beco": {
+    "room_description": "A dark, rainy, and gritty urban alleyway at night, illuminated by a single street lamp and the distant glow of the city. The alley is narrow, with brick buildings on both sides, fire escapes, and a sense of foreboding due to a large, shadowy figure in the distance.",
+    "visible_elements": [
+      {
+        "name": "Brick wall (left)",
+        "x": 30,
+        "y": 50,
+        "width": 60,
+        "height": 100,
+        "notes": "Dark red brick, wet from rain."
+      },
+      {
+        "name": "Brick wall (right)",
+        "x": 80,
+        "y": 50,
+        "width": 40,
+        "height": 100,
+        "notes": "Dark red brick, wet from rain, with graffiti."
+      },
+      {
+        "name": "Fire escape (left, lower section)",
+        "x": 25,
+        "y": 65,
+        "width": 30,
+        "height": 70,
+        "notes": "Metal, dark, with railings and stairs leading up."
+      },
+      {
+        "name": "Fire escape (left, upper section)",
+        "x": 35,
+        "y": 30,
+        "width": 20,
+        "height": 40,
+        "notes": "Metal, dark, extending upwards."
+      },
+      {
+        "name": "Fire escape (right, lower section)",
+        "x": 75,
+        "y": 40,
+        "width": 15,
+        "height": 40,
+        "notes": "Metal, dark, partially obscured by rain and fog."
+      },
+      {
+        "name": "Fire escape (right, upper section)",
+        "x": 65,
+        "y": 20,
+        "width": 10,
+        "height": 20,
+        "notes": "Metal, dark, extending upwards."
+      },
+      {
+        "name": "Street lamp",
+        "x": 38,
+        "y": 48,
+        "width": 5,
+        "height": 10,
+        "notes": "Emitting a warm, orange glow."
+      },
+      {
+        "name": "Door (left building)",
+        "x": 45,
+        "y": 58,
+        "width": 8,
+        "height": 20,
+        "notes": "Wooden, dark brown, with a small window."
+      },
+      {
+        "name": "Dumpster",
+        "x": 48,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Green, rusty, overflowing with trash bags."
+      },
+      {
+        "name": "Trash bags (near dumpster)",
+        "x": 45,
+        "y": 85,
+        "width": 8,
+        "height": 10,
+        "notes": "Black plastic, tied shut."
+      },
+      {
+        "name": "Trash bags (right side)",
+        "x": 90,
+        "y": 90,
+        "width": 5,
+        "height": 8,
+        "notes": "Black plastic, tied shut."
+      },
+      {
+        "name": "Puddles/Water stream",
+        "x": 60,
+        "y": 85,
+        "width": 80,
+        "height": 30,
+        "notes": "Reflecting light, flowing down the alley."
+      },
+      {
+        "name": "Grates (floor)",
+        "x": 75,
+        "y": 95,
+        "width": 10,
+        "height": 8,
+        "notes": "Metal, in the water stream."
+      },
+      {
+        "name": "Cracked pavement",
+        "x": 50,
+        "y": 90,
+        "width": 100,
+        "height": 20,
+        "notes": "Uneven, broken asphalt/concrete."
+      },
+      {
+        "name": "Rain",
+        "x": 50,
+        "y": 50,
+        "width": 100,
+        "height": 100,
+        "notes": "Visible as streaks and mist throughout the scene."
+      },
+      {
+        "name": "Fog/Mist",
+        "x": 60,
+        "y": 70,
+        "width": 80,
+        "height": 60,
+        "notes": "Low-lying, swirling mist, especially near the ground."
+      },
+      {
+        "name": "Shadowy figure",
+        "x": 70,
+        "y": 55,
+        "width": 25,
+        "height": 60,
+        "notes": "Large, dark, human-like silhouette in the distance, with one arm raised."
+      },
+      {
+        "name": "Graffiti 'WHERE IS SHE?'",
+        "x": 25,
+        "y": 45,
+        "width": 15,
+        "height": 10,
+        "notes": "White spray paint on the left brick wall."
+      },
+      {
+        "name": "Graffiti (right wall)",
+        "x": 85,
+        "y": 60,
+        "width": 15,
+        "height": 10,
+        "notes": "Yellowish spray paint, illegible."
+      },
+      {
+        "name": "Cat",
+        "x": 20,
+        "y": 85,
+        "width": 5,
+        "height": 8,
+        "notes": "Striped, sitting on the lower platform of the left fire escape."
+      },
+      {
+        "name": "Ventilation grate (left wall)",
+        "x": 25,
+        "y": 25,
+        "width": 8,
+        "height": 5,
+        "notes": "Dark, rectangular, above the 'WHERE IS SHE?' graffiti."
+      },
+      {
+        "name": "Pipes (right wall)",
+        "x": 80,
+        "y": 60,
+        "width": 2,
+        "height": 40,
+        "notes": "Dark, vertical pipes running down the brick wall."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "Door (left building)",
+        "x": 45,
+        "y": 58,
+        "width": 8,
+        "height": 20,
+        "notes": "Wooden, dark brown, with a small window."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "Window (on door)",
+        "x": 46,
+        "y": 55,
+        "width": 2,
+        "height": 3,
+        "notes": "Small, rectangular window on the dark wooden door."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "Dumpster",
+        "x": 48,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Green, rusty, overflowing with trash bags."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "Fire escape (left)",
+        "x": 25,
+        "y": 65,
+        "width": 30,
+        "height": 70,
+        "notes": "Metal, dark, with railings and stairs leading up."
+      },
+      {
+        "name": "Fire escape (right)",
+        "x": 75,
+        "y": 40,
+        "width": 15,
+        "height": 40,
+        "notes": "Metal, dark, partially obscured by rain and fog."
+      },
+      {
+        "name": "Street lamp",
+        "x": 38,
+        "y": 48,
+        "width": 5,
+        "height": 10,
+        "notes": "Emitting a warm, orange glow."
+      },
+      {
+        "name": "Graffiti 'WHERE IS SHE?'",
+        "x": 25,
+        "y": 45,
+        "width": 15,
+        "height": 10,
+        "notes": "White spray paint on the left brick wall."
+      },
+      {
+        "name": "Graffiti (right wall)",
+        "x": 85,
+        "y": 60,
+        "width": 15,
+        "height": 10,
+        "notes": "Yellowish spray paint, illegible."
+      },
+      {
+        "name": "Ventilation grate (left wall)",
+        "x": 25,
+        "y": 25,
+        "width": 8,
+        "height": 5,
+        "notes": "Dark, rectangular, above the 'WHERE IS SHE?' graffiti."
+      },
+      {
+        "name": "Pipes (right wall)",
+        "x": 80,
+        "y": 60,
+        "width": 2,
+        "height": 40,
+        "notes": "Dark, vertical pipes running down the brick wall."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "Dumpster",
+        "x": 48,
+        "y": 70,
+        "width": 15,
+        "height": 25,
+        "notes": "Green, rusty, overflowing with trash bags."
+      },
+      {
+        "name": "Trash bags (near dumpster)",
+        "x": 45,
+        "y": 85,
+        "width": 8,
+        "height": 10,
+        "notes": "Black plastic, tied shut."
+      },
+      {
+        "name": "Trash bags (right side)",
+        "x": 90,
+        "y": 90,
+        "width": 5,
+        "height": 8,
+        "notes": "Black plastic, tied shut."
+      },
+      {
+        "name": "Puddles/Water stream",
+        "x": 60,
+        "y": 85,
+        "width": 80,
+        "height": 30,
+        "notes": "Reflecting light, flowing down the alley."
+      },
+      {
+        "name": "Grates (floor)",
+        "x": 75,
+        "y": 95,
+        "width": 10,
+        "height": 8,
+        "notes": "Metal, in the water stream."
+      },
+      {
+        "name": "Cracked pavement",
+        "x": 50,
+        "y": 90,
+        "width": 100,
+        "height": 20,
+        "notes": "Uneven, broken asphalt/concrete."
+      },
+      {
+        "name": "Cat",
+        "x": 20,
+        "y": 85,
+        "width": 5,
+        "height": 8,
+        "notes": "Striped, sitting on the lower platform of the left fire escape."
+      }
+    ],
+    "room_id": "beco"
+  },
+  "armazem": {
+    "room_description": "A dimly lit, grimy, and abandoned-looking industrial warehouse or storage facility. The scene is characterized by a sense of decay and neglect, with rusty metal structures, dusty surfaces, and scattered debris. A single bare light bulb provides the main illumination, casting long shadows. An open large door at the back reveals a rainy, possibly urban, exterior with faint neon lights.",
+    "visible_elements": [
+      {
+        "name": "Ceiling beams (foreground)",
+        "x": 50,
+        "y": 10,
+        "width": 100,
+        "height": 20,
+        "notes": "Rusty metal beams forming the ceiling structure."
+      },
+      {
+        "name": "Hanging light bulb",
+        "x": 45,
+        "y": 38,
+        "width": 3,
+        "height": 10,
+        "notes": "A single bare incandescent bulb hanging from a chain, emitting a warm glow."
+      },
+      {
+        "name": "Hanging chain with hook",
+        "x": 57,
+        "y": 40,
+        "width": 2,
+        "height": 20,
+        "notes": "A rusty chain with a hook, likely part of a hoist system."
+      },
+      {
+        "name": "Left wall structure (metal beams)",
+        "x": 20,
+        "y": 40,
+        "width": 40,
+        "height": 60,
+        "notes": "Rusty metal support beams and horizontal bars along the left wall."
+      },
+      {
+        "name": "Cobweb on left wall structure",
+        "x": 25,
+        "y": 25,
+        "width": 8,
+        "height": 10,
+        "notes": "Visible cobweb on the upper left metal beam."
+      },
+      {
+        "name": "Stacked wooden crates (left)",
+        "x": 15,
+        "y": 65,
+        "width": 20,
+        "height": 30,
+        "notes": "Several wooden crates stacked against the left wall."
+      },
+      {
+        "name": "Forklift",
+        "x": 35,
+        "y": 75,
+        "width": 20,
+        "height": 25,
+        "notes": "An old, rusty, and dirty yellow/orange forklift."
+      },
+      {
+        "name": "Stacked wooden crates (mid-left)",
+        "x": 45,
+        "y": 65,
+        "width": 10,
+        "height": 20,
+        "notes": "A smaller stack of wooden crates behind the forklift."
+      },
+      {
+        "name": "Large open double door",
+        "x": 75,
+        "y": 65,
+        "width": 25,
+        "height": 35,
+        "notes": "A large, dark, corrugated metal double door, open to reveal an exterior scene."
+      },
+      {
+        "name": "Exterior view through door",
+        "x": 85,
+        "y": 70,
+        "width": 15,
+        "height": 30,
+        "notes": "Rainy, dark exterior with faint reflections of neon lights (red/purple) on the wet ground."
+      },
+      {
+        "name": "Staircase to upper level",
+        "x": 88,
+        "y": 60,
+        "width": 10,
+        "height": 40,
+        "notes": "A dark, wooden or metal staircase leading up to an elevated platform on the right."
+      },
+      {
+        "name": "Upper level platform/walkway",
+        "x": 80,
+        "y": 45,
+        "width": 20,
+        "height": 10,
+        "notes": "An elevated platform with a railing, accessible via the staircase."
+      },
+      {
+        "name": "Window on upper level",
+        "x": 75,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "A dark, grimy window on the upper level, possibly with bars or a grid pattern."
+      },
+      {
+        "name": "Light on upper level wall",
+        "x": 80,
+        "y": 40,
+        "width": 3,
+        "height": 3,
+        "notes": "A small, dim light fixture on the wall of the upper level."
+      },
+      {
+        "name": "Stacked wooden crates (right)",
+        "x": 90,
+        "y": 75,
+        "width": 10,
+        "height": 25,
+        "notes": "Several wooden crates stacked on the far right side, near the staircase."
+      },
+      {
+        "name": "Overturned chair",
+        "x": 80,
+        "y": 90,
+        "width": 10,
+        "height": 10,
+        "notes": "A dark, possibly metal or wooden, chair lying on its side on the floor."
+      },
+      {
+        "name": "Scattered papers on floor (left)",
+        "x": 30,
+        "y": 90,
+        "width": 20,
+        "height": 5,
+        "notes": "Several white papers scattered on the dusty floor near the forklift."
+      },
+      {
+        "name": "Scattered papers on floor (right)",
+        "x": 70,
+        "y": 95,
+        "width": 20,
+        "height": 5,
+        "notes": "Several white papers scattered on the wet floor near the overturned chair."
+      },
+      {
+        "name": "Tire tracks on floor",
+        "x": 50,
+        "y": 90,
+        "width": 60,
+        "height": 10,
+        "notes": "Dark, wet tire tracks visible on the concrete floor, likely from the forklift."
+      },
+      {
+        "name": "Wet floor patches",
+        "x": 65,
+        "y": 95,
+        "width": 30,
+        "height": 5,
+        "notes": "Reflective wet patches on the floor, especially towards the open door."
+      },
+      {
+        "name": "Dust/dirt on floor",
+        "x": 40,
+        "y": 95,
+        "width": 30,
+        "height": 5,
+        "notes": "Accumulation of dust and dirt on the floor, particularly around the forklift."
+      },
+      {
+        "name": "Grungy concrete walls",
+        "x": 50,
+        "y": 60,
+        "width": 100,
+        "height": 80,
+        "notes": "The main walls of the warehouse, appearing dirty, stained, and possibly peeling."
+      },
+      {
+        "name": "Ceiling structure (back)",
+        "x": 70,
+        "y": 20,
+        "width": 60,
+        "height": 20,
+        "notes": "Darker, less defined ceiling structure towards the back of the warehouse."
+      },
+      {
+        "name": "Cobweb on right upper beam",
+        "x": 90,
+        "y": 25,
+        "width": 8,
+        "height": 10,
+        "notes": "Visible cobweb on the upper right metal beam near the staircase."
+      }
+    ],
+    "computers_terminals": [],
+    "doors": [
+      {
+        "name": "Large open double door",
+        "x": 75,
+        "y": 65,
+        "width": 25,
+        "height": 35,
+        "notes": "A large, dark, corrugated metal double door, open to reveal an exterior scene."
+      }
+    ],
+    "phones": [],
+    "windows": [
+      {
+        "name": "Window on upper level",
+        "x": 75,
+        "y": 35,
+        "width": 10,
+        "height": 10,
+        "notes": "A dark, grimy window on the upper level, possibly with bars or a grid pattern."
+      }
+    ],
+    "furniture": [
+      {
+        "name": "Forklift",
+        "x": 35,
+        "y": 75,
+        "width": 20,
+        "height": 25,
+        "notes": "An old, rusty, and dirty yellow/orange forklift."
+      },
+      {
+        "name": "Overturned chair",
+        "x": 80,
+        "y": 90,
+        "width": 10,
+        "height": 10,
+        "notes": "A dark, possibly metal or wooden, chair lying on its side on the floor."
+      }
+    ],
+    "wall_items": [
+      {
+        "name": "Grungy concrete walls",
+        "x": 50,
+        "y": 60,
+        "width": 100,
+        "height": 80,
+        "notes": "The main walls of the warehouse, appearing dirty, stained, and possibly peeling."
+      },
+      {
+        "name": "Metal support beams (left wall)",
+        "x": 20,
+        "y": 40,
+        "width": 40,
+        "height": 60,
+        "notes": "Rusty metal support beams and horizontal bars along the left wall."
+      },
+      {
+        "name": "Light on upper level wall",
+        "x": 80,
+        "y": 40,
+        "width": 3,
+        "height": 3,
+        "notes": "A small, dim light fixture on the wall of the upper level."
+      }
+    ],
+    "floor_items": [
+      {
+        "name": "Stacked wooden crates (left)",
+        "x": 15,
+        "y": 65,
+        "width": 20,
+        "height": 30,
+        "notes": "Several wooden crates stacked against the left wall."
+      },
+      {
+        "name": "Stacked wooden crates (mid-left)",
+        "x": 45,
+        "y": 65,
+        "width": 10,
+        "height": 20,
+        "notes": "A smaller stack of wooden crates behind the forklift."
+      },
+      {
+        "name": "Stacked wooden crates (right)",
+        "x": 90,
+        "y": 75,
+        "width": 10,
+        "height": 25,
+        "notes": "Several wooden crates stacked on the far right side, near the staircase."
+      },
+      {
+        "name": "Scattered papers on floor (left)",
+        "x": 30,
+        "y": 90,
+        "width": 20,
+        "height": 5,
+        "notes": "Several white papers scattered on the dusty floor near the forklift."
+      },
+      {
+        "name": "Scattered papers on floor (right)",
+        "x": 70,
+        "y": 95,
+        "width": 20,
+        "height": 5,
+        "notes": "Several white papers scattered on the wet floor near the overturned chair."
+      },
+      {
+        "name": "Tire tracks on floor",
+        "x": 50,
+        "y": 90,
+        "width": 60,
+        "height": 10,
+        "notes": "Dark, wet tire tracks visible on the concrete floor, likely from the forklift."
+      },
+      {
+        "name": "Wet floor patches",
+        "x": 65,
+        "y": 95,
+        "width": 30,
+        "height": 5,
+        "notes": "Reflective wet patches on the floor, especially towards the open door."
+      },
+      {
+        "name": "Dust/dirt on floor",
+        "x": 40,
+        "y": 95,
+        "width": 30,
+        "height": 5,
+        "notes": "Accumulation of dust and dirt on the floor, particularly around the forklift."
+      }
+    ],
+    "room_id": "armazem"
+  }
+}

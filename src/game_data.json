@@ -1,0 +1,2270 @@
+{
+  "ITEM_NAMES": {
+    "chave_escritorio": "Chave do Escritório",
+    "cartao_visita": "Cartão de Visita — Vila Nova",
+    "fotografia": "Fotografia Amassada",
+    "isqueiro": "Isqueiro de Prata",
+    "fita_magnetica": "Fita Magnética Recuperada",
+    "cedula_500": "Cédula de 500 Marks",
+    "gravador_cassete": "Gravador de Fita Cassete"
+  },
+  "PHONE_CONTACTS": {
+    "diretora_elvira": {
+      "name": "Diretora Elvira Campos",
+      "number": "314-7721",
+      "discoveredFrom": "cartao_visita",
+      "voice": "feminine",
+      "greeting": "*estática* ... Alô? Quem fala?",
+      "dialogue": {
+        "initial": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Sr. Law. Esperava sua ligação.",
+            "Eu alterei o horário? Não. Alguém usou meu carimbo.",
+            "Eu saí mais cedo naquele dia — reunião na secretaria.",
+            "Quem ficou com a chave? O vigia.",
+            "Mas ele não seria capaz... seria?"
+          ],
+          "choices": [
+            {
+              "text": "Quem é o homem de roupas caras que visitou a escola?",
+              "goto": "ask_rich_man",
+              "hint": true
+            },
+            {
+              "text": "A senhora sabe algo sobre 'Die Wohltat'?",
+              "goto": "ask_wohltat",
+              "hint": true
+            },
+            {
+              "text": "O vigia tem algo a esconder?",
+              "goto": "ask_vigia",
+              "hint": false
+            },
+            {
+              "text": "Onde a senhora estava no dia do desaparecimento?",
+              "goto": "ask_alibi",
+              "hint": false
+            }
+          ]
+        },
+        "ask_rich_man": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Há um homem. Roupas caras, carro escuro.",
+            "Ele apareceu duas vezes pedindo para ver os registros dos alunos.",
+            "Eu neguei. Ele sorriu como quem não precisa de permissão.",
+            "Olhe o armário do vigia. Ele não sabe, mas eu vi o que tem lá dentro."
+          ],
+          "choices": [
+            {
+              "text": "Obrigado, Diretora. Vou investigar o vigia.",
+              "goto": "end_polite",
+              "hint": false
+            },
+            {
+              "text": "A senhora o protegeu? Por quê?",
+              "goto": "react_defensive",
+              "hint": false
+            }
+          ]
+        },
+        "ask_wohltat": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Wo... Wohltat? De onde tirou esse nome?",
+            "Não... não sei de nada. *a voz treme*",
+            "Eu preciso desligar. Agora.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "ask_vigia": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "O vigia? Ele é... simples. Um homem do povo.",
+            "Mas ele fica até tarde às vezes. Diz que é para vigiar.",
+            "Não confio nele. Nem desconfio. Algo entre os dois.",
+            "O armário dele pode ter respostas."
+          ],
+          "choices": [
+            {
+              "text": "Vou verificar o armário dele.",
+              "goto": "end_polite",
+              "hint": false
+            }
+          ]
+        },
+        "ask_alibi": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Eu?! Que tipo de pergunta é essa?",
+            "Eu estava na secretaria regional. Tenho assinatura no livro de presença.",
+            "Se está me investigando, Sr. Law, talvez devesse investigar quem TEM algo a esconder.",
+            "Fale com o Kommissar Mendes. Ele sabe mais do que deixa transparecer.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "react_defensive": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Proteger? Eu PROTEGI as crianças recusando aquele homem!",
+            "O que o senhor fez, Sr. Law? Veio tarde demais.",
+            "Não me ligue mais com essas insinuações.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "end_polite": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Tome cuidado, Sr. Law.",
+            "Esta cidade engole quem pergunta demais.",
+            "*clic*"
+          ],
+          "choices": []
+        }
+      }
+    },
+    "santos": {
+      "name": "Polizist Santos",
+      "number": "314-0089",
+      "discoveredFrom": "telefone_santos",
+      "voice": "masculine",
+      "greeting": "*estática* ... Fala Santos. Off the record.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Santos",
+          "lines": [
+            "Law. Eu sei quem é você.",
+            "O caso da menina? Esquece. O Kommissar arquivou na mesma hora.",
+            "Mas entre nós... Eu vi o relatório.",
+            "Três crianças desapareceram no mesmo bairro em 6 meses.",
+            "Tudo arquivado. Mesma assinatura. Mendes."
+          ],
+          "choices": [
+            {
+              "text": "Quem é Wohltat?",
+              "goto": "ask_wohltat",
+              "hint": true
+            },
+            {
+              "text": "O que tem no armazém da rua 14?",
+              "goto": "ask_armazem",
+              "hint": true
+            },
+            {
+              "text": "Mendes está envolvido diretamente?",
+              "goto": "ask_mendes",
+              "hint": false
+            },
+            {
+              "text": "Você pode me dar acesso aos arquivos?",
+              "goto": "ask_acesso",
+              "hint": false
+            }
+          ]
+        },
+        "ask_wohltat": {
+          "speaker": "Santos",
+          "lines": [
+            "Há um cara — chamam de Wohltat.",
+            "Distribui comida, roupas, esperança.",
+            "Mas quem aceita demais... entrega coisas que não pode repor.",
+            "Ele opera pelo armazém na rua 14.",
+            "Eu iria lá sozinho, mas... você sabe como é."
+          ],
+          "choices": [
+            {
+              "text": "Obrigado, Santos. Vou até o armazém.",
+              "goto": "end_helpful",
+              "hint": false
+            },
+            {
+              "text": "Por que você não fez nada até agora?",
+              "goto": "react_guilt",
+              "hint": false
+            }
+          ]
+        },
+        "ask_armazem": {
+          "speaker": "Santos",
+          "lines": [
+            "O Lagerhaus 7 na rua 14. É lá que tudo acontece.",
+            "Entrada pelo beco — tem uma porta dos fundos.",
+            "Cadeado eletrônico. Precisa de cartão magnético.",
+            "Cuidado, Law. Lá dentro não há lei."
+          ],
+          "choices": [
+            {
+              "text": "Entendido. Obrigado.",
+              "goto": "end_helpful",
+              "hint": false
+            }
+          ]
+        },
+        "ask_mendes": {
+          "speaker": "Santos",
+          "lines": [
+            "Mendes? Ele é o Kommissar. Acima de mim. Acima de todo mundo nesta estação.",
+            "Ele arquiva os casos como 'fuga'. Toda criança que desaparece? Fuga.",
+            "Eu vi ele sair tarde da delegacia. Direção errada. Direção da rua 14.",
+            "Mas não tenho provas. Se eu acuso, sou eu que desapareço."
+          ],
+          "choices": [
+            {
+              "text": "Onde estão os arquivos arquivados?",
+              "goto": "ask_acesso",
+              "hint": false
+            },
+            {
+              "text": "Vou encontrar as provas. Obrigado.",
+              "goto": "end_helpful",
+              "hint": false
+            }
+          ]
+        },
+        "ask_acesso": {
+          "speaker": "Santos",
+          "lines": [
+            "Acesso aos arquivos? O armário está trancado.",
+            "O policial de plantão... digamos que ele aceita incentivo financeiro.",
+            "500 Marks e ele olha para o teto.",
+            "É o que esta cidade se tornou, Law. Tudo tem preço."
+          ],
+          "choices": [
+            {
+              "text": "Entendido. Obrigado, Santos.",
+              "goto": "end_helpful",
+              "hint": false
+            }
+          ]
+        },
+        "react_guilt": {
+          "speaker": "Santos",
+          "lines": [
+            "Não fiz nada? NÃO fiz nada?!",
+            "Eu tentei! Três vezes. O Kommissar rasgou meus relatórios.",
+            "Ameaçou me transferir para o distrito Norte. Lá não volta vivo.",
+            "Não venha me julgar, Law. Pelo menos eu estou falando.",
+            "*estática longa* ... *clic*"
+          ],
+          "choices": []
+        },
+        "end_helpful": {
+          "speaker": "Santos",
+          "lines": [
+            "Boa sorte, Law.",
+            "Se não voltar em 24h... eu nem procuro.",
+            "*clic*"
+          ],
+          "choices": []
+        }
+      }
+    },
+    "zeca": {
+      "name": "Zeca do Gasthof",
+      "number": "314-5502",
+      "discoveredFrom": "telefone_zeca",
+      "voice": "masculine",
+      "greeting": "*bip* Fala, Murphy. Tô ouvindo.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Zeca",
+          "lines": [
+            "Murphy. Você parece pior que ontem.",
+            "A menina? A da Kraft? Sei dela.",
+            "Um cara esteve aqui, semana passada.",
+            "Bebeu feito gente que não quer lembrar.",
+            "Deixou cair um papel — um endereço."
+          ],
+          "choices": [
+            {
+              "text": "Qual endereço?",
+              "goto": "ask_endereco",
+              "hint": true
+            },
+            {
+              "text": "Descreva o cara que veio ao bar.",
+              "goto": "ask_description",
+              "hint": false
+            },
+            {
+              "text": "Alguém mais perguntou sobre Helena?",
+              "goto": "ask_others",
+              "hint": false
+            },
+            {
+              "text": "O que é Die Wohltat?",
+              "goto": "ask_wohltat",
+              "hint": true
+            }
+          ]
+        },
+        "ask_endereco": {
+          "speaker": "Zeca",
+          "lines": [
+            "Rua 14, Lagerhaus 7. Distrito Industrial.",
+            "Eu peguei o papel. Guardei pra você.",
+            "O guardanapo tá no balcão. Passa aqui quando puder.",
+            "Cuidado, Murphy. Esse cara cheirava a dinheiro sujo e enxofre."
+          ],
+          "choices": [
+            {
+              "text": "Vou passar aí. Obrigado, Zeca.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "ask_description": {
+          "speaker": "Zeca",
+          "lines": [
+            "Alto. Terno escuro, caro demais pra este bairro.",
+            "Mãos limpas demais. Unhas feitas. Não é operário.",
+            "Cheirava a loja de departamento do Estado.",
+            "Mas o olho... o olho era de quem já viu gente morrer.",
+            "Não perguntou nome. Perguntou se eu sabia onde meninas dormiam.",
+            "Eu expulsei. Mas ele voltou quando eu não estava."
+          ],
+          "choices": [
+            {
+              "text": "Ele voltou? Quando?",
+              "goto": "ask_returned",
+              "hint": false
+            },
+            {
+              "text": "Obrigado, Zeca. Vou ao armazém.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "ask_others": {
+          "speaker": "Zeca",
+          "lines": [
+            "Outra gente? Hmm. O Santos da Volkspolizei veio perguntar.",
+            "Mas não oficial. De bermuda, fora do turno.",
+            "E a Dra. Cunha — a médica do posto de saúde.",
+            "Ela perguntou se Helena costumava ir ao posto.",
+            "Disse que era rotina. Mas eu vi os olhos dela, Murphy.",
+            "Não era rotina. Era medo."
+          ],
+          "choices": [
+            {
+              "text": "Dra. Cunha... Onde fica o posto?",
+              "goto": "reveal_dra_cunha",
+              "hint": true
+            },
+            {
+              "text": "Obrigado, Zeca.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "ask_wohltat": {
+          "speaker": "Zeca",
+          "lines": [
+            "Wohltat? ... Esse nome.",
+            "Aquele cara deixou um guardanapo com o símbolo deles.",
+            "Uma mão aberta. 'Caridade', dizem.",
+            "Mas caridade não cheira a enxofre.",
+            "O endereço no guardanapo é o mesmo que eu te dei.",
+            "Vai até lá. Mas vai armado."
+          ],
+          "choices": [
+            {
+              "text": "Obrigado, Zeca. Vou com cuidado.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "ask_returned": {
+          "speaker": "Zeca",
+          "lines": [
+            "Voltou na quinta. Depois das 10.",
+            "Falou com o vigia da escola — vi quando passaram pela rua.",
+            "O vigia parecia nervoso. Aceitou um envelope.",
+            "O homem do terno... ele compra gente, Murphy.",
+            "E esta cidade vende."
+          ],
+          "choices": [
+            {
+              "text": "O vigia da escola... Preciso voltar lá.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "reveal_dra_cunha": {
+          "speaker": "Zeca",
+          "lines": [
+            "A Dra. Cunha? Fica no posto de saúde do distrito.",
+            "Mas olha... ela não atende depois das 6.",
+            "Dizem que faz visitas domiciliares. Com crianças.",
+            "Se pergunta direito, ela abre a porta.",
+            "Se pergunta errado... ela tem amigos na Volkspolizei."
+          ],
+          "choices": [
+            {
+              "text": "Entendido. Obrigado, Zeca.",
+              "goto": "end_friendly",
+              "hint": false
+            }
+          ]
+        },
+        "end_friendly": {
+          "speaker": "Zeca",
+          "lines": [
+            "Tome cuidado, Murphy.",
+            "Se precisar, o Gasthof tá sempre aberto.",
+            "*clic*"
+          ],
+          "choices": []
+        }
+      }
+    },
+    "seu_jonas": {
+      "name": "Seu Jonas",
+      "number": "sem número — carta no beco",
+      "discoveredFrom": "carta_jonas",
+      "voice": "masculine",
+      "greeting": "Carta manchada de chuva. Letra trêmula. Sem remetente.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Herr Law,",
+            "Eles acham que eu não vejo nada. Mas eu vejo tudo. Sempre vi.",
+            "O homem do carro preto? Eu vi.",
+            "Ele estaciona na rua 14, perto do armazém.",
+            "Toda quinta, depois das 10 da noite."
+          ],
+          "choices": [
+            {
+              "text": "O que mais você viu no carro?",
+              "goto": "ask_car",
+              "hint": true
+            },
+            {
+              "text": "Você conhece o nome dele?",
+              "goto": "ask_name",
+              "hint": true
+            },
+            {
+              "text": "Por que não foi à polícia?",
+              "goto": "ask_police",
+              "hint": false
+            }
+          ]
+        },
+        "ask_car": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Uma vez eu vi ele sair do carro com uma menina no banco de trás.",
+            "Ela não gritava. Estava dormindo.",
+            "Ou... não estava mais.",
+            "O banco de trás tinha cobertores. Como se levasse carga.",
+            "Mas carga não tem olhos."
+          ],
+          "choices": [
+            {
+              "text": "Helena estava no carro?",
+              "goto": "confirm_helena",
+              "hint": false
+            }
+          ]
+        },
+        "ask_name": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "O nome dele? Eu ouvi uma vez.",
+            "Wohltat. Só Wohltat.",
+            "Como se dar esmola fosse o mesmo que tirar uma vida.",
+            "Não me procure. Eu não vi nada."
+          ],
+          "choices": []
+        },
+        "ask_police": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Polícia? A Volkspolizei?",
+            "O Kommissar Mendes passa de carro toda quarta à noite.",
+            "Para no armazém. Entra. Sai sorrindo.",
+            "Eu não sou burro, Law. Eu sou invisível.",
+            "É por isso que estou vivo."
+          ],
+          "choices": [
+            {
+              "text": "Mendes vai ao armazém? Isso é importante.",
+              "goto": "confirm_mendes",
+              "hint": true
+            }
+          ]
+        },
+        "confirm_helena": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Helena? O nome da menina da escola?",
+            "Eu vi... uma menina. Pequena. Sozinha.",
+            "Não sei o nome. Mas o tamanho... era o dela.",
+            "O carro seguiu para o porto. Hafen Santos.",
+            "Container 14-B. Escrito no vidro do carro.",
+            "Não me procure. Eu não vi nada."
+          ],
+          "choices": []
+        },
+        "confirm_mendes": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Toda quarta. Sem falha. Como relógio.",
+            "Mendes não é polícia. É porteiro do inferno.",
+            "Não me procure. Eu não vi nada."
+          ],
+          "choices": []
+        }
+      }
+    },
+    "dra_cunha": {
+      "name": "Dra. Cunha",
+      "number": "314-3301",
+      "discoveredFrom": "zeca_reveal",
+      "voice": "feminine",
+      "greeting": "... Quem fala? Não atendo fora do horário.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Como conseguiu este número?",
+            "Não falo com pacientes fora do posto.",
+            "... Mas se é sobre a menina da Kraft...",
+            "Eu examinei Helena. Check-up escolar, há 2 meses.",
+            "Ela estava saudável. Mas me olhou de um jeito..."
+          ],
+          "choices": [
+            {
+              "text": "O que Helena te contou?",
+              "goto": "ask_helena_told",
+              "hint": true
+            },
+            {
+              "text": "Você faz visitas domiciliares com crianças?",
+              "goto": "ask_visits",
+              "hint": false
+            },
+            {
+              "text": "Conhece alguém chamado Wohltat?",
+              "goto": "ask_wohltat",
+              "hint": true
+            },
+            {
+              "text": "Qual era o estado de saúde dela?",
+              "goto": "ask_health",
+              "hint": false
+            }
+          ]
+        },
+        "ask_helena_told": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Helena me disse... que viu um homem no armazém.",
+            "Uma criança dentro. Dormindo. Ou quieta demais.",
+            "Ela disse que ia contar pra professora.",
+            "Eu avisei: 'Não conte pra ninguém, Helena.'",
+            "... Eu devia ter feito diferente.",
+            "Eu devia ter contado eu mesma."
+          ],
+          "choices": [
+            {
+              "text": "Por que pediu pra ela ficar calada?",
+              "goto": "react_guilt",
+              "hint": false
+            },
+            {
+              "text": "Obrigado, Dra. Cunha. Isso é importante.",
+              "goto": "end_remorse",
+              "hint": false
+            }
+          ]
+        },
+        "ask_visits": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Visitas? Quem te disse isso? Zeca?",
+            "Eu faço visitas SIM. É meu trabalho.",
+            "Crianças do bairro precisam de acompanhamento.",
+            "O que está insinuando?",
+            "Eu salvo vidas, Law. Não destruo.",
+            "*estática* Se me acusar de novo, ligo pra Volkspolizei.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "ask_wohltat": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "... Wohltat.",
+            "Eu... ouvi esse nome no posto.",
+            "Um envelope chegou. Dinheiro. Pra 'programa de assistência'.",
+            "Eu não aceitei. Mas outros aceitaram.",
+            "O vigia da escola. O Kommissar. Até o padre.",
+            "Todo mundo aceita nesta cidade, Sr. Law.",
+            "Até que não tem mais como devolver."
+          ],
+          "choices": [
+            {
+              "text": "Quem mais aceitou dinheiro do Wohltat?",
+              "goto": "reveal_network",
+              "hint": true
+            },
+            {
+              "text": "Obrigado, Dra. Cunha.",
+              "goto": "end_remorse",
+              "hint": false
+            }
+          ]
+        },
+        "ask_health": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Helena estava saudável. Altura e peso normais.",
+            "Mas tinha marcas nos braços. Injeções.",
+            "Disse que era vacina da escola. Acreditei.",
+            "... Agora não sei mais o que acreditar.",
+            "Olhe os registros do posto. Procure por 'WOHLTAT-PROGRAMM'.",
+            "E depois me esqueça."
+          ],
+          "choices": []
+        },
+        "react_guilt": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Por quê? POR QUÊ?!",
+            "Porque eu tenho medo! Esta cidade come quem fala!",
+            "Eu ouvi o que aconteceu com o vigilante que falou demais.",
+            "Apareceu no rio. 'Acidente'. Como sempre.",
+            "Eu protegi Helena pedindo silêncio. Eu sei que é irônico.",
+            "Não me ligue mais.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "reveal_network": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "O vigia da escola recebeu 5.000 Marks.",
+            "Mendes arquiva os casos. O padre dá abrigo temporário.",
+            "A Diretora... ela foi ameaçada. Não comprou.",
+            "E eu? Eu fiz o que pude sem morrer.",
+            "O nome no envelope era sempre o mesmo: W.",
+            "É uma rede, Law. Não é um homem.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "end_remorse": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Encontre Helena.",
+            "Se ela estiver viva... me avise.",
+            "Eu preciso saber que tentei.",
+            "*clic*"
+          ],
+          "choices": []
+        }
+      }
+    }
+  },
+  "GAME_ROOMS": {
+    "escritorio": {
+      "id": "escritorio",
+      "name": "Escritório de Murphy Law — Rua Sieben, 314",
+      "description": "O teto goteja. A placa na porta diz MURPHY LAW — PRIVATERMITTLER, mas o 'A' caiu. Cheira a schnapps velho e cigarro apagado na borda do cinzeiro. A chuva não para lá fora. Nunca para. No fichário, um espelho embaciado. No meio dos papéis, um telefone de discagem.",
+      "interactables": [
+        {
+          "id": "porta_rua",
+          "icon": "DoorOpen",
+          "x": 44,
+          "y": 42,
+          "type": "travel",
+          "label": "Sair para a Rua",
+          "width": 18,
+          "height": 38,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "mesa_murphy",
+          "icon": "Search",
+          "x": 25,
+          "y": 72,
+          "type": "inspect",
+          "label": "Mesa de Trabalho",
+          "width": 65,
+          "height": 22,
+          "description": "Pilhas de casos encerrados. A foto de uma menina — Helena, 9 anos — está debaixo de um copo de schnapps. Ela foi o último caso que importou."
+        },
+        {
+          "id": "garrafa_whiskey",
+          "icon": "Search",
+          "x": 58,
+          "y": 73,
+          "type": "inspect",
+          "label": "Garrafa de Schnapps",
+          "width": 6,
+          "height": 14,
+          "description": "Metade vazia. A marca é barata, destilada numa fábrica estatal que fechou há 10 anos. O gosto de culpa não tem preço."
+        },
+        {
+          "id": "ficheiro_helena",
+          "icon": "FileText",
+          "x": 85,
+          "y": 55,
+          "type": "terminal_read",
+          "label": "Ficheiro do Caso Helena",
+          "width": 15,
+          "height": 35,
+          "description": "Uma pasta manchada de café. O nome 'Helena Kraft' está escrito à mão, com uma urgência que doeu na caneta.",
+          "documentData": {
+            "title": "FALL #3143 — HELENA KRAFT",
+            "content": [
+              "═══════════════════════════════════════",
+              " FALL #3143 — VERMISSTE PERSON",
+              "═══════════════════════════════════════",
+              "",
+              "AUFTRAGGEBER: Maria Kraft — Alleinerziehend, arbeitslos",
+              "VERMISST: Helena Kraft, 9 Jahre",
+              "LETZTER AUFENTHALTSORT: Volksschule Vila Nova",
+              "VERSCHWUNDEN SEIT: 3 Wochen",
+              "",
+              "NOTIZEN DES DETEKTIVS:",
+              "",
+              "Die Mutter hat kein Geld. 500 Marks — alles, was sie hatte.",
+              "Ich sagte, es reicht.",
+              "",
+              "Die Volkspolizei hat keinen Finger gerührt. Kinder aus",
+              "dem Arbeiterbezirk machen keine Schlagzeile. Aber ich",
+              "habe Marias Augen gesehen und konnte nicht nein sagen.",
+              "",
+              "Erste Spur: die Direktorin hat über die Uhrzeit gelogen.",
+              "Jemand hat Helena innerhalb der Schule abgeholt.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "janela_chuva",
+          "icon": "Search",
+          "x": 5,
+          "y": 5,
+          "type": "inspect",
+          "label": "Janela com Vista da Rua",
+          "width": 40,
+          "height": 80,
+          "description": "A chuva cai sem cessar. Lá fora, um letreiro de néon sangra vermelho no asfalto molhado: 'GASTHOF'. A placa do Partido na esquina está pichada com tinta preta."
+        },
+        {
+          "id": "telefone_escritorio",
+          "icon": "Phone",
+          "x": 45,
+          "y": 73,
+          "type": "phone_call",
+          "label": "Telefone de Discagem",
+          "width": 7,
+          "height": 6,
+          "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
+        },
+        {
+          "id": "gravador_cassete",
+          "icon": "Archive",
+          "x": 38,
+          "y": 75,
+          "width": 7,
+          "height": 6,
+          "type": "pickup",
+          "label": "Gravador Cassete",
+          "description": "Um gravador de fita cassete antigo. Perfeito para registrar ligações.",
+          "pickupItem": "gravador_cassete",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "isqueiro_mesa",
+          "icon": "Key",
+          "x": 34,
+          "y": 84,
+          "type": "pickup",
+          "label": "Isqueiro de Prata",
+          "width": 5,
+          "height": 5,
+          "description": "Um isqueiro antigo com as iniciais M.L. gravadas. Um presente de alguém que não está mais aqui.",
+          "pickupItem": "isqueiro",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "bilhete_anonimo",
+          "icon": "FileText",
+          "x": 55,
+          "y": 83,
+          "type": "terminal_read",
+          "label": "Carta Anônima",
+          "width": 15,
+          "height": 9,
+          "description": "Uma carta enfiada por debaixo da porta durante a noite. Letra tremida, papel úmido, sem remetente. Carimbo do correio estatal — ilegível.",
+          "documentData": {
+            "title": "BRIEF OHNE ABSENDER",
+            "content": [
+              "═══════════════════════════════════════",
+              "",
+              " Herr Law,",
+              "",
+              " Ich weiß, dass Sie nach dem Mädchen suchen.",
+              " Hören Sie auf, solange es noch Zeit ist.",
+              "",
+              " Oder Sie sind der Nächste, der verschwindet.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "espelho_embaciado",
+          "icon": "Eye",
+          "x": 85,
+          "y": 55,
+          "type": "inspect",
+          "label": "Espelho Embaciado",
+          "width": 7,
+          "height": 15,
+          "description": "Um espelho pequeno pendurado no canto escuro do fichário, coberto de fuligem. Seu reflexo mal aparece. Olheiras profundas, barba por fazer, olhos de quem não dorme há dias. Você parece um fantasma que ainda não percebeu que morreu."
+        },
+        {
+          "id": "puzzle_hint_1",
+          "x": 35.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #1",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #1",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Tráfico de Crianças' está entre o suspeito 'Dra. Cunha' e o arma 'Revólver .38' (nesta ordem).",
+              "",
+              "[Tipo de restrição: between_ordered]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_6",
+          "x": 45.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #6",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #6",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Vingança Pessoal' está em um local antes do horario '22:00'.",
+              "",
+              "[Tipo de restrição: left_of]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_11",
+          "x": 55.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #11",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #11",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Dívida de Jogo' está no Volksschule Vila Nova.",
+              "",
+              "[Tipo de restrição: exact]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_16",
+          "x": 65.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #16",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #16",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O suspeito 'Seu Jonas' e o local 'Volksschule Vila Nova' estão no mesmo local.",
+              "",
+              "[Tipo de restrição: same_room]"
+            ]
+          }
+        }
+      ]
+    },
+    "rua_chuva": {
+      "id": "rua_chuva",
+      "name": "Rua Sieben — Chuva e Néon",
+      "description": "A chuva mascara tudo — passos, olhares, pecados. O letreiro do Gasthof pinga vermelho no asfalto rachado. Postes do Partido enferrujados. Um beco escuro respira do lado direito. Mais à frente, as silhuetas da Volksschule e da Volkspolizeistation recortam-se na névoa. Nenhum táxi. Nenhum ônibus. O transporte público parou há meses.",
+      "interactables": [
+        {
+          "id": "porta_escritorio",
+          "icon": "DoorClosed",
+          "x": 17,
+          "y": 70,
+          "type": "travel",
+          "label": "Voltar ao Escritório",
+          "width": 7,
+          "height": 22,
+          "requiredItem": "chave_escritorio",
+          "failedMessage": "A porta está trancada. Você esqueceu a chave dentro. Novamente.",
+          "successMessage": "A chave gira com dificuldade. A fechadura está velha, como tudo nesta cidade.",
+          "targetRoom": "escritorio"
+        },
+        {
+          "id": "beco_escuro",
+          "icon": "DoorOpen",
+          "x": 58,
+          "y": 60,
+          "type": "travel",
+          "label": "Entrar no Beco",
+          "width": 8,
+          "height": 30,
+          "targetRoom": "beco"
+        },
+        {
+          "id": "bar_vila_nova",
+          "icon": "DoorOpen",
+          "x": 73,
+          "y": 70,
+          "type": "travel",
+          "label": "Gasthof Vila Nova",
+          "width": 8,
+          "height": 22,
+          "targetRoom": "bar"
+        },
+        {
+          "id": "escola_fachada",
+          "icon": "DoorClosed",
+          "x": 38,
+          "y": 55,
+          "type": "travel",
+          "label": "Volksschule Vila Nova",
+          "width": 8,
+          "height": 30,
+          "requiredItem": "cartao_visita",
+          "failedMessage": "A escola está trancada. Você precisa de um motivo para entrar — ou de alguém que abra a porta.",
+          "successMessage": "O vigia reconhece o cartão de visita. 'A Diretora disse que você viria.'",
+          "targetRoom": "escola"
+        },
+        {
+          "id": "delegacia_fachada",
+          "icon": "DoorOpen",
+          "x": 48,
+          "y": 65,
+          "type": "travel",
+          "label": "Volkspolizeistation 8º",
+          "width": 10,
+          "height": 18,
+          "targetRoom": "delegacia"
+        },
+        {
+          "id": "neon_piscando",
+          "icon": "Search",
+          "x": 67,
+          "y": 50,
+          "type": "inspect",
+          "label": "Letreiro do Gasthof",
+          "width": 10,
+          "height": 18,
+          "description": "O 'G' de GASTHOF está apagado. Fica 'ASTHOF'. As letras restantes tremem como dentes de quem mentiu demais. A eletricidade estatal falha três vezes por noite."
+        },
+        {
+          "id": "poça_sangue",
+          "icon": "Search",
+          "x": 57.6,
+          "y": 84.1,
+          "type": "inspect",
+          "label": "Poça Suspeita",
+          "width": 18.6,
+          "height": 14.4,
+          "description": "A chuva dilui, mas não apaga. O vermelho se mistura com a água e escorre pelo bueiro entupido. Alguém sangrou aqui recentemente. A rua não tem iluminação há semanas."
+        },
+        {
+          "id": "cartao_chao",
+          "icon": "Key",
+          "x": 30,
+          "y": 82,
+          "type": "pickup",
+          "label": "Cartão no Asfalto",
+          "width": 10,
+          "height": 8,
+          "description": "Um cartão de visitas molhado: 'Diretora Elvira Campos — Volksschule Vila Nova'. O número foi riscado com caneta vermelha.",
+          "pickupItem": "cartao_visita",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "chave_escritorio_achada",
+          "icon": "Key",
+          "x": 10.2,
+          "y": 86.5,
+          "type": "pickup",
+          "label": "Chave no Cipó",
+          "width": 5,
+          "height": 5,
+          "description": "Enfiada no cipó debaixo da janela do escritório. Você deixou aí semana passada depois de ficar preso do lado de dentro — a fechadura emperra quando chove.",
+          "pickupItem": "chave_escritorio",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "puzzle_hint_2",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #2",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #2",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O horario '04:00' está em um local antes do suspeito 'Seu Jonas'.",
+              "",
+              "[Tipo de restrição: left_of]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_7",
+          "x": 15.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #7",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #7",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O arma 'Faca de Cozinha' está em um local adjacente ao horario '02:30'.",
+              "",
+              "[Tipo de restrição: adjacent]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_12",
+          "x": 25.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #12",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #12",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Extorsão' está em um local antes do local 'Volkspolizeistation 8º'.",
+              "",
+              "[Tipo de restrição: left_of]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_17",
+          "x": 35.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #17",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #17",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O suspeito 'Kommissar Mendes' e o local 'Beco da Rua Sieben' NÃO estão no mesmo local.",
+              "",
+              "[Tipo de restrição: not_same_room]"
+            ]
+          }
+        }
+      ]
+    },
+    "bar": {
+      "id": "bar",
+      "name": "Gasthof Vila Nova — Fumaça e Segredos",
+      "description": "O toca-discos toca uma valsa que ninguém escolheu. O barman limpa um copo como se estivesse apagando pecados. Atrás do balcão, um telefone de parede com secretária eletrônica. Na parede lateral, outro telefone público que funciona quando quer.",
+      "interactables": [
+        {
+          "id": "porta_rua_bar",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair do Gasthof",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "telefone_zeca",
+          "icon": "Phone",
+          "x": 15,
+          "y": 32,
+          "type": "phone_call",
+          "label": "Telefone — Ligação de Zeca",
+          "width": 8,
+          "height": 10,
+          "phoneCallId": "zeca",
+          "description": "Atrás do balcão, um telefone de parede com secretária eletrônica de fita. Zeca deixou recado. A fita magnética range quando você aperta play. Zeca conhece todo mundo. E todo mundo deve favores a ele.",
+          "documentData": {
+            "title": "RECADO TELEFÔNICO — ZECA",
+            "content": [
+              "═══════════════════════════════════════",
+              " RECADO NA SECRETÁRIA ELETRÔNICA",
+              "═══════════════════════════════════════",
+              "",
+              "*BIP* 'Murphy. Você parece pior que ontem.'",
+              "",
+              "'A menina? A da Kraft? Sei dela.'",
+              "'Um cara esteve aqui, semana passada.'",
+              "'Bebeu feito gente que não quer lembrar.'",
+              "'Deixou cair um papel — um endereço.'",
+              "'Eu peguei. Guardei pra você.'",
+              "",
+              "'Cuidado, Murphy. Esse cara cheirava",
+              "a dinheiro sujo e enxofre.'",
+              "",
+              "'Vou deixar o guardanapo no balcão.'",
+              "'Passa aqui quando puder.' *BIP*",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "guardanapo_endereco",
+          "icon": "FileText",
+          "x": 28,
+          "y": 60,
+          "type": "terminal_read",
+          "label": "Guardanapo com Endereço",
+          "width": 7,
+          "height": 7,
+          "description": "Rua 14, Lagerhaus 7. A letra é trêmula, mas o endereço é claro. Cheiro de enxofre e algo queimado no papel.",
+          "documentData": {
+            "title": "PISTA — RUA 14, LAGERHAUS 7",
+            "content": [
+              "═══════════════════════════════════════",
+              " PISTA RECUPERADA",
+              "═══════════════════════════════════════",
+              "",
+              "Endereço: Rua 14, Lagerhaus 7",
+              "Bairro: Distrito Industrial",
+              "",
+              "Notas: Cheiro de enxofre no papel.",
+              "A caligrafia sugere que quem escreveu",
+              "estava sob efeito de algo — medo,",
+              "schnapps, ou ambos.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "toca_discos",
+          "icon": "Search",
+          "x": 62,
+          "y": 55,
+          "type": "inspect",
+          "label": "Toca-Discos Velho",
+          "width": 10,
+          "height": 25,
+          "description": "Um vitrola com um LP arranhado. Toca sozinho à meia-noite — sempre a mesma valsa. Os frequentadores antigos dizem que é o fantasma de uma mulher que esperou alguém aqui até morrer."
+        },
+        {
+          "id": "cabine_telefone",
+          "icon": "Phone",
+          "x": 72,
+          "y": 42,
+          "type": "phone_call",
+          "label": "Telefone Público",
+          "width": 7,
+          "height": 12,
+          "description": "Um telefone de parede ao lado do toca-discos. Funciona quando a central estatal permite. Alguém colou um bilhete por dentro com fita adesiva. Diz: 'Eles levam crianças para o Lagerhaus 7'."
+        },
+        {
+          "id": "banco_cantos",
+          "icon": "Search",
+          "x": 78,
+          "y": 68,
+          "type": "inspect",
+          "label": "Banco Escuro",
+          "width": 20,
+          "height": 25,
+          "description": "No canto mais escuro do gasthof. O estofado está rasgado e tem algo enfiado dentro — uma foto amassada de uma menina sorrindo. Helena?"
+        },
+        {
+          "id": "porta_armazem",
+          "icon": "DoorClosed",
+          "x": 76,
+          "y": 50,
+          "type": "travel",
+          "label": "Sair pelos Fundos — Lagerhaus 7",
+          "width": 10,
+          "height": 28,
+          "requiredItem": "fotografia",
+          "failedMessage": "A porta dos fundos está trancada. Você precisa de uma prova para ir até lá — a foto pode ser o argumento.",
+          "successMessage": "Com a foto de Helena no bolso, você segue para o Lagerhaus 7. A chuva engole seus passos.",
+          "targetRoom": "armazem"
+        },
+        {
+          "id": "foto_helena_bar",
+          "icon": "Key",
+          "x": 78,
+          "y": 68,
+          "type": "pickup",
+          "label": "Fotografia Amassada",
+          "width": 5,
+          "height": 5,
+          "description": "Uma foto de Helena Kraft sorrindo em frente à escola. No verso, alguém escreveu: 'Ela viu demais.' A foto está molhada de schnapps ou de lágrimas.",
+          "pickupItem": "fotografia",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "puzzle_hint_3",
+          "x": 25.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #3",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #3",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O local 'Beco da Rua Sieben' está em um local adjacente ao horario '22:00'.",
+              "",
+              "[Tipo de restrição: adjacent]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_8",
+          "x": 35.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #8",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #8",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O suspeito 'Kommissar Mendes' e o local 'Lagerhaus 7' estão no mesmo local.",
+              "",
+              "[Tipo de restrição: same_room]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_13",
+          "x": 45.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #13",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #13",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Kommissar Mendes'.",
+              "",
+              "[Tipo de restrição: adjacent]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_18",
+          "x": 55.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #18",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #18",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O suspeito 'Kommissar Mendes' e o local 'Volksschule Vila Nova' NÃO estão no mesmo local.",
+              "",
+              "[Tipo de restrição: not_same_room]"
+            ]
+          }
+        }
+      ]
+    },
+    "escola": {
+      "id": "escola",
+      "name": "Volksschule Vila Nova — Corredores Vazios",
+      "description": "O vigia trancou a porta atrás de você. O cheiro de giz e desinfetante não mascara algo podre debaixo do assoalho. As salas estão escuras — a eletricidade foi cortada. O quadro na parede da diretoria tem um horário rasurado.",
+      "interactables": [
+        {
+          "id": "porta_escola_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair da Volksschule",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "diretoria_porta",
+          "icon": "DoorClosed",
+          "x": 44,
+          "y": 40,
+          "type": "travel",
+          "label": "Entrar na Diretoria",
+          "width": 12,
+          "height": 30,
+          "targetRoom": "diretoria"
+        },
+        {
+          "id": "sala_helena",
+          "icon": "Search",
+          "x": 82,
+          "y": 60,
+          "type": "inspect",
+          "label": "Sala da Helena — 3º Ano",
+          "width": 10,
+          "height": 35,
+          "description": "A carteira dela ainda tem o nome escrito com giz: HELENA. Um desenho de uma família com três pessoas está colado na parede. A terceira pessoa foi arrancada do desenho."
+        },
+        {
+          "id": "armario_helena",
+          "icon": "Search",
+          "x": 10,
+          "y": 48,
+          "type": "inspect",
+          "label": "Armário da Helena",
+          "width": 18,
+          "height": 50,
+          "description": "Um lanche mofado. Um bilhete dobrado: 'Não conte pra ninguém ou a mamãe sofre.' Letra de adulto disfarçando ser de criança. Papel timbrado do Partido."
+        },
+        {
+          "id": "quadro_horarios",
+          "icon": "FileText",
+          "x": 30,
+          "y": 48,
+          "type": "terminal_read",
+          "label": "Quadro de Horários Rasurado",
+          "width": 12,
+          "height": 25,
+          "description": "O horário de saída foi alterado com caneta vermelha. Alguém mudou o horário de 17h para 16h sem autorização. No dia do desaparecimento, Helena saiu uma hora antes do normal.",
+          "documentData": {
+            "title": "QUADRO DE HORÁRIOS — ALTERAÇÃO",
+            "content": [
+              "═══════════════════════════════════════",
+              " REGISTRO DE ALTERAÇÃO",
+              "═══════════════════════════════════════",
+              "",
+              "Horário original de saída: 17:00",
+              "Horário alterado: 16:00",
+              "Data da alteração: Mesmo dia do desaparecimento",
+              "",
+              "Quem autorizou a mudança?",
+              "A Diretora Elvira assinou, mas a letra",
+              "não parece ser dela.",
+              "",
+              "Alguém tirou Helena da escola uma",
+              "hora mais cedo. Alguém com acesso",
+              "ao sistema de registros — um sistema",
+              "de fichas que ninguém fiscaliza.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "corredor_sombrio",
+          "icon": "Search",
+          "x": 60,
+          "y": 30,
+          "type": "inspect",
+          "label": "Corredor Principal",
+          "width": 8,
+          "height": 25,
+          "description": "Os passos ecoam como numa igreja vazia. O teto goteja em três pontos. Nenhuma lâmpada funciona. No fundo do corredor, uma porta entreaberta que não deveria estar assim."
+        },
+        {
+          "id": "fita_magnetica_chao",
+          "icon": "Archive",
+          "x": 60.1,
+          "y": 72.8,
+          "type": "pickup",
+          "label": "Fita Magnética no Chão",
+          "width": 5,
+          "height": 5,
+          "description": "Uma fita magnética de rolo embaixo do armário da Helena. Alguém tentou escondê-la com pressa. Etiqueta colada: 'BEWEISE — NICHT LÖSCHEN'.",
+          "pickupItem": "fita_magnetica",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "puzzle_hint_4",
+          "x": 35.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #4",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #4",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Gasthof Vila Nova' (em qualquer ordem).",
+              "",
+              "[Tipo de restrição: between_unordered]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_9",
+          "x": 45.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #9",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #9",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Kommissar Mendes' (em qualquer ordem).",
+              "",
+              "[Tipo de restrição: between_unordered]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_14",
+          "x": 55.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #14",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #14",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O local 'Volksschule Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local.",
+              "",
+              "[Tipo de restrição: same_room]"
+            ]
+          }
+        }
+      ]
+    },
+    "diretoria": {
+      "id": "diretoria",
+      "name": "Diretoria — Gavetas com Segredos",
+      "description": "A sala da Diretora Elvira Campos. Uma mulher que sabe demais e fala de menos. O escritório é arrumado demais — como se alguém limasse as arestas da verdade toda noite. Sob os papéis da escrivaninha, o brilho verde de um terminal de fósforo. No canto, atrás de uma divisória, o armário do vigia.",
+      "interactables": [
+        {
+          "id": "porta_diretoria_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair da Diretoria",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "escola"
+        },
+        {
+          "id": "telefone_diretora",
+          "icon": "Phone",
+          "x": 42,
+          "y": 68,
+          "type": "phone_call",
+          "label": "Telefone — Recado da Diretora",
+          "width": 8,
+          "height": 7,
+          "phoneCallId": "diretora_elvira",
+          "description": "Você ligou para a Diretora. A linha estatal rangeu por dois minutos. Finalmente, ela atendeu. A mesa é impecável, mas a gaveta está arranhada por dentro.",
+          "documentData": {
+            "title": "LIGAÇÃO TELEFÔNICA — DIRETORA ELVIRA",
+            "content": [
+              "═══════════════════════════════════════",
+              " DIRETORA ELVIRA CAMPOS — POR TELEFONE",
+              "═══════════════════════════════════════",
+              "",
+              "*estática* 'Sr. Law. Esperava sua ligação.'",
+              "",
+              "'Eu alterei o horário? Não. Alguém",
+              "usou meu carimbo. Eu saí mais cedo",
+              "naquele dia — reunião na secretaria.'",
+              "",
+              "'Quem ficou com a chave? O vigia.'",
+              "'Mas ele não seria capaz... seria?'",
+              "",
+              "'Há um homem. Roupas caras, carro",
+              "escuro. Ele apareceu duas vezes",
+              "pedindo para ver os registros dos",
+              "alunos. Eu neguei. Ele sorriu como",
+              "quem não precisa de permissão.'",
+              "",
+              "'Olhe o armário do vigia. Ele não",
+              "sabe, mas eu vi o que tem lá dentro.'",
+              "",
+              "*clic* A linha caiu. Como sempre.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "gaveta_diretora",
+          "icon": "FileText",
+          "x": 54.2,
+          "y": 71.4,
+          "type": "terminal_read",
+          "label": "Gaveta Trancada",
+          "width": 10,
+          "height": 8,
+          "description": "Dentro há um envelope sem remetente. Contém fotos de crianças da escola — tiradas de longe, como por um stalker. Helena aparece em três delas.",
+          "requiredItem": "isqueiro",
+          "failedMessage": "A gaveta está trancada. Precisa de algo fino e metálico para arrombar — como um isqueiro.",
+          "documentData": {
+            "title": "ENVELOPE — FOTOS DE VIGILÂNCIA",
+            "content": [
+              "═══════════════════════════════════════",
+              " FOTOS RECUPERADAS DO ENVELOPE",
+              "═══════════════════════════════════════",
+              "",
+              "7 fotos de crianças da escola.",
+              "3 delas são de Helena.",
+              "",
+              "Em cada foto, um círculo vermelho",
+              "marca a criança. No verso das",
+              "fotos de Helena, está escrito:",
+              "",
+              "'A que vê demais.'",
+              "'A que fala demais.'",
+              "'A que sabe demais.'",
+              "",
+              "Estas são marcações de quem escolhe",
+              "vítimas. Helena não foi um acidente.",
+              "Ela foi selecionada.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "armario_vigia",
+          "icon": "Search",
+          "x": 85,
+          "y": 55,
+          "type": "inspect",
+          "label": "Armário do Vigia",
+          "width": 15,
+          "height": 35,
+          "description": "No canto escuro da sala, atrás de uma divisória, um armário de metal do vigia. Dentro há roupas limpas, um rádio quebrado e um envelope grosso com dinheiro — 5.000 Marks em cédulas usadas do Banco Estatal. No fundo, um papel: 'Entregue a menina e receba o resto.'"
+        },
+        {
+          "id": "cedulas_vigia",
+          "icon": "Key",
+          "x": 85,
+          "y": 58,
+          "type": "pickup",
+          "label": "Cédulas no Armário",
+          "width": 12,
+          "height": 20,
+          "description": "500 Marks em cédulas usadas do Banco Estatal. O dinheiro do sangue. Você guarda — vai servir para pagar a Maria de volta.",
+          "pickupItem": "cedula_500",
+          "hideAfterInteract": true
+        },
+        {
+          "id": "terminal_fosforo",
+          "icon": "Monitor",
+          "x": 55,
+          "y": 72,
+          "type": "terminal_read",
+          "label": "Terminal de Fósforo Verde",
+          "width": 10,
+          "height": 8,
+          "description": "Debaixo de pilhas de papel na escrivaninha, um terminal estatal antigo com monitor de fósforo verde. A fita magnética contém um keylogger. A senha da diretora é 'ELVIRA1962'. Nas mensagens apagadas, há comunicação de um remetente chamado 'DIE WOHLTAT'.",
+          "requiredItem": "fita_magnetica",
+          "failedMessage": "O terminal pede uma senha. Talvez a fita magnética encontrada na sala da Helena tenha algo...",
+          "documentData": {
+            "title": "MENSAGENS RECUPERADAS — DIE WOHLTAT",
+            "content": [
+              "═══════════════════════════════════════",
+              " NACHRICHTEN VON 'DIE WOHLTAT'",
+              "═══════════════════════════════════════",
+              "",
+              "VON: die.wohltat@volkspost.gov",
+              "AN: elvira.campos@volksschule.gov",
+              "",
+              "---",
+              "",
+              "'A menina Helena viu o que não",
+              "deveria. Ela viu o carro na rua 14.",
+              "Ela viu o homem entrar no armazém",
+              "com uma criança que não era dele.'",
+              "",
+              "'Eu não peço. Eu aviso.'",
+              "'Entregue-a ou a escola fecha.'",
+              "'Eu sei onde todos os seus alunos",
+              "moram.'",
+              "",
+              "---",
+              "",
+              "Data: 2 dias antes do desaparecimento.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        }
+      ]
+    },
+    "delegacia": {
+      "id": "delegacia",
+      "name": "Volkspolizeistation 8º — A Estação que Não Vê",
+      "description": "O Kommissar Mendes está de folga. Sempre está. O plantão tem um só policial que olha para o teto e três cadeiras vazias. O aquecimento quebrou e ninguém veio consertar. No balcão, um telefone de parede toca sem que ninguém atenda. No corredor, uma sala de interrogação vazia.",
+      "interactables": [
+        {
+          "id": "porta_delegacia_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair da Volkspolizei",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "telefone_santos",
+          "icon": "Phone",
+          "x": 18,
+          "y": 45,
+          "type": "phone_call",
+          "label": "Telefone — Recado de Santos",
+          "width": 10,
+          "height": 12,
+          "phoneCallId": "santos",
+          "description": "No balcão da delegacia, um telefone de parede com recados em fita magnética. Santos ligou e deixou recado. Parece cansado. Cansado de tentar. Cansado de não conseguir. Mas talvez ele tenha algo.",
+          "documentData": {
+            "title": "RECADO TELEFÔNICO — SANTOS",
+            "content": [
+              "═══════════════════════════════════════",
+              " POLIZIST SANTOS — OFF THE RECORD",
+              "═══════════════════════════════════════",
+              "",
+              "*BIP* 'Law. Eu sei quem é você.'",
+              "'O caso da menina? Esquece.'",
+              "'O Kommissar arquivou na mesma hora.'",
+              "",
+              "'Mas entre nós... Eu vi o relatório.'",
+              "'Três crianças desapareceram no",
+              "mesmo bairro em 6 meses. Tudo",
+              "arquivado. Mesma assinatura.'",
+              "'Mendes.'",
+              "",
+              "'Há um cara — chamam de Wohltat.'",
+              "'Distribui comida, roupas, esperança.'",
+              "'Mas quem aceita demais... entrega",
+              "coisas que não pode repor.'",
+              "",
+              "'O armazém na rua 14. Eu iria lá",
+              "sozinho, mas... você sabe como é.'",
+              "",
+              "*estática* *BIP* Fim da mensagem.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "arquivo_mendes",
+          "icon": "FileText",
+          "x": 48,
+          "y": 62,
+          "type": "terminal_read",
+          "label": "Arquivo do Kommissar Mendes",
+          "width": 10,
+          "height": 25,
+          "description": "Três casos de crianças desaparecidas. Todos arquivados como 'fuga'. Todos no mesmo raio de 2km. Todos a mando do mesmo Kommissar.",
+          "requiredItem": "cedula_500",
+          "failedMessage": "O armário está trancado. O policial de plantão olha para o teto — mas aceita incentivo financeiro.",
+          "documentData": {
+            "title": "FÄLLE ARCHIVIERT — MENDES",
+            "content": [
+              "═══════════════════════════════════════",
+              " 3 FÄLLE ARCHIVIERT ALS 'FLUCHT'",
+              "═══════════════════════════════════════",
+              "",
+              "FALL 1: Lukas Ferreira, 8 Jahre",
+              " Data: 4 meses atrás",
+              " Status: FLUCHT (arquivado por Mendes)",
+              " Última vez visto: Rua 14",
+              "",
+              "FALL 2: Ana Beatriz Costa, 11 Jahre",
+              " Data: 2 meses atrás",
+              " Status: FLUCHT (arquivado por Mendes)",
+              " Última vez visto: Volksschule Vila Nova",
+              "",
+              "FALL 3: Helena Kraft, 9 Jahre",
+              " Data: 3 semanas atrás",
+              " Status: FLUCHT (arquivado por Mendes)",
+              " Última vez visto: Volksschule Vila Nova",
+              "",
+              "PADRÃO: Todos no raio de 2km.",
+              "Todos viram algo que não deviam.",
+              "Todos arquivados pelo mesmo homem.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "mapa_pinos",
+          "icon": "Eye",
+          "x": 65,
+          "y": 48,
+          "type": "inspect",
+          "label": "Mapa com Pinos Vermelhos",
+          "width": 14,
+          "height": 30,
+          "description": "Um mapa do bairro com três pinos vermelhos. Formam um triângulo. No centro: Rua 14, Lagerhaus 7. Alguém já sabia. Alguém sempre soube."
+        },
+        {
+          "id": "quadro_desaparecidos",
+          "icon": "Eye",
+          "x": 80,
+          "y": 48,
+          "type": "inspect",
+          "label": "Quadro de Pessoas Desaparecidas",
+          "width": 14,
+          "height": 30,
+          "description": "Um mural de fotos. Crianças. Todas do mesmo bairro. Uma está circulada em vermelho: Helena Kraft. Ao lado, nomes de outras três crianças que 'fugiram' segundo o Kommissar Mendes. Ninguém foge duas vezes do mesmo lugar."
+        },
+        {
+          "id": "cela_vazia",
+          "icon": "Search",
+          "x": 30,
+          "y": 55,
+          "type": "inspect",
+          "label": "Sala de Interrogação Vazia",
+          "width": 15,
+          "height": 30,
+          "description": "Marcas de unhas na parede da sala de interrogação. Não são de um adulto. São de uma criança que tentou escapar. O concreto está arranhado até o cinza. A sala não deveria estar vazia."
+        },
+        {
+          "id": "puzzle_hint_5",
+          "x": 25.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #5",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #5",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O motivo 'Vingança Pessoal' está entre o arma 'Arame de Piano' e o suspeito 'Diretora Elvira' (nesta ordem).",
+              "",
+              "[Tipo de restrição: between_ordered]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_10",
+          "x": 35.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #10",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #10",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O arma 'Veneno Injetável' NÃO está em um local adjacente ao horario '22:00'.",
+              "",
+              "[Tipo de restrição: not_adjacent]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_hint_15",
+          "x": 45.0,
+          "y": 20.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Pista Confidencial #15",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+          "documentData": {
+            "title": "PISTA #15",
+            "content": [
+              "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+              "",
+              "O suspeito 'Diretora Elvira' e o horario '23:30' estão no mesmo local.",
+              "",
+              "[Tipo de restrição: same_room]"
+            ]
+          }
+        },
+        {
+          "id": "puzzle_deduction_terminal",
+          "x": 45.0,
+          "y": 36.0,
+          "icon": "Terminal",
+          "type": "terminal_read",
+          "label": "Quadro de Dedução — Caso Helena",
+          "width": 12.0,
+          "height": 12.0,
+          "description": "O quadro de cortiça na delegacia. Fios vermelhos conectam fotos e recortes. Um terminal de fósforo verde exibe os dados do caso.",
+          "documentData": {
+            "title": "SISTEMA DE DEDUÇÃO",
+            "content": [
+              "═══════════════════════════════════════",
+              " MURPHY LAW — DEDUKTIONSSYSTEM",
+              "═══════════════════════════════════════",
+              "",
+              "Determine qual suspeito, local, arma,",
+              "motivo e horário se conectam.",
+              "",
+              "Locais: Escritório Murphy, Rua Sieben, Gasthof Vila Nova, Volksschule, Volkspolizeistation 8º",
+              "Suspeitos: Kommissar Mendes, Diretora Elvira, Seu Jonas, Zeca do Gasthof, Dra. Cunha",
+              "Locais do crime: Lagerhaus 7, Beco da Rua Sieben, Volksschule Vila Nova, Volkspolizeistation 8º, Gasthof Vila Nova",
+              "Armas: Revólver .38, Faca de Cozinha, Arame de Piano, Chave Inglesa, Veneno Injetável",
+              "Motivos: Dívida de Jogo, Vingança Pessoal, Tráfico de Crianças, Extorsão, Cobertura de Crime",
+              "Horários: 22:00, 23:30, 01:00, 02:30, 04:00",
+              "",
+              "Total de pistas coletadas: 18",
+              "Solução única: SIM",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        }
+      ]
+    },
+    "beco": {
+      "id": "beco",
+      "name": "Beco da Rua Sieben — Sombras que Falam",
+      "description": "O beco cheira a lixo e desespero. As paredes têm grafites que contam histórias que ninguém quer ler. Os bueiros estão entupidos há meses — a companhia estatal não vem.",
+      "interactables": [
+        {
+          "id": "volta_rua_beco",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Voltar para a Rua",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "carta_jonas",
+          "icon": "Mail",
+          "x": 22,
+          "y": 38,
+          "type": "phone_call",
+          "label": "Carta de Seu Jonas",
+          "width": 8,
+          "height": 12,
+          "phoneCallId": "seu_jonas",
+          "description": "Seu Jonas não aparece — ele deixou uma carta enfiada na fenda da parede. Letra trêmula, papel molhado da chuva. Seu Jonas vive no beco há 12 anos. Vê tudo. Ninguém vê ele.",
+          "documentData": {
+            "title": "BRIEF — SEU JONAS",
+            "content": [
+              "═══════════════════════════════════════",
+              " CARTA DE SEU JONAS",
+              "═══════════════════════════════════════",
+              "",
+              "Herr Law,",
+              "",
+              "Eles acham que eu não vejo nada.",
+              "Mas eu vejo tudo. Sempre vi.",
+              "",
+              "O homem do carro preto? Eu vi.",
+              "Ele estaciona na rua 14, perto do",
+              "armazém. Toda quinta, depois das",
+              "10 da noite.",
+              "",
+              "Uma vez eu vi ele sair do carro",
+              "com uma menina no banco de trás.",
+              "Ela não gritava. Estava dormindo.",
+              "Ou... não estava mais.",
+              "",
+              "O nome dele? Eu ouvi uma vez.",
+              "Wohltat. Só Wohltat.",
+              "Como se dar esmola fosse o mesmo",
+              "que tirar uma vida.",
+              "",
+              "Não me procure. Eu não vi nada.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "grafite_parede",
+          "icon": "Eye",
+          "x": 20,
+          "y": 40,
+          "type": "inspect",
+          "label": "Grafite na Parede",
+          "width": 12,
+          "height": 10,
+          "description": "Um grafite recente: uma criança com asas quebradas dentro de uma gaiola. Embaixo, letras spray: 'ER KOMMT MIT SCHWARZEM WAGEN'. Ninguém denunciou. Ninguém viu."
+        },
+        {
+          "id": "lata_lixo",
+          "icon": "Search",
+          "x": 44,
+          "y": 65,
+          "type": "inspect",
+          "label": "Lata de Lixo",
+          "width": 14,
+          "height": 22,
+          "description": "Entre restos de comida, um crachá de identificação: 'Die Wohltat — Freiwilliger'. A foto foi arrancada. O nome está borrado de café."
+        },
+        {
+          "id": "porta_armazem_beco",
+          "icon": "DoorClosed",
+          "x": 42,
+          "y": 52,
+          "type": "travel",
+          "label": "Porta dos Fundos do Lagerhaus",
+          "width": 8,
+          "height": 20,
+          "requiredItem": "fita_magnetica",
+          "failedMessage": "A porta está trancada com um cadeado eletrônico. Precisa do cartão magnético que veio com a fita.",
+          "successMessage": "O cartão magnético encaixa no leitor. A porta se abre com um clique seco.",
+          "targetRoom": "armazem"
+        },
+        {
+          "id": "silhueta_sombria",
+          "icon": "Eye",
+          "x": 65,
+          "y": 50,
+          "type": "inspect",
+          "label": "Silhueta no Fundo do Beco",
+          "width": 20,
+          "height": 45,
+          "description": "Uma forma humana no fundo do beco. Um braço levantado — cumprimentando ou ameaçando? A chuva distorce, mas não apaga. Quem quer que seja, sabe que você está aqui. A silhueta não se move. Espera. Como quem já esperou muita gente passar — e nunca viu ninguém voltar."
+        }
+      ]
+    },
+    "armazem": {
+      "id": "armazem",
+      "name": "Lagerhaus 7 — Rua 14 — O Fim da Trilha",
+      "description": "O cheiro de químico e medo é insuportável. Caixas empilhadas formam labirintos. No fundo, uma porta de aço com cadeado. O teto goteja. Entre as caixas, o brilho verde de um terminal quase escondido. Pela fresta da porta industrial, a silhueta de um carro preto.",
+      "interactables": [
+        {
+          "id": "porta_armazem_saida",
+          "icon": "DoorOpen",
+          "x": 70,
+          "y": 60,
+          "type": "travel",
+          "label": "Sair do Lagerhaus",
+          "width": 20,
+          "height": 30,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "caixas_documentos",
+          "icon": "FileText",
+          "x": 10,
+          "y": 58,
+          "type": "terminal_read",
+          "label": "Caixas com Documentos",
+          "width": 18,
+          "height": 28,
+          "description": "Documentos de uma organização chamada 'Die Wohltat'. Registro de adoções irregulares. Compradores. Destinos. Nomes. Helena Kraft está na lista.",
+          "documentData": {
+            "title": "DOKUMENTE — DIE WOHLTAT",
+            "content": [
+              "═══════════════════════════════════════",
+              " DIE WOHLTAT — GEHEIME AKTEN",
+              "═══════════════════════════════════════",
+              "",
+              "Esta não é uma instituição de caridade.",
+              "É um mercado. Um mercado de crianças.",
+              "",
+              "REGISTRO #47 — HELENA KRAFT",
+              " Idade: 9 anos",
+              " Status: EM TRÂNSITO",
+              " Destino: [REDACTED]",
+              " Comprador: [REDACTED]",
+              " Valor: 50.000 Marks",
+              "",
+              "Outros registros na mesma caixa:",
+              " Lukas Ferreira — ENTREGUE",
+              " Ana Beatriz Costa — ENTREGUE",
+              " Helena Kraft — EM TRÂNSITO",
+              "",
+              "Ela ainda está aqui. Ela ainda está viva.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "porta_aco",
+          "icon": "Lock",
+          "x": 30,
+          "y": 55,
+          "type": "terminal_read",
+          "label": "Porta de Aço com Cadeado",
+          "width": 12,
+          "height": 30,
+          "description": "O isqueiro esquenta o cadeado até ficar vermelho. Um golpe seco e ele estala. A porta se abre. Lá dentro...",
+          "requiredItem": "isqueiro",
+          "failedMessage": "O cadeado é grosso. Precisa de algo para forçar — ou de fogo.",
+          "documentData": {
+            "title": "ATRÁS DA PORTA DE AÇO",
+            "content": [
+              "═══════════════════════════════════════",
+              " DER GEHEIME RAUM",
+              "═══════════════════════════════════════",
+              "",
+              "Um quarto improvisado. Colchão no chão.",
+              "Brinquedos quebrados. Um balde com água.",
+              "Marcas na parede — contando dias.",
+              "",
+              "Trinta e um risquinhos.",
+              "",
+              "Ela esteve aqui por 31 dias.",
+              "",
+              "Mas a sala está vazia agora.",
+              "Alguém a mudou de lugar.",
+              "",
+              "Há uma nota no colchão:",
+              "",
+              "'Ela viu demais. Murphy Law viu demais.",
+              "A troca foi antecipada. Você é o",
+              "próximo na lista. — W'",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "carro_preto",
+          "icon": "Search",
+          "x": 78,
+          "y": 60,
+          "type": "inspect",
+          "label": "Carro Preto Abandonado",
+          "width": 14,
+          "height": 14,
+          "description": "Lá fora, visível pela fresta da porta industrial entreaberta, um sedan preto do Estado com placa falsa. O banco de trás tem uma manta, um brinquedo de pelúcia e um bilhete: 'Entrega confirmada. Hafen Santos. Container 14-B.'"
+        },
+        {
+          "id": "terminal_final",
+          "icon": "Terminal",
+          "x": 15,
+          "y": 60,
+          "type": "terminal_read",
+          "label": "Terminal de Fósforo — A Verdade",
+          "width": 10,
+          "height": 10,
+          "description": "No canto entre as caixas empilhadas, quase escondido, um terminal estatal antigo com monitor de fósforo verde, fita magnética girando. Na tela, a última mensagem: 'Container 14-B. Navio parte às 06h. Última entrega do mês.'",
+          "requiredItem": "fita_magnetica",
+          "failedMessage": "O terminal pede autenticação por cartão magnético. A fita encontrada na escola tem o código de acesso.",
+          "documentData": {
+            "title": "A ÚLTIMA PISTA — CONTAINER 14-B",
+            "content": [
+              "═══════════════════════════════════════",
+              " CONTAINER 14-B — HAFEN SANTOS",
+              "═══════════════════════════════════════",
+              "",
+              "Helena ainda está viva.",
+              "Ela está sendo transportada pelo porto.",
+              "Container 14-B, navio cargueiro.",
+              "Partida às 06:00.",
+              "",
+              "Você tem até as 6 da manhã.",
+              "",
+              "O homem chamado Wohltat não é",
+              "um homem. É uma organização. É",
+              "uma rede que opera nas sombras",
+              "desta cidade podre.",
+              "",
+              "Mas você é Murphy Law.",
+              "E Murphy Law não desiste.",
+              "",
+              "Não quando uma mãe está esperando.",
+              "Não quando uma menina de 9 anos",
+              "precisa que alguém olhe para ela.",
+              "",
+              "═══════════════════════════════════════",
+              "",
+              ">>> CONTINUA... <<<",
+              "",
+              "O porto de Santos te espera.",
+              "A chuva não vai parar.",
+              "Mas você também não.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "parede_marcas",
+          "icon": "Search",
+          "x": 15,
+          "y": 40,
+          "type": "inspect",
+          "label": "Marcas na Parede do Armazém",
+          "width": 8,
+          "height": 20,
+          "description": "Unhas. Arranhões. Alguém tentou escapar por esta parede. A argamassa está esburacada. Um brinco pequeno — de borboleta — está preso entre os tijolos. É de Helena."
+        },
+        {
+          "id": "tabuleiro_xadrez",
+          "icon": "Search",
+          "x": 40,
+          "y": 62,
+          "type": "inspect",
+          "label": "Tabuleiro de Xadrez Abandonado",
+          "width": 8,
+          "height": 6,
+          "description": "Sobre uma das caixas de madeira, um tabuleiro de xadrez com as peças posicionadas. O rei branco está caído. No lugar do rei preto, uma foto de Helena. Alguém brincava com ela. Alguém que acha que pessoas são peças."
+        },
+        {
+          "id": "puzzle_solution_terminal",
+          "x": 30.0,
+          "y": 55.0,
+          "icon": "Eye",
+          "type": "terminal_read",
+          "label": "Envelope Lacrado — Resolução do Caso",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope pardo, lacrado com cera vermelha. Contém a verdade. O selo do Partido exige autorização — ou dinheiro.",
+          "requiredItem": "cedula_500",
+          "failedMessage": "O envelope está lacrado com cera do Partido. Precisa de autorização — ou de alguém que aceite incentivo.",
+          "documentData": {
+            "title": "LÖSUNG VERTRAULICH",
+            "content": [
+              "═══════════════════════════════════════",
+              " SOLUÇÃO — FALL HELENA KRAFT",
+              "═══════════════════════════════════════",
+              "",
+              "► Escritório Murphy:",
+              " Suspeito: Dra. Cunha",
+              " Local: Gasthof Vila Nova",
+              " Arma: Chave Inglesa",
+              " Motivo: Extorsão",
+              " Horario: 04:00",
+              "",
+              "► Rua Sieben:",
+              " Suspeito: Zeca do Gasthof",
+              " Local: Volkspolizeistation 8º",
+              " Arma: Arame de Piano",
+              " Motivo: Tráfico de Crianças",
+              " Horario: 02:30",
+              "",
+              "► Gasthof Vila Nova:",
+              " Suspeito: Seu Jonas",
+              " Local: Volksschule Vila Nova",
+              " Arma: Faca de Cozinha",
+              " Motivo: Vingança Pessoal",
+              " Horario: 01:00",
+              "",
+              "► Volksschule:",
+              " Suspeito: Diretora Elvira",
+              " Local: Beco da Rua Sieben",
+              " Arma: Revólver .38",
+              " Motivo: Dívida de Jogo",
+              " Horario: 23:30",
+              "",
+              "► Volkspolizeistation 8º:",
+              " Suspeito: Kommissar Mendes",
+              " Local: Lagerhaus 7",
+              " Arma: Veneno Injetável",
+              " Motivo: Cobertura de Crime",
+              " Horario: 22:00",
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

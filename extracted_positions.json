@@ -1,0 +1,854 @@
+{
+  "pipeline": "YOLO + Gemma-4-31b-it (OpenRouter)",
+  "model": "google/gemma-4-31b-it",
+  "yolo_model": "yolov8x.pt",
+  "rooms": {
+    "entrance": {
+      "id": "entrance",
+      "name": "Setor de Triagem [ENTRADA]",
+      "interactables": [
+        {
+          "id": "containment_door_sector4",
+          "x": 48.0,
+          "y": 43.0,
+          "width": 30.0,
+          "height": 45.0,
+          "icon": "DoorOpen",
+          "type": "travel",
+          "label": "Porta do Setor 4",
+          "description": "Uma pesada porta de contenção entreaberta. O aviso de 'WARNING ON' pisca em vermelho, sugerindo que algo escapou ou que o protocolo de segurança foi violado.",
+          "targetRoom": "sector_4_interior",
+          "requiredItem": "keycard_level_4",
+          "failedMessage": "[ACESSO NEGADO] Requer Credencial de Nível 4.",
+          "successMessage": "A porta range ao abrir completamente, revelando a escuridão do setor.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "security_terminal_left",
+          "x": 15.0,
+          "y": 58.0,
+          "width": 20.0,
+          "height": 25.0,
+          "icon": "Terminal",
+          "type": "terminal_read",
+          "label": "Terminal de Monitoramento",
+          "description": "Um terminal de controle com a tela estilhaçada. Há manchas de sangue seco sobre o teclado.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você consegue recuperar fragmentos de um log de erro.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": "LOG DE ERRO: Falha crítica na contenção do SCP-2940. Protocolo de evacuação ignorado pelo comando central. 'Eles não deveriam ter aberto a porta'..."
+        },
+        {
+          "id": "medical_bench_right",
+          "x": 85.0,
+          "y": 70.0,
+          "width": 15.0,
+          "height": 20.0,
+          "icon": "Search",
+          "type": "inspect",
+          "label": "Maca de Triagem",
+          "description": "Uma maca de metal fria e enferrujada. Marcas de arrastão no chão sugerem que alguém foi levado à força daqui.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você não encontra nada além de resíduos biológicos desconhecidos.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "floor_debris_helmet",
+          "x": 31.0,
+          "y": 88.0,
+          "width": 5.0,
+          "height": 5.0,
+          "icon": "Skull",
+          "type": "pickup",
+          "label": "Capacete de Segurança",
+          "description": "Um capacete tático caído no chão, severamente amassado. Parece que o impacto veio de cima.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você recolheu o capacete. Ele contém um pequeno chip de identificação.",
+          "pickupItem": "id_chip_personnel",
+          "hideAfterInteract": true,
+          "documentData": null
+        }
+      ],
+      "yolo_detections": [
+        {
+          "yolo_class": "laptop",
+          "confidence": 0.573,
+          "x": 18.8,
+          "y": 56.6,
+          "width": 14.1,
+          "height": 15.7,
+          "bbox_px": {
+            "x1": 165,
+            "y1": 374,
+            "x2": 364,
+            "y2": 494
+          }
+        },
+        {
+          "yolo_class": "bench",
+          "confidence": 0.408,
+          "x": 88.9,
+          "y": 76.1,
+          "width": 22.2,
+          "height": 27.4,
+          "bbox_px": {
+            "x1": 1094,
+            "y1": 479,
+            "x2": 1407,
+            "y2": 689
+          }
+        },
+        {
+          "yolo_class": "laptop",
+          "confidence": 0.389,
+          "x": 13.1,
+          "y": 58.2,
+          "width": 13.5,
+          "height": 20.6,
+          "bbox_px": {
+            "x1": 89,
+            "y1": 367,
+            "x2": 280,
+            "y2": 526
+          }
+        },
+        {
+          "yolo_class": "chair",
+          "confidence": 0.319,
+          "x": 78.3,
+          "y": 66.1,
+          "width": 11.7,
+          "height": 27.7,
+          "bbox_px": {
+            "x1": 1020,
+            "y1": 401,
+            "x2": 1185,
+            "y2": 613
+          }
+        }
+      ]
+    },
+    "corridor": {
+      "id": "corridor",
+      "name": "Corredor Leste — Nível 2",
+      "interactables": [
+        {
+          "id": "door_left_containment",
+          "x": 21.0,
+          "y": 25.0,
+          "width": 9.0,
+          "height": 65.0,
+          "icon": "DoorClosed",
+          "type": "travel",
+          "label": "Porta de Contenção D-Class",
+          "description": "Uma porta pesada de aço, manchada de ferrugem e sangue. O aviso na parede indica que apenas pessoal de Classe D tem acesso aqui. O silêncio do outro lado é perturbador.",
+          "targetRoom": "containment_cell_d1",
+          "requiredItem": "keycard_level_2",
+          "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 2.",
+          "successMessage": "O mecanismo hidráulico range enquanto a porta se abre lentamente.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "door_right_security",
+          "x": 73.0,
+          "y": 26.0,
+          "width": 8.0,
+          "height": 66.0,
+          "icon": "DoorClosed",
+          "type": "travel",
+          "label": "Porta de Segurança Leste",
+          "description": "Uma porta dupla reforçada. Placas de 'CAUTION' estão coladas nela, mas parecem ter sido arrancadas e recoladas apressadamente.",
+          "targetRoom": "security_checkpoint_e2",
+          "requiredItem": "keycard_level_3",
+          "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 3.",
+          "successMessage": "A trava eletrônica clica e a porta desliza.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "wall_blood_prints",
+          "x": 85.0,
+          "y": 15.0,
+          "width": 12.0,
+          "height": 70.0,
+          "icon": "Eye",
+          "type": "inspect",
+          "label": "Marcas de Mãos Sangrentas",
+          "description": "Marcas de mãos humanas arrastadas pelas paredes. A viscosidade do sangue sugere que isso aconteceu recentemente. Alguém tentou desesperadamente escalar as paredes para fugir de algo.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você sente um calafrio ao perceber que as marcas estão frescas.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "corridor_end_darkness",
+          "x": 47.0,
+          "y": 43.0,
+          "width": 10.0,
+          "height": 22.0,
+          "icon": "Ghost",
+          "type": "travel",
+          "label": "Fim do Corredor",
+          "description": "A escuridão no final do corredor parece densa, quase palpável. Você consegue ouvir um som rítmico de algo gotejando no chão.",
+          "targetRoom": "dark_sector_e2",
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você avança para a escuridão total.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "floor_puddle_debris",
+          "x": 45.0,
+          "y": 75.0,
+          "width": 15.0,
+          "height": 10.0,
+          "icon": "Search",
+          "type": "inspect",
+          "label": "Poça de Líquido Desconhecido",
+          "description": "Um líquido escuro e viscoso se mistura com detritos no chão. Não parece ser apenas água; há um cheiro metálico forte de ferro e decomposição.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você nota pequenos fragmentos de tecido rasgado flutuando no líquido.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        }
+      ],
+      "yolo_detections": []
+    },
+    "scp_173_room": {
+      "id": "scp_173_room",
+      "name": "Câmara de Contenção — SCP-173 [EUCLID]",
+      "interactables": [
+        {
+          "id": "terminal_scp_496",
+          "x": 29.5,
+          "y": 40.8,
+          "width": 13.6,
+          "height": 26.0,
+          "icon": "Terminal",
+          "type": "terminal_read",
+          "label": "Terminal de Monitoramento SCP-496",
+          "description": "Um monitor CRT antigo exibindo dados instáveis sobre o SCP-496. O brilho da tela revela anotações perturbadoras sobre a 'estática' da entidade.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Acessando arquivos de contenção...",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": "RELATÓRIO DE CONTENÇÃO: SCP-496. Status: Instável. Observações: A entidade continua a mimetizar as frequências de rádio locais. O Dr. Angell reportou perda de audição após exposição prolongada."
+        },
+        {
+          "id": "door_lab_7b",
+          "x": 71.0,
+          "y": 20.0,
+          "width": 15.0,
+          "height": 45.0,
+          "icon": "DoorClosed",
+          "type": "travel",
+          "label": "Porta do Laboratório 7B",
+          "description": "Uma porta metálica pesada com a inscrição 'LAB 7B'. O símbolo de risco biológico ao lado sugere que o que está lá dentro não deve sair.",
+          "targetRoom": "lab_7b",
+          "requiredItem": "keycard_level_2",
+          "failedMessage": "[ACESSO NEGADO] Requer Cartão de Segurança Nível 2.",
+          "successMessage": "A porta range ao abrir, revelando um corredor frio.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "mug_dr_angell",
+          "x": 23.6,
+          "y": 57.7,
+          "width": 5.5,
+          "height": 9.8,
+          "icon": "Search",
+          "type": "inspect",
+          "label": "Caneca do Dr. Angell",
+          "description": "Uma caneca com a inscrição 'Propriedade do Dr. Angell'. O café dentro dela está frio e com uma película gordurosa, abandonada às pressas.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você sente um cheiro metálico emanando da bebida.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "whiteboard_event_horizon",
+          "x": 88.0,
+          "y": 20.0,
+          "width": 12.0,
+          "height": 40.0,
+          "icon": "FileText",
+          "type": "terminal_read",
+          "label": "Quadro de Análises: Event Horizon",
+          "description": "Um quadro branco repleto de equações frenéticas e a palavra 'URGENTE!' escrita em vermelho. Parece que alguém estava tentando calcular o impossível.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "As fórmulas sugerem uma anomalia espacial que desafia a física convencional.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": "ANÁLISE DE ANOMALIA: Event Horizon. Protocolo de Contenção: Falha iminente. A massa crítica foi atingida. Não olhe para o centro do vácuo."
+        },
+        {
+          "id": "scattered_papers_floor",
+          "x": 40.0,
+          "y": 80.0,
+          "width": 40.0,
+          "height": 20.0,
+          "icon": "Archive",
+          "type": "terminal_read",
+          "label": "Documentos Espalhados",
+          "description": "Folhas de papel amareladas e rasgadas cobrem o chão, como se alguém tivesse vasculhado a sala desesperadamente.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você recolhe alguns fragmentos de relatórios de incidentes.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": "Fragmento: '...o som não para... mesmo com os abafadores... ele está chamando meu nome através da frequência...'"
+        },
+        {
+          "id": "periodic_table_wall",
+          "x": 31.0,
+          "y": 12.0,
+          "width": 10.0,
+          "height": 15.0,
+          "icon": "Eye",
+          "type": "inspect",
+          "label": "Tabela Periódica Modificada",
+          "description": "Uma tabela periódica, mas com elementos que não existem na natureza. Alguns estão circulados com sangue seco.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você percebe que a química aqui segue regras diferentes das nossas.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "desk_drawer_keycard",
+          "x": 23.0,
+          "y": 70.0,
+          "width": 10.0,
+          "height": 15.0,
+          "icon": "Key",
+          "type": "pickup",
+          "label": "Gaveta da Mesa",
+          "description": "A gaveta está semiaberta. Algo brilha no fundo, entre papéis amassados.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você encontrou um Cartão de Acesso Nível 2!",
+          "pickupItem": "keycard_level_2",
+          "hideAfterInteract": true,
+          "documentData": null
+        }
+      ],
+      "yolo_detections": [
+        {
+          "yolo_class": "chair",
+          "confidence": 0.943,
+          "x": 61.4,
+          "y": 67.9,
+          "width": 14.0,
+          "height": 41.8,
+          "bbox_px": {
+            "x1": 766,
+            "y1": 360,
+            "x2": 963,
+            "y2": 681
+          }
+        },
+        {
+          "yolo_class": "cup",
+          "confidence": 0.913,
+          "x": 23.6,
+          "y": 57.7,
+          "width": 5.5,
+          "height": 9.8,
+          "bbox_px": {
+            "x1": 293,
+            "y1": 405,
+            "x2": 370,
+            "y2": 480
+          }
+        },
+        {
+          "yolo_class": "keyboard",
+          "confidence": 0.881,
+          "x": 36.9,
+          "y": 54.4,
+          "width": 12.4,
+          "height": 7.4,
+          "bbox_px": {
+            "x1": 432,
+            "y1": 389,
+            "x2": 606,
+            "y2": 446
+          }
+        },
+        {
+          "yolo_class": "tv",
+          "confidence": 0.855,
+          "x": 29.5,
+          "y": 40.8,
+          "width": 13.6,
+          "height": 26.0,
+          "bbox_px": {
+            "x1": 318,
+            "y1": 213,
+            "x2": 510,
+            "y2": 413
+          }
+        },
+        {
+          "yolo_class": "cup",
+          "confidence": 0.79,
+          "x": 29.2,
+          "y": 55.7,
+          "width": 3.4,
+          "height": 6.3,
+          "bbox_px": {
+            "x1": 387,
+            "y1": 404,
+            "x2": 435,
+            "y2": 452
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.7,
+          "x": 62.8,
+          "y": 94.4,
+          "width": 11.0,
+          "height": 10.7,
+          "bbox_px": {
+            "x1": 806,
+            "y1": 684,
+            "x2": 961,
+            "y2": 766
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.656,
+          "x": 46.4,
+          "y": 42.1,
+          "width": 3.4,
+          "height": 5.2,
+          "bbox_px": {
+            "x1": 629,
+            "y1": 303,
+            "x2": 677,
+            "y2": 343
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.613,
+          "x": 60.6,
+          "y": 65.7,
+          "width": 7.3,
+          "height": 4.9,
+          "bbox_px": {
+            "x1": 802,
+            "y1": 485,
+            "x2": 904,
+            "y2": 522
+          }
+        },
+        {
+          "yolo_class": "mouse",
+          "confidence": 0.607,
+          "x": 45.3,
+          "y": 52.0,
+          "width": 2.6,
+          "height": 2.2,
+          "bbox_px": {
+            "x1": 618,
+            "y1": 390,
+            "x2": 655,
+            "y2": 407
+          }
+        },
+        {
+          "yolo_class": "laptop",
+          "confidence": 0.602,
+          "x": 81.3,
+          "y": 89.8,
+          "width": 11.2,
+          "height": 9.7,
+          "bbox_px": {
+            "x1": 1066,
+            "y1": 652,
+            "x2": 1223,
+            "y2": 727
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.602,
+          "x": 54.3,
+          "y": 95.6,
+          "width": 10.6,
+          "height": 8.2,
+          "bbox_px": {
+            "x1": 689,
+            "y1": 702,
+            "x2": 838,
+            "y2": 765
+          }
+        },
+        {
+          "yolo_class": "cup",
+          "confidence": 0.587,
+          "x": 41.6,
+          "y": 49.5,
+          "width": 2.7,
+          "height": 4.6,
+          "bbox_px": {
+            "x1": 566,
+            "y1": 362,
+            "x2": 603,
+            "y2": 397
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.565,
+          "x": 8.6,
+          "y": 82.0,
+          "width": 14.6,
+          "height": 11.2,
+          "bbox_px": {
+            "x1": 18,
+            "y1": 586,
+            "x2": 222,
+            "y2": 672
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.564,
+          "x": 71.5,
+          "y": 92.6,
+          "width": 11.4,
+          "height": 8.5,
+          "bbox_px": {
+            "x1": 926,
+            "y1": 678,
+            "x2": 1086,
+            "y2": 743
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.385,
+          "x": 62.4,
+          "y": 26.3,
+          "width": 3.2,
+          "height": 6.7,
+          "bbox_px": {
+            "x1": 855,
+            "y1": 176,
+            "x2": 900,
+            "y2": 227
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.366,
+          "x": 59.6,
+          "y": 46.4,
+          "width": 2.8,
+          "height": 7.2,
+          "bbox_px": {
+            "x1": 820,
+            "y1": 328,
+            "x2": 859,
+            "y2": 384
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.301,
+          "x": 54.1,
+          "y": 75.9,
+          "width": 6.9,
+          "height": 5.6,
+          "bbox_px": {
+            "x1": 713,
+            "y1": 561,
+            "x2": 810,
+            "y2": 604
+          }
+        },
+        {
+          "yolo_class": "book",
+          "confidence": 0.286,
+          "x": 58.1,
+          "y": 46.3,
+          "width": 2.0,
+          "height": 7.0,
+          "bbox_px": {
+            "x1": 803,
+            "y1": 328,
+            "x2": 832,
+            "y2": 382
+          }
+        },
+        {
+          "yolo_class": "remote",
+          "confidence": 0.277,
+          "x": 89.9,
+          "y": 66.7,
+          "width": 4.1,
+          "height": 4.9,
+          "bbox_px": {
+            "x1": 1237,
+            "y1": 493,
+            "x2": 1294,
+            "y2": 530
+          }
+        },
+        {
+          "yolo_class": "mouse",
+          "confidence": 0.251,
+          "x": 55.5,
+          "y": 86.2,
+          "width": 1.6,
+          "height": 2.9,
+          "bbox_px": {
+            "x1": 769,
+            "y1": 651,
+            "x2": 792,
+            "y2": 673
+          }
+        }
+      ]
+    },
+    "server_room": {
+      "id": "server_room",
+      "name": "Sala dos Servidores Táticos",
+      "interactables": [
+        {
+          "id": "server_block_b1",
+          "x": 20.0,
+          "y": 50.0,
+          "width": 15.0,
+          "height": 80.0,
+          "icon": "Database",
+          "type": "inspect",
+          "label": "Bloco de Servidores B1",
+          "description": "Um rack de servidores massivo. O zumbido constante e o frio artificial da sala tornam o ambiente opressor. Luzes verdes piscam ritmicamente, como se a máquina estivesse respirando.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": null,
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "tactical_terminal_01",
+          "x": 37.0,
+          "y": 52.0,
+          "width": 8.0,
+          "height": 20.0,
+          "icon": "Terminal",
+          "type": "terminal_read",
+          "label": "Terminal de Acesso Tático",
+          "description": "Um monitor CRT antigo com linhas de comando verdes. O teclado está desgastado, sugerindo uso frenético antes do abandono da sala.",
+          "targetRoom": null,
+          "requiredItem": "keycard_level_2",
+          "failedMessage": "[ERRO DE AUTENTICAÇÃO] Credenciais de Nível 2 necessárias.",
+          "successMessage": "Acessando logs de sistema...",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": {
+            "title": "Log de Erro - Setor B",
+            "content": "CÓDIGO 404: Perda de sincronia com a Célula de Contenção 09. O sistema de resfriamento falhou, mas a temperatura nos servidores continua caindo drasticamente. Algo está drenando a energia térmica."
+          }
+        },
+        {
+          "id": "server_block_b4",
+          "x": 80.0,
+          "y": 50.0,
+          "width": 20.0,
+          "height": 80.0,
+          "icon": "Database",
+          "type": "inspect",
+          "label": "Bloco de Servidores B4",
+          "description": "Este bloco parece ter sido sabotado. Cabos estão expostos e há marcas de queimadura no chassi de metal. O silêncio aqui é mais perturbador que o ruído dos outros racks.",
+          "targetRoom": null,
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": null,
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "floor_grate_access",
+          "x": 45.0,
+          "y": 90.0,
+          "width": 20.0,
+          "height": 10.0,
+          "icon": "DoorOpen",
+          "type": "travel",
+          "label": "Grade de Ventilação",
+          "description": "Uma abertura no piso que leva aos dutos de manutenção. Um vento gélido e um cheiro de ozônio emanam da escuridão abaixo.",
+          "targetRoom": "maintenance_shaft",
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você desce cuidadosamente para a escuridão.",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        }
+      ],
+      "yolo_detections": [
+        {
+          "yolo_class": "refrigerator",
+          "confidence": 0.521,
+          "x": 50.6,
+          "y": 52.5,
+          "width": 2.6,
+          "height": 43.8,
+          "bbox_px": {
+            "x1": 693,
+            "y1": 234,
+            "x2": 730,
+            "y2": 571
+          }
+        },
+        {
+          "yolo_class": "refrigerator",
+          "confidence": 0.421,
+          "x": 48.1,
+          "y": 51.6,
+          "width": 2.9,
+          "height": 46.7,
+          "bbox_px": {
+            "x1": 656,
+            "y1": 216,
+            "x2": 698,
+            "y2": 575
+          }
+        },
+        {
+          "yolo_class": "refrigerator",
+          "confidence": 0.264,
+          "x": 52.6,
+          "y": 52.4,
+          "width": 2.2,
+          "height": 41.8,
+          "bbox_px": {
+            "x1": 725,
+            "y1": 241,
+            "x2": 756,
+            "y2": 563
+          }
+        }
+      ]
+    },
+    "containment": {
+      "id": "containment",
+      "name": "Ala de Contenção Euclidiana",
+      "interactables": [
+        {
+          "id": "containment_door_main",
+          "x": 50.3,
+          "y": 55.9,
+          "width": 14.8,
+          "height": 31.8,
+          "icon": "DoorOpen",
+          "type": "travel",
+          "label": "Câmara de Contenção Aberta",
+          "description": "A imensa porta blindada da Fundação SCP está escancarada, revelando um túnel escuro e gélido. O silêncio que emana lá de dentro é perturbador.",
+          "targetRoom": "containment_chamber_interior",
+          "requiredItem": null,
+          "failedMessage": null,
+          "successMessage": "Você entra na câmara de contenção...",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": null
+        },
+        {
+          "id": "control_panel_right",
+          "x": 97.6,
+          "y": 67.4,
+          "width": 4.7,
+          "height": 21.6,
+          "icon": "Terminal",
+          "type": "terminal_read",
+          "label": "Painel de Controle de Pressão",
+          "description": "Um terminal industrial com luzes vermelhas piscando. O visor exibe avisos de instabilidade na pressão interna da câmara.",
+          "targetRoom": null,
+          "requiredItem": "keycard_level_2",
+          "failedMessage": "[ERRO] Autenticação de Nível 2 necessária para acessar os logs do sistema.",
+          "successMessage": "Acessando logs de contenção...",
+          "pickupItem": null,
+          "hideAfterInteract": false,
+          "documentData": {
+            "title": "Relatório de Incidente - Ala Euclidiana",
+            "content": "A integridade da vedação foi comprometida às 03:00h. O objeto não responde aos estímulos sonoros. Recomendamos evacuação imediata do setor."
+          }
+        }
+      ],
+      "yolo_detections": [
+        {
+          "yolo_class": "oven",
+          "confidence": 0.791,
+          "x": 97.6,
+          "y": 67.4,
+          "width": 4.7,
+          "height": 21.6,
+          "bbox_px": {
+            "x1": 1310,
+            "y1": 434,
+            "x2": 1375,
+            "y2": 600
+          }
+        },
+        {
+          "yolo_class": "clock",
+          "confidence": 0.371,
+          "x": 50.3,
+          "y": 55.9,
+          "width": 14.8,
+          "height": 31.8,
+          "bbox_px": {
+            "x1": 590,
+            "y1": 306,
+            "x2": 794,
+            "y2": 551
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "ficheiro_helena": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 566,
+    "label": "Ficheiro do Caso Helena",
+    "room": "escritorio"
+  },
+  "bilhete_anonimo": {
+    "voice": "de-DE-KillianNeural",
+    "text_length": 139,
+    "label": "Carta Anônima",
+    "room": "escritorio"
+  },
+  "puzzle_hint_1": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 181,
+    "label": "Pista Confidencial #1",
+    "room": "escritorio"
+  },
+  "puzzle_hint_6": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 139,
+    "label": "Pista Confidencial #6",
+    "room": "escritorio"
+  },
+  "puzzle_hint_11": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 123,
+    "label": "Pista Confidencial #11",
+    "room": "escritorio"
+  },
+  "puzzle_hint_16": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 149,
+    "label": "Pista Confidencial #16",
+    "room": "escritorio"
+  },
+  "puzzle_hint_2": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 134,
+    "label": "Pista Confidencial #2",
+    "room": "rua_chuva"
+  },
+  "puzzle_hint_7": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 141,
+    "label": "Pista Confidencial #7",
+    "room": "rua_chuva"
+  },
+  "puzzle_hint_12": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 146,
+    "label": "Pista Confidencial #12",
+    "room": "rua_chuva"
+  },
+  "puzzle_hint_17": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 161,
+    "label": "Pista Confidencial #17",
+    "room": "rua_chuva"
+  },
+  "telefone_zeca": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 348,
+    "label": "Telefone — Ligação de Zeca",
+    "room": "bar"
+  },
+  "guardanapo_endereco": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 201,
+    "label": "Guardanapo com Endereço",
+    "room": "bar"
+  },
+  "puzzle_hint_3": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 145,
+    "label": "Pista Confidencial #3",
+    "room": "bar"
+  },
+  "puzzle_hint_8": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 146,
+    "label": "Pista Confidencial #8",
+    "room": "bar"
+  },
+  "puzzle_hint_13": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 154,
+    "label": "Pista Confidencial #13",
+    "room": "bar"
+  },
+  "puzzle_hint_18": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 164,
+    "label": "Pista Confidencial #18",
+    "room": "bar"
+  },
+  "quadro_horarios": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 350,
+    "label": "Quadro de Horários Rasurado",
+    "room": "escola"
+  },
+  "puzzle_hint_4": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 194,
+    "label": "Pista Confidencial #4",
+    "room": "escola"
+  },
+  "puzzle_hint_9": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 190,
+    "label": "Pista Confidencial #9",
+    "room": "escola"
+  },
+  "puzzle_hint_14": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 151,
+    "label": "Pista Confidencial #14",
+    "room": "escola"
+  },
+  "telefone_diretora": {
+    "voice": "pt-BR-FranciscaNeural",
+    "text_length": 455,
+    "label": "Telefone — Recado da Diretora",
+    "room": "diretoria"
+  },
+  "gaveta_diretora": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 333,
+    "label": "Gaveta Trancada",
+    "room": "diretoria"
+  },
+  "terminal_fosforo": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 368,
+    "label": "Terminal de Fósforo Verde",
+    "room": "diretoria"
+  },
+  "telefone_santos": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 443,
+    "label": "Telefone — Recado de Santos",
+    "room": "delegacia"
+  },
+  "arquivo_mendes": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 508,
+    "label": "Arquivo do Kommissar Mendes",
+    "room": "delegacia"
+  },
+  "puzzle_hint_5": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 185,
+    "label": "Pista Confidencial #5",
+    "room": "delegacia"
+  },
+  "puzzle_hint_10": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 150,
+    "label": "Pista Confidencial #10",
+    "room": "delegacia"
+  },
+  "puzzle_hint_15": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 141,
+    "label": "Pista Confidencial #15",
+    "room": "delegacia"
+  },
+  "puzzle_deduction_terminal": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 663,
+    "label": "Quadro de Dedução — Caso Helena",
+    "room": "delegacia"
+  },
+  "carta_jonas": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 459,
+    "label": "Carta de Seu Jonas",
+    "room": "beco"
+  },
+  "caixas_documentos": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 386,
+    "label": "Caixas com Documentos",
+    "room": "armazem"
+  },
+  "porta_aco": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 358,
+    "label": "Porta de Aço com Cadeado",
+    "room": "armazem"
+  },
+  "terminal_final": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 526,
+    "label": "Terminal de Fósforo — A Verdade",
+    "room": "armazem"
+  },
+  "puzzle_solution_terminal": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 673,
+    "label": "Envelope Lacrado — Resolução do Caso",
+    "room": "armazem"
+  }
+}
