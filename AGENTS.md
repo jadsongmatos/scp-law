@@ -5,7 +5,7 @@
 - **Source of Truth:** `src/game_data.json` defines rooms, interactables, terminal documents.
 - **State Management:** In `src/App.tsx`. `localRooms` mirrors `game_data.json` for in-memory updates.
 - **Audio Engine:** `src/audio.ts`. Uses Web Audio API `GainNodes` for category volume (Master, Ambient, SFX, Voice).
-- **Terminal:** `react-xtermjs` displays logs, investigative documents.
+- **Terminal:** `react-xtermjs` fork (local `file:./react-xtermjs`) displays logs, investigative documents. Exports `useXTerm` hook + `XTerm` component. Fork has ESM+CJS dual build (`dist/index.mjs` + `dist/index.js`).
 
 ## High-Signal Facts
 - **No Resources:** Murphy Law "preparado". NO money counters, energy bars, hunger mechanics.
@@ -14,16 +14,19 @@
     - **Voices:** Generated via `python3 generate_voices.py` (uses `edge-tts`). Triggered in `npm run build` if `VITE_VOICE_GEN=1`.
     - **Images:** Generated via `python3 generate_noir_images.py` (uses Gemini via OpenRouter).
 - **Interaction Types:**
-    - `inspect`: Pure description.
-    - `pickup`: Adds item to inventory.
-    - `travel`: Moves to `targetRoom`.
-    - `terminal_read`: Opens document in xterm.
+- `inspect`: Pure description.
+- `pickup`: Adds item to inventory.
+- `travel`: Moves to `targetRoom`.
+- `terminal_read`: Opens document in xterm.
+- `phone_call`: Starts phone/carta dialogue or opens agenda.
 
 ## Developer Commands
 - `npm run dev`: Local dev server (port 3000).
 - `npm run lint`: Typecheck using `tsc --noEmit`.
 - `npm run build`: Build production. Triggers voice generation if `VITE_VOICE_GEN=1`.
+- `npm run build:novoice`: Build production without voice generation.
 - `python3 generate_voices.py`: Update voices after changing `game_data.json` (requires `edge-tts`).
+- `cd react-xtermjs && npm test`: Run fork Jest tests (22 tests, 4 suites).
 
 ## Conventions & Style
 - **Tone:** Noir meta-narrative (Film Noir aesthetic, high contrast, amber/black).
@@ -31,6 +34,8 @@
 - **Data Bridge:** `src/data.ts` merges `game_data.json` with static image imports.
 - **Secrets:** `GEMINI_API_KEY` required in `.env.local` for build-time injection.
 - **Persistence:** Game state in-memory only. NO LocalStorage save/load.
+- **react-xtermjs fork:** Local fork at `react-xtermjs/` with own git history. PeerDep `@xterm/xterm@^6.0.0`. Dual ESM+CJS build. 22 Jest tests. After modifying fork source, run `cd react-xtermjs && npm run build` to rebuild dist before building main game.
+- **tsconfig exclude:** Main game `tsconfig.json` excludes `react-xtermjs/tests` and `react-xtermjs/example` to prevent typecheck pollution.
 
 ## Agent Behavior Rules
 - **Never remove/exclude files from deploy without asking user first.** File exceeds platform limits (e.g., Cloudflare Pages 25 MiB limit)? Stop, ask user. NO silent skip/delete.
