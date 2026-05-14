@@ -296,36 +296,61 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
   } else if (obj.type === 'inspect') {
     Audio.playTypewriter();
     addLog(`[${obj.label}] ${obj.description}`);
-      } else if (obj.type === 'phone_call') {
-      if (obj.phoneCallId) {
-        const contact = PHONE_CONTACTS[obj.phoneCallId];
-        if (!contact) return;
-        discoverContact(obj.phoneCallId);
-        if (calledContacts.has(obj.phoneCallId)) {
-          if (inventory.includes('gravador_cassete')) {
-            Audio.playTerminal();
-            addLog(`[FITA] A fita cassete captou a conversa com ${contact.name}. Use a agenda para ouvir.`);
-          } else {
-            Audio.playDenied();
-            addLog(`[TELEFONE] Linha ocupada. ${contact.name} não atende.`);
-          }
-          return;
-        }
-        if (obj.phoneCallId === 'seu_jonas') {
-          Audio.playTypewriter();
-        } else {
-          Audio.playTerminal();
-        }
-        setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
-        addLog(obj.phoneCallId === 'seu_jonas'
-          ? `[CARTA] Lendo carta de ${contact.name}...`
-          : `[TELEFONE] Ligando para ${contact.name}...`);
-      } else {
+} else if (obj.type === 'phone_call') {
+  if (obj.phoneCallId === 'seu_jonas') {
+    const contact = PHONE_CONTACTS[obj.phoneCallId];
+    if (!contact) return;
+    discoverContact(obj.phoneCallId);
+    if (calledContacts.has(obj.phoneCallId)) {
+      if (inventory.includes('gravador_cassete')) {
         Audio.playTerminal();
-        setPhoneAgendaOpen(true);
-        addLog('[TELEFONE] Abrindo agenda telefônica...');
+        addLog(`[FITA] A fita cassete captou a leitura da carta de ${contact.name}. Use a agenda para ouvir.`);
+      } else {
+        Audio.playDenied();
+        addLog(`[CARTA] Você já leu a carta de ${contact.name}. Precisa do gravador para reouvir.`);
       }
+      return;
+    }
+    Audio.playTypewriter();
+    setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
+    addLog(`[CARTA] Lendo carta de ${contact.name}...`);
+  } else if (currentRoomId !== 'escritorio') {
+    if (obj.phoneCallId) {
+      const contact = PHONE_CONTACTS[obj.phoneCallId];
+      if (contact) {
+        discoverContact(obj.phoneCallId);
+        Audio.playDenied();
+        addLog(`[TELEFONE] Você encontrou o número de ${contact.name}. Volte ao escritório para ligar.`);
+      }
+    } else {
+      Audio.playDenied();
+      addLog('[TELEFONE] Você precisa voltar ao escritório para usar a agenda telefônica.');
+    }
+  } else {
+    if (obj.phoneCallId) {
+      const contact = PHONE_CONTACTS[obj.phoneCallId];
+      if (!contact) return;
+      discoverContact(obj.phoneCallId);
+      if (calledContacts.has(obj.phoneCallId)) {
+        if (inventory.includes('gravador_cassete')) {
+          Audio.playTerminal();
+          addLog(`[FITA] A fita cassete captou a conversa com ${contact.name}. Use a agenda para ouvir.`);
+        } else {
+          Audio.playDenied();
+          addLog(`[TELEFONE] Linha ocupada. ${contact.name} não atende.`);
+        }
+        return;
+      }
+      Audio.playTerminal();
+      setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
+      addLog(`[TELEFONE] Ligando para ${contact.name}...`);
+    } else {
+      Audio.playTerminal();
+      setPhoneAgendaOpen(true);
+      addLog('[TELEFONE] Abrindo agenda telefônica...');
+    }
   }
+}
 
   if (obj.id.startsWith('puzzle_hint_')) {
     setReadHints(prev => { const next = new Set(prev); next.add(obj.id); return next; });
@@ -758,7 +783,15 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
       <MapIcon size={14} /> MAPA DA CIDADE
     </button>
     <button
-      onClick={() => { Audio.playTerminal(); setPhoneAgendaOpen(true); }}
+      onClick={() => {
+    if (currentRoomId !== 'escritorio') {
+      Audio.playDenied();
+      addLog('[TELEFONE] Você precisa voltar ao escritório para usar a agenda telefônica.');
+      return;
+    }
+    Audio.playTerminal();
+    setPhoneAgendaOpen(true);
+  }}
       onMouseEnter={() => Audio.playHover()}
       className="mt-2 border border-zinc-700 bg-zinc-900 text-zinc-300 hover:text-noir-amber hover:border-noir-amber p-2 flex items-center justify-center gap-2 text-xs tracking-widest transition-colors"
     >

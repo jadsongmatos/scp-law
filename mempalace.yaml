@@ -20,11 +20,31 @@ rooms:
   keywords:
   - react_xtermjs
   - react-xtermjs
+- name: warcraftcn_ui
+  description: Files from warcraftcn-ui/
+  keywords:
+  - warcraftcn_ui
+  - warcraftcn-ui
 - name: design
   description: Files from assets/
   keywords:
   - design
   - assets
+- name: testing
+  description: Files from tests/
+  keywords:
+  - testing
+  - tests
+- name: frontend
+  description: Files from components/
+  keywords:
+  - frontend
+  - components
+- name: configuration
+  description: Files from config/
+  keywords:
+  - configuration
+  - config
 - name: general
   description: Files that don't fit other rooms
   keywords: []
