@@ -1,6 +1,5 @@
 {
   "ITEM_NAMES": {
-    "chave_escritorio": "Chave do Escritório",
     "cartao_visita": "Cartão de Visita — Vila Nova",
     "fotografia": "Fotografia Amassada",
     "isqueiro": "Isqueiro de Prata",
@@ -16,115 +15,153 @@
       "voice": "feminine",
       "greeting": "*estática* ... Alô? Quem fala?",
       "dialogue": {
+        "de_r1_d": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Minto?! Eu estava na secretaria regional! Tenho assinatura no livro!",
+            "Se me investiga em vez de investigar quem SEQUESTROU...",
+            "... *estática* Vou pensar se falo com você de novo. *clic*"
+          ],
+          "choices": []
+        },
+        "de_r2_c": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Há um homem. Roupas caras, carro escuro.",
+            "Apareceu DUAS VEZES pedindo registros de alunos.",
+            "Eu neguei. Ele sorriu como quem não precisa de permissão."
+          ],
+          "choices": [
+            {
+              "text": "A senhora sabe algo sobre 'Die Wohltat'? Parece ligado ao caso.",
+              "goto": "de_r3_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "Duas visitas e a senhora não chamou a polícia? Conivente.",
+              "goto": "de_r2_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Entendido. Vou verificar o armário do vigia como sugeriu.",
+              "goto": "de_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "de_r2_d": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Conivente?! Eu PROTEGI as crianças recusando aquele homem!",
+            "Se eu chamasse a Volkspolizei, Mendes arquivaria.",
+            "O que o senhor fez, Law? Veio tarde demais.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "de_r3_c": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Wo... Wohltat? De onde tirou esse nome?",
+            "*a voz treme* Não... não sei de nada.",
+            "... O vigia fica até tarde. Diz que é pra vigiar.",
+            "Olhe o armário dele. Ele não sabe, mas eu vi o que tem."
+          ],
+          "choices": [
+            {
+              "text": "A senhora tem razão sobre o vigia. O que mais viu?",
+              "goto": "de_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "A senhora treme ao ouvir esse nome. O que está escondendo?",
+              "goto": "de_r3_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado, Diretora. Vou verificar o armário do vigia.",
+              "goto": "de_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "de_r3_d": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Escondendo? EU fui ameaçada por aquele homem!",
+            "Mandei mensagens pra Volkspolizei. Ninguém veio.",
+            "Acha que sou eu o problema? *clic*"
+          ],
+          "choices": []
+        },
+        "de_clue": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Ele me mandou uma mensagem: 'Entregue-a ou a escola fecha.'",
+            "Eu saí mais cedo naquele dia. Quando voltei... Helena já tinha saído.",
+            "Os registros da Volksschule mostram horários alterados.",
+            "Movimentação suspeita naquela semana. Tudo está lá.",
+            "Tome cuidado, Sr. Law. Esta cidade engole quem pergunta demais. *clic*"
+          ],
+          "choices": []
+        },
+        "de_end_e": {
+          "speaker": "Diretora Elvira",
+          "lines": [
+            "Tome cuidado, Sr. Law. Nem todos são o que parecem.",
+            "*clic*"
+          ],
+          "choices": []
+        },
         "initial": {
           "speaker": "Diretora Elvira",
           "lines": [
             "Sr. Law. Esperava sua ligação.",
             "Eu alterei o horário? Não. Alguém usou meu carimbo.",
-            "Eu saí mais cedo naquele dia — reunião na secretaria.",
-            "Quem ficou com a chave? O vigia.",
-            "Mas ele não seria capaz... seria?"
+            "Eu saí mais cedo naquele dia — reunião na secretaria."
           ],
           "choices": [
             {
               "text": "Quem é o homem de roupas caras que visitou a escola?",
-              "goto": "ask_rich_man",
-              "hint": true
+              "goto": "de_r2_c",
+              "pdAction": "C"
             },
             {
-              "text": "A senhora sabe algo sobre 'Die Wohltat'?",
-              "goto": "ask_wohltat",
-              "hint": true
+              "text": "A senhora alterou o horário e agora mente pra se proteger.",
+              "goto": "de_r1_d",
+              "pdAction": "D"
             },
             {
-              "text": "O vigia tem algo a esconder?",
-              "goto": "ask_vigia",
-              "hint": false
-            },
-            {
-              "text": "Onde a senhora estava no dia do desaparecimento?",
-              "goto": "ask_alibi",
-              "hint": false
+              "text": "Obrigado por falar comigo, Diretora. Vou seguir outras pistas.",
+              "goto": "de_end_e",
+              "pdAction": "E"
             }
           ]
-        },
-        "ask_rich_man": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "Há um homem. Roupas caras, carro escuro.",
-            "Ele apareceu duas vezes pedindo para ver os registros dos alunos.",
-            "Eu neguei. Ele sorriu como quem não precisa de permissão.",
-            "Olhe o armário do vigia. Ele não sabe, mas eu vi o que tem lá dentro."
-          ],
-          "choices": [
-            {
-              "text": "Obrigado, Diretora. Vou investigar o vigia.",
-              "goto": "end_polite",
-              "hint": false
-            },
-            {
-              "text": "A senhora o protegeu? Por quê?",
-              "goto": "react_defensive",
-              "hint": false
-            }
-          ]
-        },
-        "ask_wohltat": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "Wo... Wohltat? De onde tirou esse nome?",
-            "Não... não sei de nada. *a voz treme*",
-            "Eu preciso desligar. Agora.",
-            "*clic*"
-          ],
-          "choices": []
-        },
-        "ask_vigia": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "O vigia? Ele é... simples. Um homem do povo.",
-            "Mas ele fica até tarde às vezes. Diz que é para vigiar.",
-            "Não confio nele. Nem desconfio. Algo entre os dois.",
-            "O armário dele pode ter respostas."
-          ],
-          "choices": [
-            {
-              "text": "Vou verificar o armário dele.",
-              "goto": "end_polite",
-              "hint": false
-            }
-          ]
-        },
-        "ask_alibi": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "Eu?! Que tipo de pergunta é essa?",
-            "Eu estava na secretaria regional. Tenho assinatura no livro de presença.",
-            "Se está me investigando, Sr. Law, talvez devesse investigar quem TEM algo a esconder.",
-            "Fale com o Kommissar Mendes. Ele sabe mais do que deixa transparecer.",
-            "*clic*"
-          ],
-          "choices": []
-        },
-        "react_defensive": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "Proteger? Eu PROTEGI as crianças recusando aquele homem!",
-            "O que o senhor fez, Sr. Law? Veio tarde demais.",
-            "Não me ligue mais com essas insinuações.",
-            "*clic*"
-          ],
-          "choices": []
-        },
-        "end_polite": {
-          "speaker": "Diretora Elvira",
-          "lines": [
-            "Tome cuidado, Sr. Law.",
-            "Esta cidade engole quem pergunta demais.",
-            "*clic*"
-          ],
-          "choices": []
         }
+      },
+      "axelrodStrategy": "Forgiver",
+      "murphyCommentary": {
+        "de_r1_d": [
+          "A Diretora é Forgiver — ela perdoa quase tudo. Quase.",
+          "Ela vai voltar a falar. Mas o tempo que perdi com acusação, era tempo que Helena não tem."
+        ],
+        "de_r2_d": [
+          "Segunda vez. Elvira protegeu as crianças recusando aquele homem. Eu a tratei como cúmplice.",
+          "Ela vai relevar — Forgiver sempre releva. Mas o dano está feito."
+        ],
+        "de_r3_d": [
+          "Três vezes. Ela foi ameaçada e eu a tratei como suspeita.",
+          "Perdoa talvez. Esquece nunca. O armário do vigia continua sem minha atenção."
+        ],
+        "de_end_e": [
+          "A Diretora tem mais do que disse. Mas não posso forçar.",
+          "O armário do vigia... ela mencionou duas vezes. Preciso ir lá."
+        ],
+        "de_clue": [
+          "Elvira resistiu ao homem de terno. Ela foi ameaçada — e não cedeu.",
+          "Os registros da Volksschule mostram horários e movimentação suspeita. A chave está no armário do vigia.",
+          "A mensagem de Wohltat: 'Entregue-a ou a escola fecha.' Isso é extorsão."
+        ]
       }
     },
     "santos": {
@@ -134,133 +171,152 @@
       "voice": "masculine",
       "greeting": "*estática* ... Fala Santos. Off the record.",
       "dialogue": {
-        "initial": {
+        "st_r1_d": {
           "speaker": "Santos",
           "lines": [
-            "Law. Eu sei quem é você.",
-            "O caso da menina? Esquece. O Kommissar arquivou na mesma hora.",
-            "Mas entre nós... Eu vi o relatório.",
-            "Três crianças desapareceram no mesmo bairro em 6 meses.",
-            "Tudo arquivado. Mesma assinatura. Mendes."
+            "NÃO fiz nada?! Eu tentei TRÊS VEZES!",
+            "O Kommissar rasgou meus relatórios. Ameaçou me mandar pro distrito Norte.",
+            "Não venha me julgar, Law. *clic*"
           ],
-          "choices": [
-            {
-              "text": "Quem é Wohltat?",
-              "goto": "ask_wohltat",
-              "hint": true
-            },
-            {
-              "text": "O que tem no armazém da rua 14?",
-              "goto": "ask_armazem",
-              "hint": true
-            },
-            {
-              "text": "Mendes está envolvido diretamente?",
-              "goto": "ask_mendes",
-              "hint": false
-            },
-            {
-              "text": "Você pode me dar acesso aos arquivos?",
-              "goto": "ask_acesso",
-              "hint": false
-            }
-          ]
+          "choices": []
         },
-        "ask_wohltat": {
+        "st_r2_c": {
           "speaker": "Santos",
           "lines": [
             "Há um cara — chamam de Wohltat.",
             "Distribui comida, roupas, esperança.",
             "Mas quem aceita demais... entrega coisas que não pode repor.",
-            "Ele opera pelo armazém na rua 14.",
-            "Eu iria lá sozinho, mas... você sabe como é."
+            "Ele opera pelo armazém na rua 14."
           ],
           "choices": [
             {
-              "text": "Obrigado, Santos. Vou até o armazém.",
-              "goto": "end_helpful",
-              "hint": false
+              "text": "O armazém... O que tem lá dentro? Como entro?",
+              "goto": "st_r3_c",
+              "pdAction": "C"
             },
             {
-              "text": "Por que você não fez nada até agora?",
-              "goto": "react_guilt",
-              "hint": false
+              "text": "Você é polícia. Vai ficar aí assistindo ou vai agir?",
+              "goto": "st_r2_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Endereço anotado. Obrigado, Santos.",
+              "goto": "st_end_e",
+              "pdAction": "E"
             }
           ]
         },
-        "ask_armazem": {
+        "st_r2_d": {
+          "speaker": "Santos",
+          "lines": [
+            "Agir? Contra o KOMMISSAR?!",
+            "Eu fui ao armazém. Sozinho. A porta trancou.",
+            "Não me teste, Law. *clic*"
+          ],
+          "choices": []
+        },
+        "st_r3_c": {
           "speaker": "Santos",
           "lines": [
             "O Lagerhaus 7 na rua 14. É lá que tudo acontece.",
-            "Entrada pelo beco — tem uma porta dos fundos.",
-            "Cadeado eletrônico. Precisa de cartão magnético.",
-            "Cuidado, Law. Lá dentro não há lei."
+            "Entrada pelo beco — porta dos fundos. Cadeado eletrônico.",
+            "Mendes? Ele arquiva como 'fuga'. Toda criança que desaparece.",
+            "Eu vi ele sair tarde da delegacia. Direção da rua 14."
           ],
           "choices": [
             {
-              "text": "Entendido. Obrigado.",
-              "goto": "end_helpful",
-              "hint": false
-            }
-          ]
-        },
-        "ask_mendes": {
-          "speaker": "Santos",
-          "lines": [
-            "Mendes? Ele é o Kommissar. Acima de mim. Acima de todo mundo nesta estação.",
-            "Ele arquiva os casos como 'fuga'. Toda criança que desaparece? Fuga.",
-            "Eu vi ele sair tarde da delegacia. Direção errada. Direção da rua 14.",
-            "Mas não tenho provas. Se eu acuso, sou eu que desapareço."
-          ],
-          "choices": [
-            {
-              "text": "Onde estão os arquivos arquivados?",
-              "goto": "ask_acesso",
-              "hint": false
+              "text": "Como acesso os arquivos arquivados? Preciso de provas.",
+              "goto": "st_clue",
+              "pdAction": "C"
             },
             {
-              "text": "Vou encontrar as provas. Obrigado.",
-              "goto": "end_helpful",
-              "hint": false
-            }
-          ]
-        },
-        "ask_acesso": {
-          "speaker": "Santos",
-          "lines": [
-            "Acesso aos arquivos? O armário está trancado.",
-            "O policial de plantão... digamos que ele aceita incentivo financeiro.",
-            "500 Marks e ele olha para o teto.",
-            "É o que esta cidade se tornou, Law. Tudo tem preço."
-          ],
-          "choices": [
+              "text": "Você tem provas contra o próprio Kommissar e fica aí escondido?",
+              "goto": "st_r3_d",
+              "pdAction": "D"
+            },
             {
-              "text": "Entendido. Obrigado, Santos.",
-              "goto": "end_helpful",
-              "hint": false
+              "text": "Lagerhaus 7. Entendido. Cuidado aí, Santos.",
+              "goto": "st_end_e",
+              "pdAction": "E"
             }
           ]
         },
-        "react_guilt": {
+        "st_r3_d": {
           "speaker": "Santos",
           "lines": [
-            "Não fiz nada? NÃO fiz nada?!",
-            "Eu tentei! Três vezes. O Kommissar rasgou meus relatórios.",
-            "Ameaçou me transferir para o distrito Norte. Lá não volta vivo.",
-            "Não venha me julgar, Law. Pelo menos eu estou falando.",
-            "*estática longa* ... *clic*"
+            "Escondido?! Eu te dei TUDO o que sei!",
+            "Sem provas, sou eu que desapareço.",
+            "Estou fora. *clic*"
           ],
           "choices": []
         },
-        "end_helpful": {
+        "st_clue": {
           "speaker": "Santos",
           "lines": [
-            "Boa sorte, Law.",
-            "Se não voltar em 24h... eu nem procuro.",
+            "O armário de arquivos está trancado.",
+            "O policial de plantão... aceita incentivo financeiro. 500 Marks.",
+            "É o que esta cidade se tornou, Law. Tudo tem preço.",
+            "O relatório interno liga esta estação ao caso.",
+            "Boa sorte. Se não voltar em 24h... eu nem procuro. *clic*"
+          ],
+          "choices": []
+        },
+        "st_end_e": {
+          "speaker": "Santos",
+          "lines": [
+            "Cuidado lá fora, Law. Esta cidade come vivos.",
             "*clic*"
           ],
           "choices": []
+        },
+        "initial": {
+          "speaker": "Santos",
+          "lines": [
+            "Law. Eu sei quem é você.",
+            "O caso da menina? Esquece. O Kommissar arquivou.",
+            "Mas entre nós... Eu vi o relatório. Três crianças. 6 meses. Mesma assinatura: Mendes."
+          ],
+          "choices": [
+            {
+              "text": "Quem é esse Wohltat? Preciso entender o que estamos enfrentando.",
+              "goto": "st_r2_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "Você sabe e não fez nada? Três crianças, Santos.",
+              "goto": "st_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado por me contatar. Vou ver o que posso fazer.",
+              "goto": "st_end_e",
+              "pdAction": "E"
+            }
+          ]
         }
+      },
+      "axelrodStrategy": "Grudger",
+      "murphyCommentary": {
+        "st_r1_d": [
+          "Santos tentou três vezes e eu o tratei como covarde. Uma traição e a porta se fecha — Grudger é assim.",
+          "O relatório interno ficou do outro lado da linha."
+        ],
+        "st_r2_d": [
+          "Segunda vez que empurrei. Santos é Grudger — uma ofensa e era pra sempre.",
+          "Eu ia ter a localização exata. Agora tenho só um nome e nenhum endereço."
+        ],
+        "st_r3_d": [
+          "Terceiro empurrão. Santos não é covarde — é sobrevivente. Eu não soube distinguir.",
+          "O Lagerhaus 7 continua sem entrada. Os arquivos continuam trancados."
+        ],
+        "st_end_e": [
+          "Santos entendeu. Às vezes a melhor jogada é recuar.",
+          "Mas o relatório interno continua na delegacia. Sem ele, não tenho prova."
+        ],
+        "st_clue": [
+          "Santos entregou. Lagerhaus 7, beco, porta dos fundos. Mendes vai pra rua 14 toda noite.",
+          "O policial de plantão aceita 500 Marks. O relatório interno liga a Volkspolizeistation 8 ao crime. Tudo tem preço nesta cidade."
+        ]
       }
     },
     "zeca": {
@@ -270,161 +326,154 @@
       "voice": "masculine",
       "greeting": "*bip* Fala, Murphy. Tô ouvindo.",
       "dialogue": {
+        "zc_r1_d": {
+          "speaker": "Zeca",
+          "lines": [
+            "Enrolando? Eu guardo segredos, Murphy. É meu ofício.",
+            "Se não sabe pedir, não merece ouvir.",
+            "*clic*"
+          ],
+          "choices": []
+        },
+        "zc_r2_c": {
+          "speaker": "Zeca",
+          "lines": [
+            "Rua 14, Lagerhaus 7. Distrito Industrial.",
+            "O guardanapo tá no balcão. Guardei pra você.",
+            "O cara? Alto. Terno escuro, caro demais. Mãos limpas.",
+            "Cheirava a loja de departamento do Estado."
+          ],
+          "choices": [
+            {
+              "text": "Ele voltou ao bar? Alguém mais perguntou por Helena?",
+              "goto": "zc_r3_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "Você deixou esse sujeito sair depois do que ouviu?",
+              "goto": "zc_r2_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Lagerhaus 7. Vou lá. Obrigado, Zeca.",
+              "goto": "zc_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "zc_r2_d": {
+          "speaker": "Zeca",
+          "lines": [
+            "Deixar sair? Eu EXPELSEI. Na cara dele.",
+            "Mas não sou polícia, Murphy. Sou barman.",
+            "Não volte. *clic*"
+          ],
+          "choices": []
+        },
+        "zc_r3_c": {
+          "speaker": "Zeca",
+          "lines": [
+            "Voltou na quinta. Depois das 10.",
+            "Falou com o vigia da escola. Vi quando passaram.",
+            "O vigia aceitou um envelope. Nervoso.",
+            "O Santos veio perguntar. Não oficial. De bermuda."
+          ],
+          "choices": [
+            {
+              "text": "Dra. Cunha também perguntou? Onde encontro ela?",
+              "goto": "zc_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "Você protege esse cara não expulsando ele pra sempre?",
+              "goto": "zc_r3_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Santos, Dra. Cunha... Obrigado, Zeca. Informação valiosa.",
+              "goto": "zc_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "zc_r3_d": {
+          "speaker": "Zeca",
+          "lines": [
+            "Proteger?! Eu expulsei DUAS VEZES!",
+            "Se ele volta é porque tem gente GRANDE atrás.",
+            "O Gasthof tá fechado pra você. *clic*"
+          ],
+          "choices": []
+        },
+        "zc_clue": {
+          "speaker": "Zeca",
+          "lines": [
+            "A Dra. Cunha? Posto de saúde do distrito.",
+            "Não atende depois das 6. Mas faz visitas domiciliares.",
+            "O olho do cara era de quem já viu gente morrer.",
+            "Ele compra gente, Murphy. E esta cidade vende.",
+            "Cuidado no Lagerhaus. Vai armado. *clic*"
+          ],
+          "choices": []
+        },
+        "zc_end_e": {
+          "speaker": "Zeca",
+          "lines": [
+            "Se precisar, o Gasthof tá sempre aberto. Menos pra fantasma.",
+            "*clic*"
+          ],
+          "choices": []
+        },
         "initial": {
           "speaker": "Zeca",
           "lines": [
             "Murphy. Você parece pior que ontem.",
-            "A menina? A da Kraft? Sei dela.",
-            "Um cara esteve aqui, semana passada.",
-            "Bebeu feito gente que não quer lembrar.",
+            "A menina da Kraft? Sei dela.",
+            "Um cara esteve aqui. Bebeu feito quem não quer lembrar.",
             "Deixou cair um papel — um endereço."
           ],
           "choices": [
             {
-              "text": "Qual endereço?",
-              "goto": "ask_endereco",
-              "hint": true
+              "text": "Qual endereço, Zeca? Isso pode salvar uma vida.",
+              "goto": "zc_r2_c",
+              "pdAction": "C"
             },
             {
-              "text": "Descreva o cara que veio ao bar.",
-              "goto": "ask_description",
-              "hint": false
+              "text": "Para de enrolar. Me dá o endereço agora.",
+              "goto": "zc_r1_d",
+              "pdAction": "D"
             },
             {
-              "text": "Alguém mais perguntou sobre Helena?",
-              "goto": "ask_others",
-              "hint": false
-            },
-            {
-              "text": "O que é Die Wohltat?",
-              "goto": "ask_wohltat",
-              "hint": true
+              "text": "Obrigado, Zeca. Se lembrar de mais algo, me avisa.",
+              "goto": "zc_end_e",
+              "pdAction": "E"
             }
           ]
-        },
-        "ask_endereco": {
-          "speaker": "Zeca",
-          "lines": [
-            "Rua 14, Lagerhaus 7. Distrito Industrial.",
-            "Eu peguei o papel. Guardei pra você.",
-            "O guardanapo tá no balcão. Passa aqui quando puder.",
-            "Cuidado, Murphy. Esse cara cheirava a dinheiro sujo e enxofre."
-          ],
-          "choices": [
-            {
-              "text": "Vou passar aí. Obrigado, Zeca.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "ask_description": {
-          "speaker": "Zeca",
-          "lines": [
-            "Alto. Terno escuro, caro demais pra este bairro.",
-            "Mãos limpas demais. Unhas feitas. Não é operário.",
-            "Cheirava a loja de departamento do Estado.",
-            "Mas o olho... o olho era de quem já viu gente morrer.",
-            "Não perguntou nome. Perguntou se eu sabia onde meninas dormiam.",
-            "Eu expulsei. Mas ele voltou quando eu não estava."
-          ],
-          "choices": [
-            {
-              "text": "Ele voltou? Quando?",
-              "goto": "ask_returned",
-              "hint": false
-            },
-            {
-              "text": "Obrigado, Zeca. Vou ao armazém.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "ask_others": {
-          "speaker": "Zeca",
-          "lines": [
-            "Outra gente? Hmm. O Santos da Volkspolizei veio perguntar.",
-            "Mas não oficial. De bermuda, fora do turno.",
-            "E a Dra. Cunha — a médica do posto de saúde.",
-            "Ela perguntou se Helena costumava ir ao posto.",
-            "Disse que era rotina. Mas eu vi os olhos dela, Murphy.",
-            "Não era rotina. Era medo."
-          ],
-          "choices": [
-            {
-              "text": "Dra. Cunha... Onde fica o posto?",
-              "goto": "reveal_dra_cunha",
-              "hint": true
-            },
-            {
-              "text": "Obrigado, Zeca.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "ask_wohltat": {
-          "speaker": "Zeca",
-          "lines": [
-            "Wohltat? ... Esse nome.",
-            "Aquele cara deixou um guardanapo com o símbolo deles.",
-            "Uma mão aberta. 'Caridade', dizem.",
-            "Mas caridade não cheira a enxofre.",
-            "O endereço no guardanapo é o mesmo que eu te dei.",
-            "Vai até lá. Mas vai armado."
-          ],
-          "choices": [
-            {
-              "text": "Obrigado, Zeca. Vou com cuidado.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "ask_returned": {
-          "speaker": "Zeca",
-          "lines": [
-            "Voltou na quinta. Depois das 10.",
-            "Falou com o vigia da escola — vi quando passaram pela rua.",
-            "O vigia parecia nervoso. Aceitou um envelope.",
-            "O homem do terno... ele compra gente, Murphy.",
-            "E esta cidade vende."
-          ],
-          "choices": [
-            {
-              "text": "O vigia da escola... Preciso voltar lá.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "reveal_dra_cunha": {
-          "speaker": "Zeca",
-          "lines": [
-            "A Dra. Cunha? Fica no posto de saúde do distrito.",
-            "Mas olha... ela não atende depois das 6.",
-            "Dizem que faz visitas domiciliares. Com crianças.",
-            "Se pergunta direito, ela abre a porta.",
-            "Se pergunta errado... ela tem amigos na Volkspolizei."
-          ],
-          "choices": [
-            {
-              "text": "Entendido. Obrigado, Zeca.",
-              "goto": "end_friendly",
-              "hint": false
-            }
-          ]
-        },
-        "end_friendly": {
-          "speaker": "Zeca",
-          "lines": [
-            "Tome cuidado, Murphy.",
-            "Se precisar, o Gasthof tá sempre aberto.",
-            "*clic*"
-          ],
-          "choices": []
         }
+      },
+      "axelrodStrategy": "TitForTat",
+      "murphyCommentary": {
+        "zc_r1_d": [
+          "Zeca é TitForTat — espelha o que recebe. Eu empurrei, ele empurrou de volta.",
+          "O endereço do armazém ficou no balcão. Do meu lado da linha."
+        ],
+        "zc_r2_d": [
+          "Segunda ofensa. Zeca tratou o sujeito cara a cara — eu não.",
+          "Perdi a descrição e o que o suspeito disse quando voltou."
+        ],
+        "zc_r3_d": [
+          "Três vezes. Zeca é justo — mas justo não é paciente.",
+          "O Gasthof fecha pra mim. Dra. Cunha fica sem endereço."
+        ],
+        "zc_end_e": [
+          "Zeca entende. O Gasthof sempre estará ali.",
+          "Mas sem o endereço do posto da Dra. Cunha, a trilha esfria."
+        ],
+        "zc_clue": [
+          "Rua 14, Lagerhaus 7. Terno caro, mãos limpas, olho de quem mata.",
+          "O homem voltou quinta e comprou o vigia. Santos perguntou off the record.",
+          "Dra. Cunha no posto de saúde. O Lagerhaus é o coração da rede."
+        ]
       }
     },
     "seu_jonas": {
@@ -434,98 +483,154 @@
       "voice": "masculine",
       "greeting": "Carta manchada de chuva. Letra trêmula. Sem remetente.",
       "dialogue": {
-        "initial": {
+        "sj_r1_d": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
-            "Herr Law,",
-            "Eles acham que eu não vejo nada. Mas eu vejo tudo. Sempre vi.",
-            "O homem do carro preto? Eu vi.",
-            "Ele estaciona na rua 14, perto do armazém.",
-            "Toda quinta, depois das 10 da noite."
+            "Medo não é desculpa? Diz isso pro vigia que apareceu no rio.",
+            "Eu sou invisível. É por isso que estou vivo.",
+            "Não me escreva de novo. Estou repensando esta correspondência."
           ],
-          "choices": [
-            {
-              "text": "O que mais você viu no carro?",
-              "goto": "ask_car",
-              "hint": true
-            },
-            {
-              "text": "Você conhece o nome dele?",
-              "goto": "ask_name",
-              "hint": true
-            },
-            {
-              "text": "Por que não foi à polícia?",
-              "goto": "ask_police",
-              "hint": false
-            }
-          ]
+          "choices": []
         },
-        "ask_car": {
+        "sj_r2_c": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
-            "Uma vez eu vi ele sair do carro com uma menina no banco de trás.",
-            "Ela não gritava. Estava dormindo.",
-            "Ou... não estava mais.",
-            "O banco de trás tinha cobertores. Como se levasse carga.",
+            "Uma vez vi ele sair do carro com uma menina no banco de trás.",
+            "Ela não gritava. Dormindo. Ou quieta demais.",
+            "O banco tinha cobertores. Como se levasse carga.",
             "Mas carga não tem olhos."
           ],
           "choices": [
             {
-              "text": "Helena estava no carro?",
-              "goto": "confirm_helena",
-              "hint": false
+              "text": "O senhor ouviu algum nome? Algo que identifique esse homem?",
+              "goto": "sj_r3_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "E o senhor só ficou olhando pela janela? Não fez nada?",
+              "goto": "sj_r2_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "O relato é importante. Obrigado, Seu Jonas.",
+              "goto": "sj_end_e",
+              "pdAction": "E"
             }
           ]
         },
-        "ask_name": {
+        "sj_r2_d": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
-            "O nome dele? Eu ouvi uma vez.",
-            "Wohltat. Só Wohltat.",
-            "Como se dar esmola fosse o mesmo que tirar uma vida.",
-            "Não me procure. Eu não vi nada."
+            "Fazer o quê? Atravessar a rua e morrer?",
+            "Vigia, mendigo, padre — quem abre a boca some.",
+            "Estou repensando se continuo escrevendo."
           ],
           "choices": []
         },
-        "ask_police": {
+        "sj_r3_c": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
-            "Polícia? A Volkspolizei?",
-            "O Kommissar Mendes passa de carro toda quarta à noite.",
-            "Para no armazém. Entra. Sai sorrindo.",
-            "Eu não sou burro, Law. Eu sou invisível.",
-            "É por isso que estou vivo."
+            "O nome? Ouvi uma vez. Wohltat. Só Wohltat.",
+            "Como se dar esmola fosse tirar uma vida.",
+            "O Kommissar Mendes? Passa de carro toda quarta à noite.",
+            "Para no armazém. Entra. Sai sorrindo."
           ],
           "choices": [
             {
-              "text": "Mendes vai ao armazém? Isso é importante.",
-              "goto": "confirm_mendes",
-              "hint": true
+              "text": "Mendes vai ao armazém? O senhor tem certeza? Isso é crucial.",
+              "goto": "sj_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "Mendes e Wohltat no mesmo lugar e o senhor nunca denunciou?",
+              "goto": "sj_r3_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Wohltat. Mendes. Obrigado, Seu Jonas. Vou com cuidado.",
+              "goto": "sj_end_e",
+              "pdAction": "E"
             }
           ]
         },
-        "confirm_helena": {
+        "sj_r3_d": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
-            "Helena? O nome da menina da escola?",
-            "Eu vi... uma menina. Pequena. Sozinha.",
-            "Não sei o nome. Mas o tamanho... era o dela.",
-            "O carro seguiu para o porto. Hafen Santos.",
-            "Container 14-B. Escrito no vidro do carro.",
-            "Não me procure. Eu não vi nada."
+            "Denunciar ao Mendes? Ao WOHLTAT?",
+            "Eu escrevo pra VOCÊ porque é o único que pode agir.",
+            "Mas se continua me criticando... mudo de ideia sobre isso."
           ],
           "choices": []
         },
-        "confirm_mendes": {
+        "sj_clue": {
           "speaker": "Carta de Seu Jonas",
           "lines": [
             "Toda quarta. Sem falha. Como relógio.",
             "Mendes não é polícia. É porteiro do inferno.",
+            "No envelope que ele carrega... um testamento. Não registrado.",
+            "Alguém está recebendo herança que não devia.",
             "Não me procure. Eu não vi nada."
           ],
           "choices": []
+        },
+        "sj_end_e": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Fique vivo, Herr Law. É o melhor que posso desejar.",
+            "Eu não vi nada."
+          ],
+          "choices": []
+        },
+        "initial": {
+          "speaker": "Carta de Seu Jonas",
+          "lines": [
+            "Herr Law,",
+            "Eles acham que eu não vejo nada. Mas eu vejo tudo.",
+            "O homem do carro preto? Eu vi.",
+            "Toda quinta, depois das 10, na rua 14."
+          ],
+          "choices": [
+            {
+              "text": "O que mais o senhor viu naquele carro?",
+              "goto": "sj_r2_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "Por que nunca foi à polícia com isso? Medo não é desculpa.",
+              "goto": "sj_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado, Seu Jonas. Fique seguro aí.",
+              "goto": "sj_end_e",
+              "pdAction": "E"
+            }
+          ]
         }
+      },
+      "axelrodStrategy": "WinStayLoseShift",
+      "murphyCommentary": {
+        "sj_r1_d": [
+          "Seu Jonas é WinStayLoseShift — quando perde, muda. Quando ganha, repete.",
+          "Ele não cortou. Mas vai pensar duas vezes antes de escrever de novo."
+        ],
+        "sj_r2_d": [
+          "Segunda vez que o pressiono. Ele não cortou — mas astance mudou.",
+          "O nome Wohltat ficou do outro lado da janela."
+        ],
+        "sj_r3_d": [
+          "Três vezes. Seu Jonas repensando se continua escrevendo.",
+          "WinStayLoseShift: se a interação é ruim, ele muda de tática. Nunca corta — mas a informação pode secar."
+        ],
+        "sj_end_e": [
+          "Seu Jonas viu tudo de sua janela. Carro, menina, Mendes.",
+          "O testamento não registrado continua escondido."
+        ],
+        "sj_clue": [
+          "Seu Jonas viu o carro com a menina. Wohltat — dar esmola como tirar uma vida.",
+          "Mendes toda quarta no armazém. Um testamento não registrado — motivação financeira escondida.",
+          "O zelador invisível que vê tudo. Quem diria que o testamento de alguém morto financiaria tudo isso."
+        ]
       }
     },
     "dra_cunha": {
@@ -535,146 +640,194 @@
       "voice": "feminine",
       "greeting": "... Quem fala? Não atendo fora do horário.",
       "dialogue": {
-        "initial": {
+        "dc_r1_d": {
           "speaker": "Dra. Cunha",
           "lines": [
-            "Como conseguiu este número?",
-            "Não falo com pacientes fora do posto.",
-            "... Mas se é sobre a menina da Kraft...",
-            "Eu examinei Helena. Check-up escolar, há 2 meses.",
-            "Ela estava saudável. Mas me olhou de um jeito..."
-          ],
-          "choices": [
-            {
-              "text": "O que Helena te contou?",
-              "goto": "ask_helena_told",
-              "hint": true
-            },
-            {
-              "text": "Você faz visitas domiciliares com crianças?",
-              "goto": "ask_visits",
-              "hint": false
-            },
-            {
-              "text": "Conhece alguém chamado Wohltat?",
-              "goto": "ask_wohltat",
-              "hint": true
-            },
-            {
-              "text": "Qual era o estado de saúde dela?",
-              "goto": "ask_health",
-              "hint": false
-            }
-          ]
-        },
-        "ask_helena_told": {
-          "speaker": "Dra. Cunha",
-          "lines": [
-            "Helena me disse... que viu um homem no armazém.",
-            "Uma criança dentro. Dormindo. Ou quieta demais.",
-            "Ela disse que ia contar pra professora.",
-            "Eu avisei: 'Não conte pra ninguém, Helena.'",
-            "... Eu devia ter feito diferente.",
-            "Eu devia ter contado eu mesma."
-          ],
-          "choices": [
-            {
-              "text": "Por que pediu pra ela ficar calada?",
-              "goto": "react_guilt",
-              "hint": false
-            },
-            {
-              "text": "Obrigado, Dra. Cunha. Isso é importante.",
-              "goto": "end_remorse",
-              "hint": false
-            }
-          ]
-        },
-        "ask_visits": {
-          "speaker": "Dra. Cunha",
-          "lines": [
-            "Visitas? Quem te disse isso? Zeca?",
-            "Eu faço visitas SIM. É meu trabalho.",
-            "Crianças do bairro precisam de acompanhamento.",
-            "O que está insinuando?",
-            "Eu salvo vidas, Law. Não destruo.",
-            "*estática* Se me acusar de novo, ligo pra Volkspolizei.",
-            "*clic*"
+            "Tempo? VOCÊ não tem tempo?!",
+            "Eu atendo essa gente há 15 anos. Não preciso disso.",
+            "*estática* ... *clic*"
           ],
           "choices": []
         },
-        "ask_wohltat": {
+        "dc_r2_c": {
           "speaker": "Dra. Cunha",
           "lines": [
-            "... Wohltat.",
-            "Eu... ouvi esse nome no posto.",
-            "Um envelope chegou. Dinheiro. Pra 'programa de assistência'.",
-            "Eu não aceitei. Mas outros aceitaram.",
-            "O vigia da escola. O Kommissar. Até o padre.",
-            "Todo mundo aceita nesta cidade, Sr. Law.",
-            "Até que não tem mais como devolver."
-          ],
-          "choices": [
-            {
-              "text": "Quem mais aceitou dinheiro do Wohltat?",
-              "goto": "reveal_network",
-              "hint": true
-            },
-            {
-              "text": "Obrigado, Dra. Cunha.",
-              "goto": "end_remorse",
-              "hint": false
-            }
-          ]
-        },
-        "ask_health": {
-          "speaker": "Dra. Cunha",
-          "lines": [
-            "Helena estava saudável. Altura e peso normais.",
-            "Mas tinha marcas nos braços. Injeções.",
+            "Examinei Helena. Check-up escolar há 2 meses.",
+            "Ela estava saudável. Mas tinha marcas nos braços. Injeções.",
             "Disse que era vacina da escola. Acreditei.",
-            "... Agora não sei mais o que acreditar.",
-            "Olhe os registros do posto. Procure por 'WOHLTAT-PROGRAMM'.",
-            "E depois me esqueça."
+            "... Agora não sei mais o que acreditar."
           ],
-          "choices": []
+          "choices": [
+            {
+              "text": "Marcas de injeção... A senhora ficou com o prontuário?",
+              "goto": "dc_r3_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "A senhora ignorou marcas de injeção numa criança? Isso é negligência.",
+              "goto": "dc_r2_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado pelas informações, Dra. Vou seguir investigando.",
+              "goto": "dc_end_e",
+              "pdAction": "E"
+            }
+          ]
         },
-        "react_guilt": {
+        "dc_r2_d": {
           "speaker": "Dra. Cunha",
           "lines": [
-            "Por quê? POR QUÊ?!",
-            "Porque eu tenho medo! Esta cidade come quem fala!",
-            "Eu ouvi o que aconteceu com o vigilante que falou demais.",
-            "Apareceu no rio. 'Acidente'. Como sempre.",
-            "Eu protegi Helena pedindo silêncio. Eu sei que é irônico.",
-            "Não me ligue mais.",
-            "*clic*"
+            "Negligência? Eu SOU médica deste bairro há 15 anos!",
+            "Vacina do Estado causa marca. Toda criança tem.",
+            "Não me venha dar aula. *estática* ... *clic*"
           ],
           "choices": []
         },
-        "reveal_network": {
+        "dc_r3_c": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Helena me contou... que viu um homem no armazém.",
+            "Uma criança dentro. Dormindo. Ou quieta demais.",
+            "Eu avisei: 'Não conte pra ninguém, Helena.'",
+            "... Eu devia ter feito diferente."
+          ],
+          "choices": [
+            {
+              "text": "Por que pediu pra ela ficar calada? Deve ter tido um motivo.",
+              "goto": "dc_r4_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "A senhora silenciou uma testemunha. Isso é cumplicidade.",
+              "goto": "dc_r3_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Compreendo o medo. Vou continuar sozinho.",
+              "goto": "dc_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "dc_r3_d": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Cúmplice?! EU protegi Helena do jeito que pude!",
+            "O vigilante que falou demais? Apareceu no rio.",
+            "Não me julgue. *estática longa* ... *clic*"
+          ],
+          "choices": []
+        },
+        "dc_r4_c": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Porque eu tenho medo. Esta cidade come quem fala.",
+            "Ouvi o nome: Wohltat. Um envelope chegou ao posto.",
+            "Dinheiro pra 'programa de assistência'. Eu não aceitei.",
+            "Mas outros aceitaram. O vigia. Mendes. Até o padre."
+          ],
+          "choices": [
+            {
+              "text": "Quem mais aceitou? Preciso de nomes.",
+              "goto": "dc_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "A senhora protege essa rede com o silêncio. Fala de uma vez.",
+              "goto": "dc_r4_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado pela coragem, Dra. Cunha. Vou com cuidado.",
+              "goto": "dc_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "dc_r4_d": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Proteger? Eu PROTEGI as crianças recusando aquele homem!",
+            "O que o senhor fez, Law? Veio tarde demais.",
+            "Não me ligue mais. *clic*"
+          ],
+          "choices": []
+        },
+        "dc_clue": {
           "speaker": "Dra. Cunha",
           "lines": [
             "O vigia da escola recebeu 5.000 Marks.",
             "Mendes arquiva os casos. O padre dá abrigo temporário.",
-            "A Diretora... ela foi ameaçada. Não comprou.",
-            "E eu? Eu fiz o que pude sem morrer.",
+            "A Diretora foi ameaçada. Não comprou.",
             "O nome no envelope era sempre o mesmo: W.",
             "É uma rede, Law. Não é um homem.",
+            "Procure nos registros do posto. 'WOHLTAT-PROGRAMM'.",
             "*clic*"
           ],
           "choices": []
         },
-        "end_remorse": {
+        "dc_end_e": {
           "speaker": "Dra. Cunha",
           "lines": [
-            "Encontre Helena.",
-            "Se ela estiver viva... me avise.",
-            "Eu preciso saber que tentei.",
+            "Tome cuidado, Law. Esta cidade não perdoa quem pergunta.",
             "*clic*"
           ],
           "choices": []
+        },
+        "initial": {
+          "speaker": "Dra. Cunha",
+          "lines": [
+            "Como conseguiu este número?",
+            "Não falo com pacientes fora do horário.",
+            "... Mas se é sobre a menina da Kraft, sente e escute."
+          ],
+          "choices": [
+            {
+              "text": "Preciso entender o estado de saúde dela. Pode me ajudar?",
+              "goto": "dc_r2_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "Escuta, eu não tenho tempo pra jogo. Fala logo o que sabe.",
+              "goto": "dc_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Desculpe incomodar. Vou tentar outro canal.",
+              "goto": "dc_end_e",
+              "pdAction": "E"
+            }
+          ]
         }
+      },
+      "axelrodStrategy": "SoftGrudger",
+      "murphyCommentary": {
+        "dc_r1_d": [
+          "Primeiro contato e já espantei a testemunha. Impaciência não é investigação — é sabotagem.",
+          "A Dra. Cunha sabe algo sobre Helena. Agora não vou saber o quê."
+        ],
+        "dc_r2_d": [
+          "Acusar sem provas. Classic Murphy. Ela tinha as marcas, eu tinha a boca — e usei errado.",
+          "Segunda vez que empurro alguém que podia ajudar."
+        ],
+        "dc_r3_d": [
+          "Três. Três vezes eu apertei demais. A Dra. Cunha não é inimiga — é cúmplice relutante.",
+          "Eu devia ter ouvido antes de acusar. Agora ela cortou."
+        ],
+        "dc_r4_d": [
+          "Quatro vezes eu escolhi a porta errada. A Dra. Cunha engoliu o medo por anos — eu não consegui engolir meu orgulho por cinco minutos.",
+          "A rede Wohltat existe. Ela ia me contar. Eu não deixei."
+        ],
+        "dc_end_e": [
+          "Ela desligou com medo. Não posso culpar — esta cidade ensina que falar é morrer.",
+          "Mas o prontuário de Helena continua trancado."
+        ],
+        "dc_clue": [
+          "A Dra. Cunha abriu a gaveta. Wohltat não é um homem — é uma teia.",
+          "Vigia comprado. Mendes arquivando. Padre dando abrigo. Todo mundo aceita nesta cidade.",
+          "Até que não tem mais como devolver. O prontuário médico é a prova de que a extorsão partiu de ameaça."
+        ]
       }
     }
   },
@@ -776,22 +929,9 @@
           "width": 7,
           "height": 6,
           "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
-        },
-        {
-          "id": "gravador_cassete",
-          "icon": "Archive",
-          "x": 38,
-          "y": 75,
-          "width": 7,
-          "height": 6,
-          "type": "pickup",
-          "label": "Gravador Cassete",
-          "description": "Um gravador de fita cassete antigo. Perfeito para registrar ligações.",
-          "pickupItem": "gravador_cassete",
-          "hideAfterInteract": true
-        },
-        {
-          "id": "isqueiro_mesa",
+},
+{
+"id": "isqueiro_mesa",
           "icon": "Key",
           "x": 34,
           "y": 84,
@@ -897,7 +1037,7 @@
             "content": [
               "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
               "",
-              "O motivo 'Dívida de Jogo' está no Volksschule Vila Nova.",
+              "O motivo 'Dívida de Jogo' está no Volksschule.",
               "",
               "[Tipo de restrição: exact]"
             ]
@@ -940,9 +1080,6 @@
           "label": "Voltar ao Escritório",
           "width": 7,
           "height": 22,
-          "requiredItem": "chave_escritorio",
-          "failedMessage": "A porta está trancada. Você esqueceu a chave dentro. Novamente.",
-          "successMessage": "A chave gira com dificuldade. A fechadura está velha, como tudo nesta cidade.",
           "targetRoom": "escritorio"
         },
         {
@@ -1025,19 +1162,6 @@
           "height": 8,
           "description": "Um cartão de visitas molhado: 'Diretora Elvira Campos — Volksschule Vila Nova'. O número foi riscado com caneta vermelha.",
           "pickupItem": "cartao_visita",
-          "hideAfterInteract": true
-        },
-        {
-          "id": "chave_escritorio_achada",
-          "icon": "Key",
-          "x": 10.2,
-          "y": 86.5,
-          "type": "pickup",
-          "label": "Chave no Cipó",
-          "width": 5,
-          "height": 5,
-          "description": "Enfiada no cipó debaixo da janela do escritório. Você deixou aí semana passada depois de ficar preso do lado de dentro — a fechadura emperra quando chove.",
-          "pickupItem": "chave_escritorio",
           "hideAfterInteract": true
         },
         {
@@ -1350,6 +1474,40 @@
               "[Tipo de restrição: not_same_room]"
             ]
           }
+        },
+        {
+          "id": "interview_clue_zeca",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileKey",
+          "type": "terminal_read",
+          "label": "Pista de Gasthof — Entrevista",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope selado. Só abre se Gasthof cooperar.",
+          "interviewGate": "zeca",
+          "documentData": {
+            "title": "ENTREVISTA: ZECA DO GASTHOF",
+            "content": [
+              "═══════════════════════════════════════",
+              " INFORMAÇÃO CONFIDENCIAL — ZECA DO GASTHOF",
+              "═══════════════════════════════════════",
+              "",
+              "Fonte: Zeca do Gasthof (Informante Justo)",
+              "Estratégia comportamental: TitForTat",
+              "Canal: telefone",
+              "",
+              "REGISTO DA ENTREVISTA:",
+              "Lagerhaus 7 — endereço do armazém ligado ao caso",
+              "",
+              "── NOTA DO ARQUIVO ──",
+              "Esta informação só é acessível se a",
+              "entrevista com Zeca do Gasthof for bem-sucedida.",
+              "Perfil do contato: Qualquer traição encerra a parceria.",
+              "",
+              "[Restrição: interview_gate=zeca]"
+            ]
+          }
         }
       ]
     },
@@ -1522,6 +1680,40 @@
               "[Tipo de restrição: same_room]"
             ]
           }
+        },
+        {
+          "id": "interview_clue_diretora_elvira",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileKey",
+          "type": "terminal_read",
+          "label": "Pista de Campos — Entrevista",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope selado. Só abre se Campos cooperar.",
+          "interviewGate": "diretora_elvira",
+          "documentData": {
+            "title": "ENTREVISTA: DIRETORA ELVIRA CAMPOS",
+            "content": [
+              "═══════════════════════════════════════",
+              " INFORMAÇÃO CONFIDENCIAL — DIRETORA ELVIRA CAMPOS",
+              "═══════════════════════════════════════",
+              "",
+              "Fonte: Diretora Elvira Campos (Detetive Leniente)",
+              "Estratégia comportamental: Forgiver",
+              "Canal: telefone",
+              "",
+              "REGISTO DA ENTREVISTA:",
+              "Registros da Volksschule — horários e movimentação suspeita",
+              "",
+              "── NOTA DO ARQUIVO ──",
+              "Esta informação só é acessível se a",
+              "entrevista com Diretora Elvira Campos for bem-sucedida.",
+              "Perfil do contato: Este contato nunca encerra a conversa.",
+              "",
+              "[Restrição: interview_gate=diretora_elvira]"
+            ]
+          }
         }
       ]
     },
@@ -1684,6 +1876,40 @@
               "Data: 2 dias antes do desaparecimento.",
               "",
               "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "interview_clue_dra_cunha",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileKey",
+          "type": "terminal_read",
+          "label": "Pista de Cunha — Entrevista",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope selado. Só abre se Cunha cooperar.",
+          "interviewGate": "dra_cunha",
+          "documentData": {
+            "title": "ENTREVISTA: DRA. CUNHA",
+            "content": [
+              "═══════════════════════════════════════",
+              " INFORMAÇÃO CONFIDENCIAL — DRA. CUNHA",
+              "═══════════════════════════════════════",
+              "",
+              "Fonte: Dra. Cunha (Cúmplice Relutante)",
+              "Estratégia comportamental: SoftGrudger",
+              "Canal: telefone",
+              "",
+              "REGISTO DA ENTREVISTA:",
+              "Prontuário médico — prova de extorsão com ameaça",
+              "",
+              "── NOTA DO ARQUIVO ──",
+              "Esta informação só é acessível se a",
+              "entrevista com Dra. Cunha for bem-sucedida.",
+              "Perfil do contato: Traição 3x encerra a parceria.",
+              "",
+              "[Restrição: interview_gate=dra_cunha]"
             ]
           }
         }
@@ -1918,6 +2144,40 @@
               "═══════════════════════════════════════"
             ]
           }
+        },
+        {
+          "id": "interview_clue_santos",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileKey",
+          "type": "terminal_read",
+          "label": "Pista de Santos — Entrevista",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope selado. Só abre se Santos cooperar.",
+          "interviewGate": "santos",
+          "documentData": {
+            "title": "ENTREVISTA: POLIZIST SANTOS",
+            "content": [
+              "═══════════════════════════════════════",
+              " INFORMAÇÃO CONFIDENCIAL — POLIZIST SANTOS",
+              "═══════════════════════════════════════",
+              "",
+              "Fonte: Polizist Santos (Aliado Implacável)",
+              "Estratégia comportamental: Grudger",
+              "Canal: telefone",
+              "",
+              "REGISTO DA ENTREVISTA:",
+              "Relatório interno — conexão Volkspolizeistation 8 com o crime",
+              "",
+              "── NOTA DO ARQUIVO ──",
+              "Esta informação só é acessível se a",
+              "entrevista com Polizist Santos for bem-sucedida.",
+              "Perfil do contato: Qualquer traição encerra a parceria.",
+              "",
+              "[Restrição: interview_gate=santos]"
+            ]
+          }
         }
       ]
     },
@@ -2027,6 +2287,40 @@
           "width": 20,
           "height": 45,
           "description": "Uma forma humana no fundo do beco. Um braço levantado — cumprimentando ou ameaçando? A chuva distorce, mas não apaga. Quem quer que seja, sabe que você está aqui. A silhueta não se move. Espera. Como quem já esperou muita gente passar — e nunca viu ninguém voltar."
+        },
+        {
+          "id": "interview_clue_seu_jonas",
+          "x": 5.0,
+          "y": 20.0,
+          "icon": "FileKey",
+          "type": "terminal_read",
+          "label": "Pista de Jonas — Entrevista",
+          "width": 10.0,
+          "height": 10.0,
+          "description": "Um envelope selado. Só abre se Jonas cooperar.",
+          "interviewGate": "seu_jonas",
+          "documentData": {
+            "title": "ENTREVISTA: SEU JONAS",
+            "content": [
+              "═══════════════════════════════════════",
+              " INFORMAÇÃO CONFIDENCIAL — SEU JONAS",
+              "═══════════════════════════════════════",
+              "",
+              "Fonte: Seu Jonas (Informante Pragmático)",
+              "Estratégia comportamental: WinStayLoseShift",
+              "Canal: carta",
+              "",
+              "REGISTO DA ENTREVISTA:",
+              "Testamento não registrado — motivação financeira escondida",
+              "",
+              "── NOTA DO ARQUIVO ──",
+              "Esta informação só é acessível se a",
+              "entrevista com Seu Jonas for bem-sucedida.",
+              "Perfil do contato: Este contato nunca encerra a conversa.",
+              "",
+              "[Restrição: interview_gate=seu_jonas]"
+            ]
+          }
         }
       ]
     },
@@ -2265,6 +2559,309 @@
           }
         }
       ]
+    }
+  },
+  "_interviewClueMap": {
+    "description": "Mapa de pistas desbloqueadas por entrevistas bem-sucedidas",
+    "payoff_matrix": {
+      "C,C": [
+        3,
+        3
+      ],
+      "C,D": [
+        0,
+        5
+      ],
+      "D,C": [
+        5,
+        0
+      ],
+      "D,D": [
+        1,
+        1
+      ]
+    },
+    "npc_contacts": {
+      "dra_cunha": {
+        "name": "Dra. Cunha",
+        "strategy": "SoftGrudger",
+        "archetype": "Cúmplice Relutante",
+        "noir_voice": "Ressentida, mas não vingativa. Pune e depois relembra. A memória é curta, mas o golpe é preciso.",
+        "medium": "telefone",
+        "hint_rooms": [
+          "diretoria"
+        ],
+        "clue_reward": "Prontuário médico — prova de extorsão com ameaça",
+        "cutoff_rule": "threshold",
+        "cutoff_threshold": 3,
+        "simulation": {
+          "all_cooperate": {
+            "player_score": 15,
+            "npc_score": 15,
+            "npc_response_pattern": [
+              "C",
+              "C",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false
+          },
+          "first_defect_then_cooperate": {
+            "player_score": 5,
+            "npc_score": 20,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          },
+          "two_defects_then_cooperate": {
+            "player_score": 6,
+            "npc_score": 16,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          }
+        }
+      },
+      "santos": {
+        "name": "Polizist Santos",
+        "strategy": "Grudger",
+        "archetype": "Aliado Implacável",
+        "noir_voice": "Leal até o fim — mas o fim é definitivo. Uma traição e a porta se fecha.",
+        "medium": "telefone",
+        "hint_rooms": [
+          "delegacia"
+        ],
+        "clue_reward": "Relatório interno — conexão Volkspolizeistation 8 com o crime",
+        "cutoff_rule": "always",
+        "cutoff_threshold": 1,
+        "simulation": {
+          "all_cooperate": {
+            "player_score": 15,
+            "npc_score": 15,
+            "npc_response_pattern": [
+              "C",
+              "C",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false
+          },
+          "first_defect_then_cooperate": {
+            "player_score": 5,
+            "npc_score": 20,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": false,
+            "cutoff": true,
+            "cutoff_reason": "Grudger: qualquer traição causa corte permanente"
+          },
+          "two_defects_then_cooperate": {
+            "player_score": 6,
+            "npc_score": 16,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": false,
+            "cutoff": true,
+            "cutoff_reason": "Grudger: qualquer traição causa corte permanente"
+          }
+        }
+      },
+      "zeca": {
+        "name": "Zeca do Gasthof",
+        "strategy": "TitForTat",
+        "archetype": "Informante Justo",
+        "noir_voice": "Cauteloso, calculista. Mede cada palavra. Olhos que avaliam.",
+        "medium": "telefone",
+        "hint_rooms": [
+          "bar"
+        ],
+        "clue_reward": "Lagerhaus 7 — endereço do armazém ligado ao caso",
+        "cutoff_rule": "always",
+        "cutoff_threshold": 1,
+        "simulation": {
+          "all_cooperate": {
+            "player_score": 15,
+            "npc_score": 15,
+            "npc_response_pattern": [
+              "C",
+              "C",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false
+          },
+          "first_defect_then_cooperate": {
+            "player_score": 14,
+            "npc_score": 14,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": false,
+            "cutoff": true,
+            "cutoff_reason": "TitForTat: qualquer traição causa corte permanente"
+          },
+          "two_defects_then_cooperate": {
+            "player_score": 12,
+            "npc_score": 12,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "C",
+              "C"
+            ],
+            "clue_earned": false,
+            "cutoff": true,
+            "cutoff_reason": "TitForTat: qualquer traição causa corte permanente"
+          }
+        }
+      },
+      "diretora_elvira": {
+        "name": "Diretora Elvira Campos",
+        "strategy": "Forgiver",
+        "archetype": "Detetive Leniente",
+        "noir_voice": "Compreensivo. Vê bem onde outros vêem mal. Perdoa quase tudo — quase.",
+        "medium": "telefone",
+        "hint_rooms": [
+          "escola"
+        ],
+        "clue_reward": "Registros da Volksschule — horários e movimentação suspeita",
+        "cutoff_rule": "never",
+        "cutoff_threshold": 0,
+        "simulation": {
+          "all_cooperate": {
+            "player_score": 15,
+            "npc_score": 15,
+            "npc_response_pattern": [
+              "C",
+              "C",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false
+          },
+          "first_defect_then_cooperate": {
+            "player_score": 5,
+            "npc_score": 20,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          },
+          "two_defects_then_cooperate": {
+            "player_score": 6,
+            "npc_score": 16,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          }
+        }
+      },
+      "seu_jonas": {
+        "name": "Seu Jonas",
+        "strategy": "WinStayLoseShift",
+        "archetype": "Informante Pragmático",
+        "noir_voice": "Pragmática. Adapta-se ao resultado. Se ganhou, repete. Se perdeu, muda.",
+        "medium": "carta",
+        "hint_rooms": [
+          "beco"
+        ],
+        "clue_reward": "Testamento não registrado — motivação financeira escondida",
+        "cutoff_rule": "never",
+        "cutoff_threshold": 0,
+        "simulation": {
+          "all_cooperate": {
+            "player_score": 15,
+            "npc_score": 15,
+            "npc_response_pattern": [
+              "C",
+              "C",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false
+          },
+          "first_defect_then_cooperate": {
+            "player_score": 5,
+            "npc_score": 20,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "D",
+              "D",
+              "D"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          },
+          "two_defects_then_cooperate": {
+            "player_score": 15,
+            "npc_score": 10,
+            "npc_response_pattern": [
+              "C",
+              "D",
+              "C",
+              "C",
+              "C"
+            ],
+            "clue_earned": true,
+            "cutoff": false,
+            "cutoff_reason": ""
+          }
+        }
+      }
     }
   }
 }

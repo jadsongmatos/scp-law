@@ -59,12 +59,6 @@
     "label": "Pista Confidencial #17",
     "room": "rua_chuva"
   },
-  "telefone_zeca": {
-    "voice": "pt-BR-AntonioNeural",
-    "text_length": 348,
-    "label": "Telefone — Ligação de Zeca",
-    "room": "bar"
-  },
   "guardanapo_endereco": {
     "voice": "pt-BR-AntonioNeural",
     "text_length": 201,
@@ -95,6 +89,12 @@
     "label": "Pista Confidencial #18",
     "room": "bar"
   },
+  "interview_clue_zeca": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 382,
+    "label": "Pista de Gasthof — Entrevista",
+    "room": "bar"
+  },
   "quadro_horarios": {
     "voice": "pt-BR-AntonioNeural",
     "text_length": 350,
@@ -119,11 +119,11 @@
     "label": "Pista Confidencial #14",
     "room": "escola"
   },
-  "telefone_diretora": {
-    "voice": "pt-BR-FranciscaNeural",
-    "text_length": 455,
-    "label": "Telefone — Recado da Diretora",
-    "room": "diretoria"
+  "interview_clue_diretora_elvira": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 427,
+    "label": "Pista de Campos — Entrevista",
+    "room": "escola"
   },
   "gaveta_diretora": {
     "voice": "pt-BR-AntonioNeural",
@@ -137,11 +137,11 @@
     "label": "Terminal de Fósforo Verde",
     "room": "diretoria"
   },
-  "telefone_santos": {
+  "interview_clue_dra_cunha": {
     "voice": "pt-BR-AntonioNeural",
-    "text_length": 443,
-    "label": "Telefone — Recado de Santos",
-    "room": "delegacia"
+    "text_length": 370,
+    "label": "Pista de Cunha — Entrevista",
+    "room": "diretoria"
   },
   "arquivo_mendes": {
     "voice": "pt-BR-AntonioNeural",
@@ -173,10 +173,16 @@
     "label": "Quadro de Dedução — Caso Helena",
     "room": "delegacia"
   },
-  "carta_jonas": {
+  "interview_clue_santos": {
     "voice": "pt-BR-AntonioNeural",
-    "text_length": 459,
-    "label": "Carta de Seu Jonas",
+    "text_length": 396,
+    "label": "Pista de Santos — Entrevista",
+    "room": "delegacia"
+  },
+  "interview_clue_seu_jonas": {
+    "voice": "pt-BR-AntonioNeural",
+    "text_length": 390,
+    "label": "Pista de Jonas — Entrevista",
     "room": "beco"
   },
   "caixas_documentos": {

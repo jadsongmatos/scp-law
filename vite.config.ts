@@ -9,7 +9,7 @@ function voiceGenPlugin() {
   return {
     name: 'voice-gen',
     buildStart() {
-      const script = path.resolve(__dirname, 'generate_voices.py');
+      const script = path.resolve(__dirname, 'scripts', 'generate', 'voices.py');
       if (!fs.existsSync(script)) return;
       const isBuild = process.env.VITE_VOICE_GEN === '1';
       if (isBuild) {
@@ -34,16 +34,19 @@ export default defineConfig(({mode}) => {
     },
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(__dirname, 'src'),
       },
     },
     build: {
-      chunkSizeWarningLimit: 600,
+      chunkSizeWarningLimit: 750,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'lucide': ['lucide-react'],
-            'game-data': ['./src/game_data.json'],
+          manualChunks(id) {
+            if (id.includes('node_modules/lucide-react')) return 'lucide';
+            if (id.includes('/src/game_data.json')) return 'game-data';
+            if (id.includes('node_modules/motion')) return 'motion';
+            if (id.includes('node_modules/sonner')) return 'sonner';
+            return undefined;
           },
         },
       },

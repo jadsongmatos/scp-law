@@ -1,0 +1,15 @@
+{
+  "_comment": "INPUT do gerador de puzzle (scripts/puzzle/noir_generator.py). Edite aqui e rode `python3 -m scripts.puzzle.noir_generator` para produzir puzzle_output.json. Flags de CLI sobrescrevem este arquivo.",
+  "seed": 42,
+  "difficulty": "medium",
+  "n_rooms": 0,
+  "categories": {
+    "suspeito": ["Delegado Mendes", "Diretora Elvira", "Seu Jonas", "Zeca do Bar", "Dra. Cunha"],
+    "local": ["Armazém 7", "Beco da Rua 14", "Escola Vila Nova", "Delegacia 8º", "Bar Vila Nova"],
+    "arma": ["Revólver .38", "Faca de Cozinha", "Arame de Piano", "Chave Inglesa", "Veneno Injetável"],
+    "motivo": ["Dívida de Jogo", "Vingança Pessoal", "Tráfico de Crianças", "Extorsão", "Cobertura de Crime"],
+    "horario": ["22:00", "23:30", "01:00", "02:30", "04:00"]
+  },
+  "room_names": ["Escritório Murphy", "Rua Sete", "Bar Vila Nova", "Escola Municipal", "Delegacia 8º"],
+  "puzzle_rooms": ["escritorio", "rua_chuva", "bar", "escola", "delegacia", "beco", "armazem", "diretoria"]
+}

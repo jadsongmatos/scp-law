@@ -1,0 +1,609 @@
+{
+  "puzzle": {
+    "seed": 42,
+    "difficulty": "medium",
+    "n_rooms": 5,
+    "categories": {
+      "suspeito": [
+        "Delegado Mendes",
+        "Diretora Elvira",
+        "Seu Jonas",
+        "Zeca do Bar",
+        "Dra. Cunha"
+      ],
+      "local": [
+        "Armazém 7",
+        "Beco da Rua 14",
+        "Escola Vila Nova",
+        "Delegacia 8º",
+        "Bar Vila Nova"
+      ],
+      "arma": [
+        "Revólver .38",
+        "Faca de Cozinha",
+        "Arame de Piano",
+        "Chave Inglesa",
+        "Veneno Injetável"
+      ],
+      "motivo": [
+        "Dívida de Jogo",
+        "Vingança Pessoal",
+        "Tráfico de Crianças",
+        "Extorsão",
+        "Cobertura de Crime"
+      ],
+      "horario": [
+        "22:00",
+        "23:30",
+        "01:00",
+        "02:30",
+        "04:00"
+      ]
+    },
+    "solution": {
+      "suspeito": {
+        "Delegado Mendes": 4,
+        "Diretora Elvira": 3,
+        "Seu Jonas": 2,
+        "Zeca do Bar": 1,
+        "Dra. Cunha": 0
+      },
+      "local": {
+        "Armazém 7": 4,
+        "Beco da Rua 14": 3,
+        "Escola Vila Nova": 2,
+        "Delegacia 8º": 1,
+        "Bar Vila Nova": 0
+      },
+      "arma": {
+        "Revólver .38": 3,
+        "Faca de Cozinha": 2,
+        "Arame de Piano": 1,
+        "Chave Inglesa": 0,
+        "Veneno Injetável": 4
+      },
+      "motivo": {
+        "Dívida de Jogo": 3,
+        "Vingança Pessoal": 2,
+        "Tráfico de Crianças": 1,
+        "Extorsão": 0,
+        "Cobertura de Crime": 4
+      },
+      "horario": {
+        "22:00": 4,
+        "23:30": 3,
+        "01:00": 2,
+        "02:30": 1,
+        "04:00": 0
+      }
+    },
+    "hint_count": 16,
+    "unique_solution": true
+  },
+  "hints": [
+    {
+      "type": "between_ordered",
+      "c_mid": "motivo",
+      "v_mid": "Tráfico de Crianças",
+      "c1": "suspeito",
+      "v1": "Dra. Cunha",
+      "c2": "arma",
+      "v2": "Revólver .38",
+      "text": "O motivo 'Tráfico de Crianças' está entre o suspeito 'Dra. Cunha' e o arma 'Revólver .38' (nesta ordem)."
+    },
+    {
+      "type": "left_of",
+      "c1": "horario",
+      "v1": "04:00",
+      "c2": "suspeito",
+      "v2": "Seu Jonas",
+      "text": "O horario '04:00' está em um local antes do suspeito 'Seu Jonas'."
+    },
+    {
+      "type": "adjacent",
+      "c1": "local",
+      "v1": "Beco da Rua 14",
+      "c2": "horario",
+      "v2": "22:00",
+      "text": "O local 'Beco da Rua 14' está em um local adjacente ao horario '22:00'."
+    },
+    {
+      "type": "between_unordered",
+      "c_mid": "motivo",
+      "v_mid": "Vingança Pessoal",
+      "c1": "arma",
+      "v1": "Veneno Injetável",
+      "c2": "local",
+      "v2": "Bar Vila Nova",
+      "text": "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Bar Vila Nova' (em qualquer ordem)."
+    },
+    {
+      "type": "between_ordered",
+      "c_mid": "motivo",
+      "v_mid": "Vingança Pessoal",
+      "c1": "arma",
+      "v1": "Arame de Piano",
+      "c2": "suspeito",
+      "v2": "Diretora Elvira",
+      "text": "O motivo 'Vingança Pessoal' está entre o arma 'Arame de Piano' e o suspeito 'Diretora Elvira' (nesta ordem)."
+    },
+    {
+      "type": "left_of",
+      "c1": "motivo",
+      "v1": "Vingança Pessoal",
+      "c2": "horario",
+      "v2": "22:00",
+      "text": "O motivo 'Vingança Pessoal' está em um local antes do horario '22:00'."
+    },
+    {
+      "type": "adjacent",
+      "c1": "arma",
+      "v1": "Faca de Cozinha",
+      "c2": "horario",
+      "v2": "02:30",
+      "text": "O arma 'Faca de Cozinha' está em um local adjacente ao horario '02:30'."
+    },
+    {
+      "type": "same_room",
+      "c1": "suspeito",
+      "v1": "Delegado Mendes",
+      "c2": "local",
+      "v2": "Armazém 7",
+      "text": "O suspeito 'Delegado Mendes' e o local 'Armazém 7' estão no mesmo local."
+    },
+    {
+      "type": "between_unordered",
+      "c_mid": "arma",
+      "v_mid": "Arame de Piano",
+      "c1": "suspeito",
+      "v1": "Dra. Cunha",
+      "c2": "suspeito",
+      "v2": "Delegado Mendes",
+      "text": "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Delegado Mendes' (em qualquer ordem)."
+    },
+    {
+      "type": "not_adjacent",
+      "c1": "arma",
+      "v1": "Veneno Injetável",
+      "c2": "horario",
+      "v2": "22:00",
+      "text": "O arma 'Veneno Injetável' NÃO está em um local adjacente ao horario '22:00'."
+    },
+    {
+      "type": "exact",
+      "cat": "motivo",
+      "val": "Dívida de Jogo",
+      "room": 3,
+      "text": "O motivo 'Dívida de Jogo' está no Escola Municipal."
+    },
+    {
+      "type": "left_of",
+      "c1": "motivo",
+      "v1": "Extorsão",
+      "c2": "local",
+      "v2": "Delegacia 8º",
+      "text": "O motivo 'Extorsão' está em um local antes do local 'Delegacia 8º'."
+    },
+    {
+      "type": "adjacent",
+      "c1": "motivo",
+      "v1": "Dívida de Jogo",
+      "c2": "suspeito",
+      "v2": "Delegado Mendes",
+      "text": "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Delegado Mendes'."
+    },
+    {
+      "type": "same_room",
+      "c1": "local",
+      "v1": "Escola Vila Nova",
+      "c2": "arma",
+      "v2": "Faca de Cozinha",
+      "text": "O local 'Escola Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local."
+    },
+    {
+      "type": "same_room",
+      "c1": "suspeito",
+      "v1": "Diretora Elvira",
+      "c2": "horario",
+      "v2": "23:30",
+      "text": "O suspeito 'Diretora Elvira' e o horario '23:30' estão no mesmo local."
+    },
+    {
+      "type": "same_room",
+      "c1": "suspeito",
+      "v1": "Seu Jonas",
+      "c2": "local",
+      "v2": "Escola Vila Nova",
+      "text": "O suspeito 'Seu Jonas' e o local 'Escola Vila Nova' estão no mesmo local."
+    }
+  ],
+  "interactables": [
+    {
+      "id": "puzzle_hint_1",
+      "room": "escritorio",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #1",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #1",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Tráfico de Crianças' está entre o suspeito 'Dra. Cunha' e o arma 'Revólver .38' (nesta ordem).",
+          "",
+          "[Tipo de restrição: between_ordered]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_2",
+      "room": "rua_chuva",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #2",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #2",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O horario '04:00' está em um local antes do suspeito 'Seu Jonas'.",
+          "",
+          "[Tipo de restrição: left_of]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_3",
+      "room": "bar",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #3",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #3",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O local 'Beco da Rua 14' está em um local adjacente ao horario '22:00'.",
+          "",
+          "[Tipo de restrição: adjacent]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_4",
+      "room": "escola",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #4",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #4",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Bar Vila Nova' (em qualquer ordem).",
+          "",
+          "[Tipo de restrição: between_unordered]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_5",
+      "room": "delegacia",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #5",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #5",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Vingança Pessoal' está entre o arma 'Arame de Piano' e o suspeito 'Diretora Elvira' (nesta ordem).",
+          "",
+          "[Tipo de restrição: between_ordered]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_6",
+      "room": "escritorio",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #6",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #6",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Vingança Pessoal' está em um local antes do horario '22:00'.",
+          "",
+          "[Tipo de restrição: left_of]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_7",
+      "room": "rua_chuva",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #7",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #7",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O arma 'Faca de Cozinha' está em um local adjacente ao horario '02:30'.",
+          "",
+          "[Tipo de restrição: adjacent]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_8",
+      "room": "bar",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #8",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #8",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O suspeito 'Delegado Mendes' e o local 'Armazém 7' estão no mesmo local.",
+          "",
+          "[Tipo de restrição: same_room]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_9",
+      "room": "escola",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #9",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #9",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Delegado Mendes' (em qualquer ordem).",
+          "",
+          "[Tipo de restrição: between_unordered]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_10",
+      "room": "delegacia",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #10",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #10",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O arma 'Veneno Injetável' NÃO está em um local adjacente ao horario '22:00'.",
+          "",
+          "[Tipo de restrição: not_adjacent]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_11",
+      "room": "escritorio",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #11",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #11",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Dívida de Jogo' está no Escola Municipal.",
+          "",
+          "[Tipo de restrição: exact]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_12",
+      "room": "rua_chuva",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #12",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #12",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Extorsão' está em um local antes do local 'Delegacia 8º'.",
+          "",
+          "[Tipo de restrição: left_of]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_13",
+      "room": "bar",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #13",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #13",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Delegado Mendes'.",
+          "",
+          "[Tipo de restrição: adjacent]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_14",
+      "room": "escola",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #14",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #14",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O local 'Escola Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local.",
+          "",
+          "[Tipo de restrição: same_room]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_15",
+      "room": "delegacia",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #15",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #15",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O suspeito 'Diretora Elvira' e o horario '23:30' estão no mesmo local.",
+          "",
+          "[Tipo de restrição: same_room]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_hint_16",
+      "room": "escritorio",
+      "x": 50.0,
+      "y": 50.0,
+      "icon": "FileText",
+      "type": "terminal_read",
+      "label": "Pista Confidencial #16",
+      "width": 10.0,
+      "height": 10.0,
+      "description": "Um fragmento de informação recuperado dos arquivos do caso.",
+      "documentData": {
+        "title": "PISTA #16",
+        "content": [
+          "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
+          "",
+          "O suspeito 'Seu Jonas' e o local 'Escola Vila Nova' estão no mesmo local.",
+          "",
+          "[Tipo de restrição: same_room]"
+        ]
+      }
+    },
+    {
+      "id": "puzzle_deduction_terminal",
+      "room": "delegacia",
+      "x": 50.0,
+      "y": 60.0,
+      "icon": "Terminal",
+      "type": "terminal_read",
+      "label": "Quadro de Dedução — Caso Helena",
+      "width": 12.0,
+      "height": 12.0,
+      "description": "O quadro de cortiça na delegacia. Fios vermelhos conectam fotos e recortes.",
+      "documentData": {
+        "title": "SISTEMA DE DEDUÇÃO",
+        "content": [
+          "═══════════════════════════════════════",
+          " MURPHY LAW — SISTEMA DE DEDUÇÃO",
+          "═══════════════════════════════════════",
+          "",
+          "Determine qual suspeito, local, arma,",
+          "motivo e horário se conectam.",
+          "",
+          "Locais: Escritório Murphy, Rua Sete, Bar Vila Nova, Escola Municipal, Delegacia 8º",
+          "Suspeitos: Delegado Mendes, Diretora Elvira, Seu Jonas, Zeca do Bar, Dra. Cunha",
+          "Locais do crime: Armazém 7, Beco da Rua 14, Escola Vila Nova, Delegacia 8º, Bar Vila Nova",
+          "Armas: Revólver .38, Faca de Cozinha, Arame de Piano, Chave Inglesa, Veneno Injetável",
+          "Motivos: Dívida de Jogo, Vingança Pessoal, Tráfico de Crianças, Extorsão, Cobertura de Crime",
+          "Horários: 22:00, 23:30, 01:00, 02:30, 04:00",
+          "",
+          "Total de pistas coletadas: 16",
+          "Solução única: SIM",
+          "",
+          "═══════════════════════════════════════"
+        ]
+      }
+    }
+  ]
+}

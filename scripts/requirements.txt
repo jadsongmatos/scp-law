@@ -1,0 +1,14 @@
+edge-tts>=6.1.0
+requests>=2.31.0
+Pillow>=10.0.0
+ortools>=9.8.0
+
+# Interview/PD engine (optional — only needed for interview.py)
+# Requires PyTorch (CPU-only recommended): pip install torch --index-url https://download.pytorch.org/whl/cpu
+axelrod>=4.14.0
+
+# Vision pipeline (optional — only needed for extract_positions.py)
+ultralytics>=8.0.0
+
+# Archive scripts (optional — only needed for scp_game_gen.py)
+beautifulsoup4>=4.12.0

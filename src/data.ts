@@ -19,6 +19,7 @@ export interface Interactable {
   phoneCallId?: string;
   documentData?: { title: string; content: string[] };
   hideAfterInteract?: boolean;
+  interviewGate?: string;
 }
 
 export interface PhoneContact {
@@ -27,11 +28,13 @@ export interface PhoneContact {
   discoveredFrom: string;
   voice: string;
   greeting: string;
+  axelrodStrategy: string;
   dialogue: Record<string, {
     speaker: string;
     lines: string[];
-    choices: { text: string; goto: string; hint: boolean }[];
+    choices: { text: string; goto: string; pdAction?: string }[];
   }>;
+  murphyCommentary?: Record<string, string[]>;
 }
 
 export interface Room {
@@ -63,7 +66,6 @@ import mapArmazem from './assets/images/noir/maps/map_armazem.png';
 
 import gameData from './game_data.json';
 
-import imgChaveEscritorio from './assets/images/noir/items/item_chave_escritorio.png';
 import imgCartaoVisita from './assets/images/noir/items/item_cartao_visita.png';
 import imgFotografia from './assets/images/noir/items/item_fotografia.png';
 import imgIsqueiro from './assets/images/noir/items/item_isqueiro.png';
@@ -72,7 +74,6 @@ import imgCedula500 from './assets/images/noir/items/item_cedula_500.png';
 import imgGravadorCassete from './assets/images/noir/items/item_gravador_cassete.png';
 
 export const ITEM_IMAGES: Record<string, string> = {
-  chave_escritorio: imgChaveEscritorio,
   cartao_visita: imgCartaoVisita,
   fotografia: imgFotografia,
   isqueiro: imgIsqueiro,

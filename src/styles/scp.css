@@ -1,0 +1,912 @@
+.institutional {
+  font-family: "JetBrains Mono", "Playfair Display", monospace;
+  line-height: 1.5;
+  letter-spacing: 0.3px;
+}
+
+/* ============================================
+   SCP CLASSIFICATION COLOR SYSTEM
+
+   Safe     → green clinical (#33cc33)
+   Euclid   → amber caution (#ccaa33)
+   Keter    → red danger (#cc3333)
+   Thaumiel → purple esoteric (#9933cc)
+   Apollyon → dark crimson (#660011)
+   ============================================ */
+
+/* Border-image classes for responsive frames */
+.scp-btn-border {
+  border-image-source: url("/scp_assets/button-bg.webp");
+}
+
+.scp-btn-border-sm {
+  border-image-source: url("/scp_assets/button-bg-sm.webp");
+}
+
+.scp-btn-border-frame {
+  border-image-source: url("/scp_assets/button-bg-with-frame.webp");
+}
+
+.scp-btn-border-frame-sm {
+  border-image-source: url("/scp_assets/button-bg-with-frame-sm.webp");
+}
+
+.scp-card-border {
+  border-image-source: url("/scp_assets/card-bg.webp");
+}
+
+.scp-input-border {
+  border-image-source: url("/scp_assets/input-frame.webp");
+}
+
+.scp-dropdown-border {
+  border-image-source: url("/scp_assets/dropdown-menu-bg.webp");
+}
+
+.scp-textarea-border {
+  border-image-source: url("/scp_assets/textarea-bg.webp");
+}
+
+/* ============================================
+   SKELETON BASE & CLASSIFICATION VARIANTS
+   ============================================ */
+
+/* Base skeleton - Safe (green clinical) */
+.scp-skeleton {
+  background: linear-gradient(
+    135deg,
+    hsl(120 10% 12%) 0%,
+    hsl(120 8% 18%) 50%,
+    hsl(120 10% 14%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 hsl(120 10% 25% / 0.3),
+    inset 0 -1px 0 hsl(120 10% 8% / 0.5),
+    0 2px 8px hsl(0 0% 0% / 0.4);
+}
+
+/* Keter variant - red/danger containment theme */
+.scp-skeleton-keter {
+  background: linear-gradient(
+    135deg,
+    hsl(0 30% 12%) 0%,
+    hsl(5 25% 18%) 50%,
+    hsl(0 30% 14%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 hsl(0 30% 25% / 0.3),
+    inset 0 -1px 0 hsl(0 30% 8% / 0.5),
+    0 2px 8px hsl(0 50% 10% / 0.5);
+}
+
+/* Thaumiel variant - purple esoteric theme */
+.scp-skeleton-thaumiel {
+  background: linear-gradient(
+    135deg,
+    hsl(270 25% 12%) 0%,
+    hsl(275 20% 18%) 50%,
+    hsl(270 25% 14%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 hsl(275 25% 25% / 0.3),
+    inset 0 -1px 0 hsl(270 25% 8% / 0.5),
+    0 2px 8px hsl(270 40% 10% / 0.5);
+}
+
+/* Euclid variant - amber/caution uncertainty theme */
+.scp-skeleton-euclid {
+  background: linear-gradient(
+    135deg,
+    hsl(40 30% 12%) 0%,
+    hsl(45 25% 18%) 50%,
+    hsl(40 30% 14%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 hsl(45 30% 25% / 0.3),
+    inset 0 -1px 0 hsl(40 30% 10% / 0.5),
+    0 2px 8px hsl(45 40% 10% / 0.5);
+}
+
+/* Apollyon variant - dark crimson existential theme */
+.scp-skeleton-apollyon {
+  background: linear-gradient(
+    135deg,
+    hsl(345 25% 8%) 0%,
+    hsl(350 20% 12%) 50%,
+    hsl(345 25% 10%) 100%
+  );
+  box-shadow:
+    inset 0 1px 0 hsl(350 25% 18% / 0.3),
+    inset 0 -1px 0 hsl(345 25% 5% / 0.5),
+    0 2px 8px hsl(350 40% 8% / 0.6);
+}
+
+/* ============================================
+   SHIMMER ANIMATIONS
+   ============================================ */
+
+@keyframes scp-shimmer {
+  0% { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+/* Base shimmer - shared properties */
+.scp-skeleton-shimmer {
+  position: absolute;
+  inset: 0;
+  animation: scp-shimmer 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Safe shimmer - green clinical scan */
+.scp-skeleton .scp-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(120 100% 50% / 0.06) 20%,
+    hsl(125 80% 55% / 0.12) 40%,
+    hsl(130 70% 50% / 0.16) 50%,
+    hsl(125 80% 55% / 0.12) 60%,
+    hsl(120 100% 50% / 0.06) 80%,
+    transparent 100%
+  );
+}
+
+/* Keter shimmer - red alert scan */
+.scp-skeleton-keter .scp-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(0 100% 50% / 0.08) 20%,
+    hsl(5 100% 55% / 0.15) 40%,
+    hsl(0 90% 50% / 0.2) 50%,
+    hsl(5 100% 55% / 0.15) 60%,
+    hsl(0 85% 50% / 0.08) 80%,
+    transparent 100%
+  );
+}
+
+/* Thaumiel shimmer - purple esoteric scan */
+.scp-skeleton-thaumiel .scp-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(280 70% 50% / 0.08) 20%,
+    hsl(285 60% 55% / 0.15) 40%,
+    hsl(290 50% 60% / 0.2) 50%,
+    hsl(285 60% 55% / 0.15) 60%,
+    hsl(280 70% 50% / 0.08) 80%,
+    transparent 100%
+  );
+}
+
+/* Euclid shimmer - amber caution scan */
+.scp-skeleton-euclid .scp-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(40 80% 50% / 0.08) 20%,
+    hsl(45 70% 55% / 0.15) 40%,
+    hsl(50 60% 50% / 0.2) 50%,
+    hsl(45 70% 55% / 0.15) 60%,
+    hsl(40 80% 50% / 0.08) 80%,
+    transparent 100%
+  );
+}
+
+/* Apollyon shimmer - dark crimson scan */
+.scp-skeleton-apollyon .scp-skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(350 60% 30% / 0.08) 20%,
+    hsl(355 50% 35% / 0.15) 40%,
+    hsl(0 40% 40% / 0.2) 50%,
+    hsl(355 50% 35% / 0.15) 60%,
+    hsl(350 60% 30% / 0.08) 80%,
+    transparent 100%
+  );
+}
+
+/* ============================================
+   CLASSIFICATION ICON PATTERNS
+   ============================================ */
+
+@keyframes scp-icon-pulse {
+  0%, 100% { opacity: 0.03; }
+  50% { opacity: 0.08; }
+}
+
+/* Base icons - shared properties */
+.scp-skeleton-icons {
+  position: absolute;
+  inset: 0;
+  animation: scp-icon-pulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Safe icons - biohazard symbol */
+.scp-skeleton .scp-skeleton-icons {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='8' fill='none' stroke='%2333cc33' stroke-width='2' fill-opacity='0.5'/%3E%3Ccircle cx='30' cy='30' r='3' fill='%2333cc33' fill-opacity='0.5'/%3E%3Cpath d='M30 18 A12 12 0 0 1 42 30' fill='none' stroke='%2333cc33' stroke-width='2' stroke-opacity='0.5'/%3E%3Cpath d='M30 18 A12 12 0 0 0 18 30' fill='none' stroke='%2333cc33' stroke-width='2' stroke-opacity='0.5'/%3E%3Cpath d='M24 40 A12 12 0 0 0 36 40' fill='none' stroke='%2333cc33' stroke-width='2' stroke-opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 40px 40px;
+}
+
+/* Keter icons - radiation trefoil */
+.scp-skeleton-keter .scp-skeleton-icons {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='6' fill='%23cc3333' fill-opacity='0.5'/%3E%3Cpath d='M30 8 L34 24 L26 24 Z' fill='%23cc3333' fill-opacity='0.4'/%3E%3Cpath d='M11 40 L25 32 L21 44 Z' fill='%23cc3333' fill-opacity='0.4'/%3E%3Cpath d='M49 40 L39 44 L35 32 Z' fill='%23cc3333' fill-opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 35px 35px;
+}
+
+/* Thaumiel icons - eye of providence */
+.scp-skeleton-thaumiel .scp-skeleton-icons {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 20 Q20 30 30 40 Q40 30 30 20 Z' fill='none' stroke='%239933cc' stroke-width='1.5' stroke-opacity='0.5'/%3E%3Ccircle cx='30' cy='30' r='5' fill='%239933cc' fill-opacity='0.5'/%3E%3Ccircle cx='30' cy='30' r='2' fill='%23cc66ff' fill-opacity='0.4'/%3E%3C/svg%3E");
+  background-size: 35px 35px;
+}
+
+/* Euclid icons - caution/question mark */
+.scp-skeleton-euclid .scp-skeleton-icons {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 14 Q38 14 38 22 Q38 28 30 30 L30 36' fill='none' stroke='%23ccaa33' stroke-width='3' stroke-opacity='0.5' stroke-linecap='round'/%3E%3Ccircle cx='30' cy='42' r='3' fill='%23ccaa33' fill-opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 35px 35px;
+}
+
+/* Apollyon icons - skull */
+.scp-skeleton-apollyon .scp-skeleton-icons {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='%23660011' fill-opacity='0.5'%3E%3Cpath d='M30 10 Q40 10 45 18 Q50 26 48 35 L42 35 Q42 38 40 40 L35 40 L35 45 L32 48 L28 48 L25 45 L25 40 L20 40 Q18 38 18 35 L12 35 Q10 26 15 18 Q20 10 30 10 M22 22 Q22 26 25 26 Q28 26 28 22 Q28 18 25 18 Q22 18 22 22 M32 22 Q32 26 35 26 Q38 26 38 22 Q38 18 35 18 Q32 18 32 22 M25 32 L28 35 L30 33 L32 35 L35 32'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 45px 45px;
+}
+
+/* ============================================
+   SPINNER — SCP Containment Loading
+   ============================================ */
+
+@keyframes scp-spinner-core-light {
+  0%, 100% { opacity: 0.2; color: rgb(204 51 51 / 0.2); }
+  25% { opacity: 0.62; color: rgb(204 51 51 / 0.62); }
+  50% { opacity: 0.98; color: rgb(220 60 60 / 0.98); }
+  75% { opacity: 0.64; color: rgb(204 55 55 / 0.64); }
+}
+
+@keyframes scp-spinner-core-dark {
+  0%, 100% { opacity: 0.2; color: rgb(255 80 80 / 0.2); }
+  25% { opacity: 0.62; color: rgb(255 90 90 / 0.62); }
+  50% { opacity: 0.98; color: rgb(255 110 110 / 0.98); }
+  75% { opacity: 0.64; color: rgb(255 85 85 / 0.64); }
+}
+
+@keyframes scp-spinner-glow-light {
+  0%, 100% {
+    opacity: 0.08;
+    filter: blur(1.2px) drop-shadow(0 0 2px rgb(204 51 51 / 0.12)) drop-shadow(0 0 5px rgb(204 51 51 / 0.06));
+  }
+  25% {
+    opacity: 0.24;
+    filter: blur(1.6px) drop-shadow(0 0 6px rgb(204 51 51 / 0.28)) drop-shadow(0 0 14px rgb(204 51 51 / 0.14));
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(2.2px) drop-shadow(0 0 10px rgb(220 60 60 / 0.42)) drop-shadow(0 0 20px rgb(220 60 60 / 0.2));
+  }
+  75% {
+    opacity: 0.26;
+    filter: blur(1.7px) drop-shadow(0 0 7px rgb(204 55 55 / 0.3)) drop-shadow(0 0 15px rgb(204 55 55 / 0.14));
+  }
+}
+
+@keyframes scp-spinner-glow-dark {
+  0%, 100% {
+    opacity: 0.08;
+    filter: blur(1.2px) drop-shadow(0 0 2px rgb(255 80 80 / 0.12)) drop-shadow(0 0 5px rgb(255 80 80 / 0.06));
+  }
+  25% {
+    opacity: 0.24;
+    filter: blur(1.6px) drop-shadow(0 0 6px rgb(255 90 90 / 0.28)) drop-shadow(0 0 14px rgb(255 90 90 / 0.14));
+  }
+  50% {
+    opacity: 0.52;
+    filter: blur(2.2px) drop-shadow(0 0 10px rgb(255 110 110 / 0.42)) drop-shadow(0 0 20px rgb(255 110 110 / 0.2));
+  }
+  75% {
+    opacity: 0.26;
+    filter: blur(1.7px) drop-shadow(0 0 7px rgb(255 85 85 / 0.3)) drop-shadow(0 0 15px rgb(255 85 85 / 0.14));
+  }
+}
+
+.scp-spinner {
+  background: transparent;
+  color: rgb(204 51 51 / 0.95);
+  overflow: visible;
+}
+
+.dark .scp-spinner {
+  color: rgb(255 80 80 / 0.95);
+}
+
+@keyframes scp-spinner-flicker {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-0.03px) scale(1.0007); }
+}
+
+.scp-spinner-wrap {
+  transform-origin: center;
+  animation: scp-spinner-flicker 3400ms linear infinite;
+}
+
+.scp-spinner-core {
+  transform-origin: center;
+  animation: scp-spinner-core-light 2600ms linear infinite;
+}
+
+.scp-spinner-glow {
+  transform-origin: center;
+  animation: scp-spinner-glow-light 2600ms linear infinite;
+}
+
+.dark .scp-spinner-core {
+  animation-name: scp-spinner-core-dark;
+}
+
+.dark .scp-spinner-glow {
+  animation-name: scp-spinner-glow-dark;
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .scp-spinner-wrap, .scp-spinner-core, .scp-spinner-glow,
+  .dark .scp-spinner-wrap, .dark .scp-spinner-core, .dark .scp-spinner-glow {
+    animation: none;
+  }
+
+  .scp-spinner-core, .dark .scp-spinner-core { opacity: 1; }
+  .scp-spinner-glow, .dark .scp-spinner-glow { opacity: 0.35; }
+  .scp-skeleton-shimmer { animation: none; }
+  .scp-skeleton-icons { animation: none; }
+}
+
+.clip-path-banner {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 50% 100%, 0% 85%);
+}
+
+/* ============================================
+   TOOLTIP — SCP Classification Variants
+   ============================================ */
+
+/* Shared tooltip background */
+.scp-tooltip-base {
+  background: linear-gradient(180deg, hsl(0 10% 8%) 0%, hsl(0 5% 5%) 100%);
+}
+
+/* Safe — green (contained) */
+.scp-tooltip-safe {
+  border: 1px solid hsl(120 50% 35%);
+  box-shadow:
+    inset 0 0 8px hsl(120 40% 28% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Euclid — amber (uncertain) */
+.scp-tooltip-euclid {
+  border: 1px solid hsl(45 60% 35%);
+  box-shadow:
+    inset 0 0 8px hsl(45 50% 25% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Keter — red (danger) */
+.scp-tooltip-keter {
+  border: 1px solid hsl(0 55% 42%);
+  box-shadow:
+    inset 0 0 10px hsl(0 45% 38% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Thaumiel — purple (esoteric) */
+.scp-tooltip-thaumiel {
+  border: 1px solid hsl(280 40% 42%);
+  box-shadow:
+    inset 0 0 10px hsl(280 35% 38% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Apollyon — dark crimson (existential) */
+.scp-tooltip-apollyon {
+  border: 1px solid hsl(345 60% 30%);
+  box-shadow:
+    inset 0 0 10px hsl(345 50% 25% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legacy default tooltip (Safe) */
+.scp-tooltip {
+  border: 1px solid hsl(120 50% 35%);
+  box-shadow:
+    inset 0 0 8px hsl(120 40% 28% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legacy uncommon → Euclid */
+.scp-tooltip-uncommon {
+  border: 1px solid hsl(45 60% 35%);
+  box-shadow:
+    inset 0 0 8px hsl(45 50% 25% / 0.12),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legacy rare → Keter */
+.scp-tooltip-rare {
+  border: 1px solid hsl(0 55% 42%);
+  box-shadow:
+    inset 0 0 10px hsl(0 45% 38% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legacy epic → Thaumiel */
+.scp-tooltip-epic {
+  border: 1px solid hsl(280 40% 42%);
+  box-shadow:
+    inset 0 0 10px hsl(280 35% 38% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* Legacy legendary → Apollyon */
+.scp-tooltip-legendary {
+  border: 1px solid hsl(345 60% 30%);
+  box-shadow:
+    inset 0 0 10px hsl(345 50% 25% / 0.15),
+    0 4px 20px hsl(0 0% 0% / 0.7);
+}
+
+/* ============================================
+   Avatar CLASSIFICATION VARIANTS
+   ============================================ */
+
+.scp-avatar-default {
+  --scp-frame-url: url("/scp_assets/avatar-safe.webp");
+}
+
+.scp-avatar-euclid {
+  --scp-frame-url: url("/scp_assets/avatar-euclid.webp");
+}
+
+.scp-avatar-thaumiel {
+  --scp-frame-url: url("/scp_assets/avatar-thaumiel.webp");
+}
+
+.scp-avatar-keter {
+  --scp-frame-url: url("/scp_assets/avatar-keter.webp");
+}
+
+.scp-avatar-apollyon {
+  --scp-frame-url: url("/scp_assets/avatar-apollyon.webp");
+}
+
+.scp-avatar-frame {
+  background-image: var(--scp-frame-url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* ============================================
+   Cursor CLASSIFICATION VARIANTS
+   ============================================ */
+
+.scp-keter-cursor, .scp-keter-cursor * {
+  cursor: crosshair;
+}
+
+.scp-euclid-cursor, .scp-euclid-cursor * {
+  cursor: help;
+}
+
+.scp-thaumiel-cursor, .scp-thaumiel-cursor * {
+  cursor: cell;
+}
+
+.scp-apollyon-cursor, .scp-apollyon-cursor * {
+  cursor: not-allowed;
+}
+
+/* ============================================
+   CHECKBOX — Classification Stamp Style
+   ============================================ */
+
+.scp-checkbox {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: 2px solid transparent;
+  border-radius: 2px;
+  cursor: pointer;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.scp-checkbox:focus-visible {
+  outline: none;
+  border-color: hsl(0 80% 50%);
+  box-shadow: 0 0 0 3px hsl(0 80% 50% / 0.4);
+}
+
+.scp-checkbox[data-disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.scp-checkbox-default {
+  background-image: url("/scp_assets/checkbox-safe.webp");
+}
+
+.scp-checkbox-default[data-state="checked"] {
+  background-image: url("/scp_assets/checkbox-safe-checked.webp");
+}
+
+/* Euclid classification */
+.scp-checkbox-euclid {
+  background-image: url("/scp_assets/checkbox-euclid.webp");
+}
+
+.scp-checkbox-euclid[data-state="checked"] {
+  background-image: url("/scp_assets/checkbox-euclid-checked.webp");
+}
+
+/* Keter classification */
+.scp-checkbox-keter {
+  background-image: url("/scp_assets/checkbox-keter.webp");
+}
+
+.scp-checkbox-keter[data-state="checked"] {
+  background-image: url("/scp_assets/checkbox-keter-checked.webp");
+}
+
+/* Thaumiel classification */
+.scp-checkbox-thaumiel {
+  background-image: url("/scp_assets/checkbox-thaumiel.webp");
+}
+
+.scp-checkbox-thaumiel[data-state="checked"] {
+  background-image: url("/scp_assets/checkbox-thaumiel-checked.webp");
+}
+
+/* Apollyon classification */
+.scp-checkbox-apollyon {
+  background-image: url("/scp_assets/checkbox-apollyon.webp");
+}
+
+.scp-checkbox-apollyon[data-state="checked"] {
+  background-image: url("/scp_assets/checkbox-apollyon-checked.webp");
+}
+
+/* ============================================
+   RADIO GROUP — Containment Protocol Selector
+   ============================================ */
+
+.scp-radio-socket {
+  all: unset;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  background: radial-gradient(
+    circle at 40% 35%,
+    hsl(0 8% 18%) 0%,
+    hsl(0 6% 10%) 70%,
+    hsl(0 4% 6%) 100%
+  );
+
+  box-shadow:
+    inset 0 1px 3px hsl(0 0% 0% / 0.6),
+    inset 0 -1px 1px hsl(0 20% 30% / 0.2),
+    0 0 0 1.5px hsl(0 15% 28%),
+    0 0 0 2.5px hsl(0 10% 15%);
+
+  transition: box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.scp-radio-socket:focus-visible {
+  outline: none;
+  box-shadow:
+    inset 0 1px 3px hsl(0 0% 0% / 0.6),
+    inset 0 -1px 1px hsl(0 20% 30% / 0.2),
+    0 0 0 1.5px hsl(0 70% 50%),
+    0 0 0 3px hsl(0 80% 50% / 0.35),
+    0 0 12px hsl(0 100% 60% / 0.3);
+}
+
+.scp-radio-socket[data-disabled], .scp-radio-socket:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Classification indicator (selected state) */
+.scp-radio-indicator {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle at 40% 35%,
+    hsl(0 100% 78%) 0%,
+    hsl(0 100% 55%) 40%,
+    hsl(0 90% 40%) 75%,
+    hsl(0 80% 30%) 100%
+  );
+
+  box-shadow:
+    0 0 4px hsl(0 100% 55% / 0.8),
+    0 0 10px hsl(0 100% 50% / 0.4),
+    inset 0 -1px 2px hsl(0 80% 30% / 0.4),
+    inset 0 1px 1px hsl(0 100% 85% / 0.5);
+
+  animation: scp-indicator-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes scp-indicator-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 4px hsl(0 100% 55% / 0.8),
+      0 0 10px hsl(0 100% 50% / 0.4),
+      inset 0 -1px 2px hsl(0 80% 30% / 0.4),
+      inset 0 1px 1px hsl(0 100% 85% / 0.5);
+  }
+  50% {
+    box-shadow:
+      0 0 6px hsl(0 100% 55% / 1),
+      0 0 16px hsl(0 100% 50% / 0.55),
+      inset 0 -1px 2px hsl(0 80% 30% / 0.4),
+      inset 0 1px 1px hsl(0 100% 85% / 0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scp-radio-indicator { animation: none; }
+}
+
+/* ============================================
+   ACCORDION — Document Protocol Style
+   ============================================ */
+
+.scp-accordion-icon--folder {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23cc3333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6Z'/%3E%3C/svg%3E");
+  filter: brightness(0) saturate(100%) invert(35%) sepia(90%) saturate(1500%) hue-rotate(340deg) brightness(95%) contrast(90%);
+}
+
+.scp-accordion-icon--stamp {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ccaa33' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 22H19'/%3E%3Cpath d='M3 8h4v6H3z'/%3E%3Cpath d='M7 12c1.5-2 3.5-4 5-4s3.5 2 5 4'/%3E%3Cpath d='M3 20h18'/%3E%3C/svg%3E");
+  filter: brightness(0) saturate(100%) invert(60%) sepia(50%) saturate(600%) hue-rotate(10deg) brightness(95%) contrast(90%);
+}
+
+.scp-accordion-icon--protocol {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%239933cc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2Z'/%3E%3Cpath d='M14 2V8H20'/%3E%3Cpath d='M9 13H15'/%3E%3Cpath d='M9 17H15'/%3E%3C/svg%3E");
+  filter: brightness(0) saturate(100%) invert(35%) sepia(80%) saturate(800%) hue-rotate(250deg) brightness(90%) contrast(90%);
+}
+
+@keyframes scp-light-sweep {
+  from { transform: translateX(-100%); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes scp-accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes scp-accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+.scp-accordion-content-border {
+  border-image-source: url("/scp_assets/accordion-content-bg.webp");
+}
+
+.scp-accordion-header-border {
+  border-image-source: url("/scp_assets/accordion-header.webp");
+}
+
+/* ============================================
+   TABS — Classification Variants
+   ============================================ */
+
+/* Default Tab (Safe) */
+.scp-tabs-safe .scp-tab-trigger {
+  background-image: url("/scp_assets/tabs/tab-list-safe.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  height: 50px;
+}
+
+.scp-tab-trigger:focus-visible {
+  outline: 2px solid hsl(0 80% 50%);
+  outline-offset: 2px;
+}
+
+.scp-tab-trigger:hover {
+  filter: brightness(1.25);
+}
+
+.scp-tabs-safe .scp-tab-trigger[data-state="active"] {
+  background-image: url("/scp_assets/tabs/tab-list-active-safe.webp");
+}
+
+.scp-tabs-safe .scp-tab-content {
+  background-image: url("/scp_assets/tabs/tab-content-safe.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Euclid Tab */
+.scp-tabs-euclid .scp-tab-trigger {
+  background-image: url("/scp_assets/tabs/tab-list-euclid.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+
+.scp-tabs-euclid .scp-tab-trigger[data-state="active"] {
+  background-image: url("/scp_assets/tabs/tab-list-active-euclid.webp");
+}
+
+.scp-tabs-euclid .scp-tab-content {
+  background-image: url("/scp_assets/tabs/tab-content-euclid.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Keter Tab */
+.scp-tabs-keter .scp-tab-trigger {
+  background-image: url("/scp_assets/tabs/tab-list-keter.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+
+.scp-tabs-keter .scp-tab-trigger[data-state="active"] {
+  background-image: url("/scp_assets/tabs/tab-list-active-keter.webp");
+}
+
+.scp-tabs-keter .scp-tab-content {
+  background-image: url("/scp_assets/tabs/tab-content-keter.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Thaumiel Tab */
+.scp-tabs-thaumiel .scp-tab-trigger {
+  background-image: url("/scp_assets/tabs/tab-list-thaumiel.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+}
+
+.scp-tabs-thaumiel .scp-tab-trigger[data-state="active"] {
+  background-image: url("/scp_assets/tabs/tab-list-active-thaumiel.webp");
+}
+
+.scp-tabs-thaumiel .scp-tab-content {
+  background-image: url("/scp_assets/tabs/tab-content-thaumiel.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+/* Apollyon Tab */
+.scp-tabs-apollyon .scp-tab-trigger {
+  background-image: url("/scp_assets/tabs/tab-list-apollyon.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  color: var(--color-black);
+}
+
+.scp-tabs-apollyon .scp-tab-trigger[data-state="active"] {
+  background-image: url("/scp_assets/tabs/tab-list-active-apollyon.webp");
+}
+
+.scp-tabs-apollyon .scp-tab-content {
+  background-image: url("/scp_assets/tabs/tab-content-apollyon.webp");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 300px;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-label-base {
+  position: relative;
+  z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+
+.tab-label-vertical {
+  justify-content: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+/* ============================================
+   TOAST — SCP Notification Variants
+   ============================================ */
+
+.scroll-handle-safe {
+  background-image: url('/scp_assets/toast/scroll-handle-safe.png');
+  background-size: 100% 100%;
+}
+
+.scroll-handle-euclid {
+  background-image: url('/scp_assets/toast/scroll-handle-euclid.png');
+  background-size: 100% 100%;
+}
+
+.scroll-handle-keter {
+  background-image: url('/scp_assets/toast/scroll-handle-keter.png');
+  background-size: 100% 100%;
+}
+
+.scroll-handle-thaumiel {
+  background-image: url('/scp_assets/toast/scroll-handle-thaumiel.png');
+  background-size: 100% 100%;
+}
+
+.scroll-handle-apollyon {
+  background-image: url('/scp_assets/toast/scroll-handle-apollyon.png');
+  background-size: 100% 100%;
+}
+
+.scroll-handle-flip {
+  transform: scaleX(-1);
+}
+
+.scroll-center-safe {
+  background-image: url('/scp_assets/toast/scroll-content-safe.webp');
+  background-size: 100% 100%;
+}
+
+.scroll-center-euclid {
+  background-image: url('/scp_assets/toast/scroll-content-euclid.webp');
+  background-size: 100% 100%;
+}
+
+.scroll-center-keter {
+  background-image: url('/scp_assets/toast/scroll-content-keter.webp');
+  background-size: 100% 100%;
+}
+
+.scroll-center-thaumiel {
+  background-image: url('/scp_assets/toast/scroll-content-thaumiel.webp');
+  background-size: 100% 100%;
+}
+
+.scroll-center-apollyon {
+  background-image: url('/scp_assets/toast/scroll-content-apollyon.webp');
+  background-size: 100% 100%;
+}
