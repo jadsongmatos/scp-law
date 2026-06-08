@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
 import { GAME_ROOMS, Interactable, ITEM_NAMES, ITEM_IMAGES, Room, PHONE_CONTACTS, PhoneContact } from './data';
 import { IconMap } from './Icons';
 import { Audio } from './audio';
-import { FileText, Map as MapIcon, X, Bug, Download, Wine, Briefcase, CheckCircle, AlertTriangle, Settings, Volume2, Phone, PhoneCall, Mail, Play, Archive, Package, Terminal } from 'lucide-react';
+import { FileText, Map as MapIcon, X, Bug, Download, Wine, Briefcase, CheckCircle, AlertTriangle, Settings, Volume2, Phone, PhoneCall, Mail, Play, Archive, Package, Terminal, Eye } from 'lucide-react';
 import { useXTerm } from 'react-xtermjs';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
@@ -12,7 +12,9 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipTitle, TooltipBody } fr
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody, DialogClose } from '@/components/ui/dialog';
 import { Toaster } from 'sonner';
 import { DevInspector } from '@/components/DevInspector';
+import DetectiveBoard from '@/components/DetectiveBoard';
 import { resolveItemUse, INTERACT } from '@/lib/itemUse';
+import { adjustMenuPosition } from '@/lib/useMenuPosition';
 
 function Game() {
   const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
@@ -52,6 +54,9 @@ function Game() {
   // DevInspector's context menu — proven to work over the scene overlays).
   const [objMenu, setObjMenu] = useState<{ x: number; y: number; obj: Interactable } | null>(null);
   const objMenuRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (objMenu && objMenuRef.current) adjustMenuPosition(objMenuRef.current, objMenu.x, objMenu.y);
+  }, [objMenu]);
   const [readHints, setReadHints] = useState<Set<string>>(new Set());
   const [deductionOpen, setDeductionOpen] = useState(false);
   const [deductionResult, setDeductionResult] = useState<'correct' | 'wrong' | null>(null);
@@ -75,22 +80,24 @@ const [pdChoiceHistory, setPdChoiceHistory] = useState<Record<string, string[]>>
   const [murphyCommentaryMap, setMurphyCommentaryMap] = useState<Record<string, string[]>>({});
   const [gameCompleted, setGameCompleted] = useState(false);
   const [readInterviewClues, setReadInterviewClues] = useState<Set<string>>(new Set());
-  const [cassetteMenuOpen, setCassetteMenuOpen] = useState(false);
-  const [mobileInventoryOpen, setMobileInventoryOpen] = useState(false);
-  const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
+const [cassetteMenuOpen, setCassetteMenuOpen] = useState(false);
+const [mobileInventoryOpen, setMobileInventoryOpen] = useState(false);
+const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
+const [deductionAttempts, setDeductionAttempts] = useState(0);
 
 const calculateGameCompletion = () => {
 const totalHints = 18;
 const totalContacts = 5;
 const hintsFound = readHints.size / totalHints;
-const interviewsCompleted = [...calledContacts].filter(c => !pdCutoffContacts.has(c)).length / totalContacts;
+const interviewsCompleted = [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length / totalContacts;
 const cluesRead = readInterviewClues.size / totalContacts;
-const deductionScore = deductionResult === 'correct' ? 1 : 0;
+const deductionScore = deductionResult === 'correct' ? Math.max(0.5, 1 - 0.1 * Math.max(0, deductionAttempts - 1)) : 0;
 
 let tftCompliant = true;
 const contactIds = Object.keys(PHONE_CONTACTS);
 let anyInterviewHeld = false;
 for (const cid of contactIds) {
+if (cid === 'agente_scp') continue;
 const history = pdChoiceHistory[cid] || [];
 const contact = PHONE_CONTACTS[cid];
 if (!contact || history.length === 0) continue;
@@ -123,7 +130,7 @@ const base = hintsFound * weights.hints
 + deductionScore * weights.deduction;
 const tftBonus = tftCompliant ? weights.tft : 0;
 const percent = Math.round((base + tftBonus) * 100);
-return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted: [...calledContacts].filter(c => !pdCutoffContacts.has(c)).length, cluesRead: readInterviewClues.size, deductionCorrect: deductionResult === 'correct' };
+return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted: [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length, cluesRead: readInterviewClues.size, deductionCorrect: deductionResult === 'correct', deductionAttempts };
 };
 
   const DEDUCTION_LOCATIONS = ['Escritório Murphy', 'Rua Sieben', 'Gasthof Vila Nova', 'Volksschule', 'Volkspolizeistation 8º'] as const;
@@ -180,6 +187,10 @@ return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted:
       }, 50);
     }
   }, [xtermInstance]);
+
+useEffect(() => {
+discoverContact('agente_scp');
+}, []);
 
   const addLog = (msg: string) => {
     if (!xtermInstance) return;
@@ -261,6 +272,38 @@ return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted:
   } | null>(null);
 
   const viewportRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<HTMLDivElement | null>(null);
+  const [panX, setPanX] = useState(0);
+  const panState = useRef<{ startX: number; panStart: number; dragging: boolean } | null>(null);
+  const wasPanning = useRef(false);
+
+  const handlePanStart = useCallback((clientX: number) => {
+    panState.current = { startX: clientX, panStart: panX, dragging: false };
+  }, [panX]);
+
+  const handlePanMove = useCallback((clientX: number) => {
+    if (!panState.current) return;
+    const dx = clientX - panState.current.startX;
+    if (Math.abs(dx) > 3) panState.current.dragging = true;
+    const vp = viewportRef.current;
+    const sc = sceneRef.current;
+    if (!vp || !sc) return;
+    const vpW = vp.clientWidth;
+    const scW = sc.clientWidth;
+    const maxPan = 0;
+    const minPan = Math.min(vpW - scW, 0);
+    setPanX(Math.max(minPan, Math.min(maxPan, panState.current.panStart + dx)));
+  }, []);
+
+  const handlePanEnd = useCallback(() => {
+    if (panState.current?.dragging) wasPanning.current = true;
+    panState.current = null;
+    requestAnimationFrame(() => { wasPanning.current = false; });
+  }, []);
+
+  useEffect(() => {
+    setPanX(0);
+  }, [currentRoomId]);
 
   const handleDragMouseDown = useCallback((e: React.MouseEvent, obj: Interactable, type: 'move' | 'resize') => {
     e.stopPropagation();
@@ -376,7 +419,7 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
     // (the left-click context menu). handleInteract just performs the action.
     if (obj.type === 'travel' && obj.targetRoom) {
       Audio.playDoor();
-      setCurrentRoomId(obj.targetRoom);
+      setIsMapOpen(true);
 } else if (obj.type === 'pickup' && obj.pickupItem) {
     Audio.playPickup();
     if (!inventory.includes(obj.pickupItem)) {
@@ -390,12 +433,12 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
 if (obj.interviewGate && pdCutoffContacts.has(obj.interviewGate)) {
 Audio.playDenied();
 addLog(`[ACESSO NEGADO] Entrevista com ${obj.interviewGate} falhou. Documento selado.`);
-} else if (obj.id === 'puzzle_deduction_terminal') {
-      Audio.playTerminal();
-      setDeductionOpen(true);
-      setDeductionResult(null);
-      addLog('Acessando quadro de dedução...');
-      Audio.speak(obj.id);
+} else if (obj.id === 'puzzle_deduction_terminal' || obj.id === 'detective_board') {
+    Audio.playTerminal();
+    setDeductionOpen(true);
+    setDeductionResult(null);
+    addLog('Acessando quadro de dedução...');
+    Audio.speak(obj.id);
 } else {
 Audio.playTerminal();
 setDocumentData(obj.documentData);
@@ -568,21 +611,34 @@ if (obj.phoneCallId) {
   {/* Main Game Area */}
   <div className="flex flex-1 overflow-hidden z-10 relative">
 
-    {/* Environment Viewport */}
-    <div ref={viewportRef} className="flex-1 bg-zinc-950 relative md:border-r border-zinc-900 overflow-hidden shadow-inner group">
-          <div className="absolute inset-0 bg-black pointer-events-none" />
-
+      {/* Environment Viewport */}
+      <div
+        ref={viewportRef}
+        className="flex-1 bg-zinc-950 relative md:border-r border-zinc-900 overflow-hidden shadow-inner group cursor-grab active:cursor-grabbing"
+        onMouseDown={(e) => { if (!devMode) handlePanStart(e.clientX); }}
+        onMouseMove={(e) => { if (panState.current?.dragging) handlePanMove(e.clientX); }}
+        onMouseUp={handlePanEnd}
+        onMouseLeave={handlePanEnd}
+        onTouchStart={(e) => { if (!devMode && e.touches.length === 1) handlePanStart(e.touches[0].clientX); }}
+        onTouchMove={(e) => { if (panState.current?.dragging && e.touches.length === 1) handlePanMove(e.touches[0].clientX); }}
+        onTouchEnd={handlePanEnd}
+      >
+{/* Scene layer: image at natural aspect, panned horizontally */}
+        <div
+          ref={sceneRef}
+          className="relative h-full inline-block"
+          style={{ transform: `translateX(${panX}px)`, transition: panState.current?.dragging ? 'none' : 'transform 0.15s ease-out' }}
+        >
           {currentRoom.bgImage && (
             <img
               src={currentRoom.bgImage}
               alt={currentRoom.name}
-              className="absolute inset-0 w-full h-full object-cover opacity-90 pointer-events-none transition-opacity duration-1000"
+              className="h-full w-auto opacity-90 pointer-events-none transition-opacity duration-1000 block"
+              draggable={false}
+              style={{ maxWidth: 'none' }}
             />
           )}
-
           <div className="rain-overlay" />
-          <div className="fog-overlay" />
-          <div className="vignette-overlay" />
 
   {currentRoom.interactables.map((obj) => {
   if (!devMode && interactedItems.includes(obj.id)) return null;
@@ -658,6 +714,7 @@ if (obj.phoneCallId) {
   // cursor. The menu itself is rendered once below the map (see {objMenu}).
   const triggerTitle = obj.description ? `${obj.label} — ${obj.description.slice(0, 120)}${obj.description.length > 120 ? '…' : ''}` : obj.label;
   const openObjMenu = (e: React.MouseEvent) => {
+    if (panState.current?.dragging || wasPanning.current) return;
     e.preventDefault();
     e.stopPropagation();
     Audio.playHover();
@@ -681,14 +738,18 @@ if (obj.phoneCallId) {
         <IconCmp size={isBoxArea ? 24 : 48} className="drop-shadow-[0_0_8px_rgba(0,0,0,0.8)] filter opacity-0" />
       ) : null)}
     </button>
-  );
-})}
+        );
+        })}
+          </div>{/* end scene layer */}
 
-  {objMenu && (
+        <div className="fog-overlay" style={{ position: 'absolute' }} />
+        <div className="vignette-overlay" style={{ position: 'absolute' }} />
+
+        {objMenu && (
     <div
       ref={objMenuRef}
       className="fixed z-[9999] bg-zinc-900 border border-noir-amber/40 rounded shadow-xl py-1 min-w-[200px] max-h-[60vh] overflow-y-auto institutional"
-      style={{ left: Math.min(objMenu.x, window.innerWidth - 220), top: Math.min(objMenu.y, window.innerHeight - 320) }}
+      style={{ left: objMenu.x, top: objMenu.y }}
       onClick={(e) => e.stopPropagation()}
       onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); }}
     >
@@ -918,25 +979,45 @@ if (obj.phoneCallId) {
         {discoveredContacts.size === 0 ? (
           <p className="text-zinc-600 text-xs text-center py-8 tracking-widest">NENHUM CONTATO CONHECIDO</p>
         ) : (
-          (Array.from(discoveredContacts) as string[]).map((contactId) => {
-            const contact = PHONE_CONTACTS[contactId];
-            if (!contact) return null;
-            const isLetter = contactId === 'seu_jonas';
-            const wasCalled = calledContacts.has(contactId);
-            const isCutoff = pdCutoffContacts.has(contactId);
-            const hasRecording = !!phoneRecordings[contactId];
-            const contactBadge = isCutoff ? 'keter' as const : wasCalled ? 'safe' as const : 'euclid' as const;
-            return (
-              <Button
-                key={contactId}
-                variant="ghost"
-                onClick={() => {
-                  if (isCutoff) {
-                    Audio.playDenied();
-                    addLog(`[${isLetter ? 'CARTA' : 'TELEFONE'}] ${contact.name} cortou relações. Impossível reconectar.`);
-                    return;
-                  }
-                  if (wasCalled) {
+(Array.from(discoveredContacts) as string[]).map((contactId) => {
+const contact = PHONE_CONTACTS[contactId];
+if (!contact) return null;
+const isLetter = contactId === 'seu_jonas';
+const isScp = contactId === 'agente_scp';
+const wasCalled = calledContacts.has(contactId);
+const isCutoff = pdCutoffContacts.has(contactId);
+const hasRecording = !!phoneRecordings[contactId];
+const contactBadge = isCutoff ? 'keter' as const : isScp && !gameCompleted ? 'thaumiel' as const : wasCalled ? 'safe' as const : 'euclid' as const;
+return (
+<Button
+key={contactId}
+variant="ghost"
+onClick={() => {
+if (isCutoff) {
+Audio.playDenied();
+addLog(`[${isLetter ? 'CARTA' : 'TELEFONE'}] ${contact.name} cortou relações. Impossível reconectar.`);
+return;
+}
+if (isScp) {
+if (gameCompleted && hasRecording) {
+Audio.playTerminal();
+setPhoneAgendaOpen(false);
+setCassettePlayback({ contactId, lines: phoneRecordings[contactId] });
+addLog(`[FITA] Reouvindo gravação de ${contact.name}...`);
+} else if (hasRecording) {
+Audio.playTerminal();
+setPhoneAgendaOpen(false);
+setCassettePlayback({ contactId, lines: phoneRecordings[contactId] });
+addLog(`[FITA] Reouvindo última transmissão de ${contact.name}...`);
+} else {
+Audio.playTerminal();
+setPhoneAgendaOpen(false);
+setActivePhoneCall({ contactId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
+addLog(`[SCP] Canal seguro — ${contact.name}...`);
+}
+return;
+}
+if (wasCalled) {
                     if (hasRecording) {
                       Audio.playTerminal();
                       setPhoneAgendaOpen(false);
@@ -960,22 +1041,24 @@ if (obj.phoneCallId) {
                 onMouseEnter={() => Audio.playHover()}
                 className={`w-full bg-zinc-900 border border-zinc-800 hover:border-noir-amber p-3 flex items-center gap-4 text-left transition-colors group ${wasCalled && !hasRecording ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
-                <div className="w-10 h-10 border border-zinc-700 group-hover:border-noir-amber flex items-center justify-center bg-black">
-                  {wasCalled && hasRecording ? (
-                    <Play size={18} className="text-noir-amber" />
-                  ) : isLetter ? (
-                    <Mail size={18} className="text-zinc-500 group-hover:text-noir-amber" />
-                  ) : (
-                    <PhoneCall size={18} className="text-zinc-500 group-hover:text-noir-amber" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-zinc-300 text-xs font-bold tracking-wider truncate group-hover:text-noir-amber transition-colors">{contact.name}</p>
-                  <p className="text-zinc-600 text-[10px] tracking-wide">{isLetter ? 'CARTA NO BECO' : contact.number}</p>
-                </div>
-                <Badge classification={contactBadge} size="sm">
-                  {isCutoff ? 'CORTADO' : wasCalled && hasRecording ? 'OUVIR FITA' : wasCalled ? (isLetter ? 'GELESEN' : 'GETRENNT') : (isLetter ? 'LER' : 'LIGAR')}
-                </Badge>
+<div className="w-10 h-10 border border-zinc-700 group-hover:border-noir-amber flex items-center justify-center bg-black">
+{isScp ? (
+<Eye size={18} className="text-noir-amber" />
+) : wasCalled && hasRecording ? (
+<Play size={18} className="text-noir-amber" />
+) : isLetter ? (
+<Mail size={18} className="text-zinc-500 group-hover:text-noir-amber" />
+) : (
+<PhoneCall size={18} className="text-zinc-500 group-hover:text-noir-amber" />
+)}
+</div>
+<div className="flex-1 min-w-0">
+<p className="text-zinc-300 text-xs font-bold tracking-wider truncate group-hover:text-noir-amber transition-colors">{contact.name}</p>
+<p className="text-zinc-600 text-[10px] tracking-wide">{isScp ? 'CANAL SEGURO' : isLetter ? 'CARTA NO BECO' : contact.number}</p>
+</div>
+<Badge classification={contactBadge} size="sm">
+{isScp ? (gameCompleted ? 'OUVIR FITA' : hasRecording ? 'OUVIR FITA' : 'SCP') : isCutoff ? 'CORTADO' : wasCalled && hasRecording ? 'OUVIR FITA' : wasCalled ? (isLetter ? 'GELESEN' : 'GETRENNT') : (isLetter ? 'LER' : 'LIGAR')}
+</Badge>
               </Button>
             );
           })
@@ -990,15 +1073,32 @@ if (obj.phoneCallId) {
   </Dialog>
 
   {/* Phone Call / Letter Dialogue Modal */}
-  <Dialog open={!!activePhoneCall} onOpenChange={(open) => { if (!open && activePhoneCall) { Audio.playHover(); Audio.stopSpeak(); if (!calledContacts.has(activePhoneCall.contactId)) { const allNodes = [...activePhoneCall.visitedNodes, activePhoneCall.nodeId]; const recording: { speaker: string; lines: string[] }[] = []; const ct = PHONE_CONTACTS[activePhoneCall.contactId]; for (const nid of allNodes) { const n = ct?.dialogue[nid]; if (n) recording.push({ speaker: n.speaker, lines: n.lines }); } setCalledContacts(prev => { const next = new Set(prev); next.add(activePhoneCall.contactId); return next; }); setPhoneRecordings(prev => ({ ...prev, [activePhoneCall.contactId]: recording })); if (ct?.murphyCommentary) { const commentary: string[] = []; for (const nid of allNodes) { if (ct.murphyCommentary[nid]) { commentary.push(...ct.murphyCommentary[nid]); } } if (commentary.length > 0) { setMurphyCommentaryMap(prev => ({ ...prev, [activePhoneCall.contactId]: commentary })); } } } setActivePhoneCall(null); } }}>
+  <Dialog open={!!activePhoneCall} onOpenChange={(open) => { if (!open && activePhoneCall) { Audio.playHover(); Audio.stopSpeak(); const closingContactId = activePhoneCall.contactId; const closingNodeId = activePhoneCall.nodeId; const closingVisitedNodes = [...activePhoneCall.visitedNodes]; const allNodes = [...closingVisitedNodes, closingNodeId]; const ct = PHONE_CONTACTS[closingContactId]; if (closingContactId === 'agente_scp') { const recording: { speaker: string; lines: string[] }[] = []; for (const nid of allNodes) { const n = ct?.dialogue[nid]; if (n) recording.push({ speaker: n.speaker, lines: n.lines }); } setPhoneRecordings(prev => ({ ...prev, [closingContactId]: recording })); if (ct?.murphyCommentary) { const commentary: string[] = []; for (const nid of allNodes) { if (ct.murphyCommentary[nid]) { commentary.push(...ct.murphyCommentary[nid]); } } if (commentary.length > 0) { setMurphyCommentaryMap(prev => ({ ...prev, [closingContactId]: commentary })); } } if (allNodes.includes('deduction_correct')) {
+setCalledContacts(prev => { const next = new Set(prev); next.add(closingContactId); return next; });
+setDeductionResult('correct');
+setGameCompleted(true);
+addLog('[DEDUÇÃO] ✅ DEDUÇÃO CONFIRMADA — Fall Helena Kraft encerrado.');
+Audio.playPickup();
+} else if (allNodes.includes('deduction_wrong')) {
+setDeductionResult('wrong');
+addLog('[DEDUÇÃO] Stern rejeitou a dedução. Revise as pistas.');
+Audio.playDenied();
+setTimeout(() => setDeductionOpen(true), 300);
+} else if (allNodes.includes('deduction_incomplete')) {
+setDeductionResult('wrong');
+addLog('[DEDUÇÃO] Dedução incompleta. Preencha todos os campos.');
+Audio.playDenied();
+setTimeout(() => setDeductionOpen(true), 300);
+} } else if (!calledContacts.has(closingContactId)) { const recording: { speaker: string; lines: string[] }[] = []; for (const nid of allNodes) { const n = ct?.dialogue[nid]; if (n) recording.push({ speaker: n.speaker, lines: n.lines }); } setCalledContacts(prev => { const next = new Set(prev); next.add(closingContactId); return next; }); setPhoneRecordings(prev => ({ ...prev, [closingContactId]: recording })); if (ct?.murphyCommentary) { const commentary: string[] = []; for (const nid of allNodes) { if (ct.murphyCommentary[nid]) { commentary.push(...ct.murphyCommentary[nid]); } } if (commentary.length > 0) { setMurphyCommentaryMap(prev => ({ ...prev, [closingContactId]: commentary })); } } } setActivePhoneCall(null); } }}>
     <DialogContent className="max-w-full md:max-w-xl max-h-[90vh] md:max-h-none flex flex-col">
       {activePhoneCall && (() => {
         const contact = PHONE_CONTACTS[activePhoneCall.contactId];
         if (!contact) return null;
         const node = contact.dialogue[activePhoneCall.nodeId];
         if (!node) return null;
-        const isLetter = activePhoneCall.contactId === 'seu_jonas';
-        const isCallEnded = node.choices.length === 0;
+const isLetter = activePhoneCall.contactId === 'seu_jonas';
+const isScp = activePhoneCall.contactId === 'agente_scp';
+const isCallEnded = node.choices.length === 0;
 
         const handleChoice = (choice: { text: string; goto: string; pdAction?: string }) => {
           if (activePhoneCall.contactId === 'zeca' && choice.text.includes('Dra. Cunha')) {
@@ -1033,10 +1133,10 @@ if (obj.phoneCallId) {
         return (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-3">
-                {isLetter ? <Mail size={18} /> : <PhoneCall size={18} />}
-                {isLetter ? `CARTA — ${contact.name.toUpperCase()}` : `${contact.number} — ${contact.name.toUpperCase()}`}
-              </DialogTitle>
+<DialogTitle className="flex items-center gap-3">
+{isScp ? <Eye size={18} /> : isLetter ? <Mail size={18} /> : <PhoneCall size={18} />}
+{isScp ? `CANAL SEGURO — ${contact.name.toUpperCase()}` : isLetter ? `CARTA — ${contact.name.toUpperCase()}` : `${contact.number} — ${contact.name.toUpperCase()}`}
+</DialogTitle>
               <DialogClose />
             </DialogHeader>
 
@@ -1077,17 +1177,17 @@ if (obj.phoneCallId) {
               </DialogFooter>
             ) : (
               <DialogFooter className="p-4 bg-black/50">
-                <Badge classification="keter" className="mx-auto animate-pulse">
-                  {isLetter ? '— FIM DA CARTA —' : '*C L I C*'}
-                </Badge>
+<Badge classification="keter" className="mx-auto animate-pulse">
+{isScp ? '*CANAL ENCERRADO*' : isLetter ? '— FIM DA CARTA —' : '*C L I C*'}
+</Badge>
               </DialogFooter>
             )}
 
             <div className="h-8 bg-black border-t border-noir-amber text-noir-amber text-xs flex items-center px-4 justify-between">
-              <span>{isLetter ? 'BRIEF' : 'TELEFON'}</span>
-              <Badge classification={isCallEnded ? 'keter' : 'thaumiel'} size="sm" className="animate-pulse">
-                {isLetter ? 'GELESEN' : isCallEnded ? 'GETRENNT' : 'VERBUNDEN'}
-              </Badge>
+<span>{isScp ? 'SICHERHEITSKANAL' : isLetter ? 'BRIEF' : 'TELEFON'}</span>
+<Badge classification={isCallEnded ? 'keter' : 'thaumiel'} size="sm" className="animate-pulse">
+{isScp ? (isCallEnded ? 'ABGESCHLOSSEN' : 'VERSCHLÜSSELT') : isLetter ? 'GELESEN' : isCallEnded ? 'GETRENNT' : 'VERBUNDEN'}
+</Badge>
             </div>
           </>
         );
@@ -1279,90 +1379,16 @@ if (obj.phoneCallId) {
     </DialogContent>
   </Dialog>
 
-  {/* Deduction Board Modal */}
-  <Dialog open={deductionOpen} onOpenChange={(open) => { if (!open) { Audio.playHover(); setDeductionOpen(false); Audio.stopSpeak(); } }}>
-    <DialogContent className="max-w-full md:max-w-5xl max-h-[90vh] md:max-h-none flex flex-col">
-<DialogHeader>
-<DialogTitle className="flex items-center gap-3">
-<CheckCircle size={20} /> DEDUKTIONSSYSTEM — FALL HELENA KRAFT
-</DialogTitle>
-<DialogClose />
-</DialogHeader>
-
-<DialogBody className="p-4 overflow-y-auto">
-<p className="text-zinc-500 text-xs mb-4 tracking-wide">CADA COLUNA = UM LOCAL DE INVESTIGAÇÃO. SELECIONE UM VALOR POR CATEGORIA. NENHUM VALOR PODE SE REPETIR NA MESMA LINHA.</p>
-
-<div className="overflow-x-auto">
-<table className="w-full border-collapse text-xs">
-<thead>
-<tr>
-<th className="border border-zinc-800 bg-black text-zinc-600 p-2 text-left w-24">CATEGORIA</th>
-{DEDUCTION_LOCATIONS.map(loc => (
-<th key={loc} className="border border-zinc-800 bg-black text-noir-amber p-2 text-center min-w-[140px]">{loc}</th>
-))}
-</tr>
-</thead>
-<tbody>
-{(['suspeito', 'local_crime', 'arma', 'motivo', 'horario'] as DeductionCategory[]).map(cat => {
-const catLabel = { suspeito: 'SUSPEITO', local_crime: 'LOCAL DO CRIME', arma: 'ARMA', motivo: 'MOTIVO', horario: 'HORÁRIO' }[cat];
-const options = DEDUCTION_CATEGORIES[cat];
-const usedInRow: string[] = [];
-DEDUCTION_LOCATIONS.forEach(loc => {
-if (deductionGrid[loc][cat]) usedInRow.push(deductionGrid[loc][cat]);
-});
-return (
-<tr key={cat}>
-<td className="border border-zinc-800 bg-zinc-900 text-noir-amber p-2 font-bold tracking-wider">{catLabel}</td>
-{DEDUCTION_LOCATIONS.map(loc => {
-const current = deductionGrid[loc][cat];
-const availableOptions = [...options].filter(o => !usedInRow.includes(o) || o === current);
-const isDuplicate = current && usedInRow.filter(v => v === current).length > 1;
-return (
-<td key={loc} className={`border border-zinc-800 p-1 ${isDuplicate ? 'bg-noir-red/10' : 'bg-zinc-950'}`}>
-<select
-value={current}
-onChange={(e) => {
-const val = e.target.value;
-setDeductionGrid(prev => ({
-...prev,
-[loc]: { ...prev[loc], [cat]: val }
-}));
-Audio.playTypewriter();
-}}
-className={`w-full bg-black border ${isDuplicate ? 'border-noir-red' : current ? 'border-noir-amber' : 'border-zinc-700'} text-zinc-300 p-1.5 text-[11px] tracking-wide appearance-none cursor-pointer hover:border-noir-amber transition-colors ${current ? 'text-noir-amber font-bold' : ''}`}
->
-<option value="">—</option>
-{availableOptions.map(opt => (
-<option key={opt} value={opt}>{opt}</option>
-))}
-</select>
-</td>
-);
-})}
-</tr>
-);
-})}
-</tbody>
-</table>
-</div>
-
-{deductionResult === 'correct' && (
-<div className="mt-4 p-3 border border-green-800 bg-green-900/20 text-green-400 flex items-center gap-2 text-xs tracking-wider">
-<Badge classification="safe">DEDUÇÃO CORRETA — FALL HELENA KRAFT RESOLVIDO</Badge>
-</div>
-)}
-{deductionResult === 'wrong' && (
-<div className="mt-4 p-3 border border-noir-red bg-noir-red/10 text-noir-red flex items-center gap-2 text-xs tracking-wider">
-<Badge classification="keter">DEDUÇÃO INCORRETA — HÁ INCONSISTÊNCIAS</Badge>
-</div>
-)}
-
-<div className="mt-4 flex justify-between items-center">
-<Badge classification="euclid" size="sm">PISTAS: {readHints.size}</Badge>
-<Button
-variant="default"
-onClick={() => {
+      {/* Detective Board */}
+      {deductionOpen && (
+        <DetectiveBoard
+          grid={deductionGrid}
+          onGridChange={setDeductionGrid}
+          readHints={readHints}
+          result={deductionResult}
+onSubmit={() => {
 Audio.playTerminal();
+setDeductionAttempts(prev => prev + 1);
 let allFilled = true;
 let allCorrect = true;
 for (const loc of DEDUCTION_LOCATIONS) {
@@ -1372,34 +1398,24 @@ if (deductionGrid[loc][cat] !== DEDUCTION_SOLUTION[loc][cat]) allCorrect = false
 }
 if (!allFilled) break;
 }
+setDeductionOpen(false);
 if (!allFilled) {
-setDeductionResult('wrong');
-addLog('[DEDUÇÃO] Preencha todos os campos antes de submeter.');
+addLog('[DEDUÇÃO] Submetendo ao canal seguro da Fundação...');
+setActivePhoneCall({ contactId: 'agente_scp', nodeId: 'deduction_incomplete', linesShown: 0, visitedNodes: [] });
 } else if (allCorrect) {
-setDeductionResult('correct');
-setGameCompleted(true);
-addLog('[DEDUÇÃO] ✅ DEDUÇÃO CORRETA — Caso Helena Kraft resolvido!');
-Audio.playPickup();
+addLog('[DEDUÇÃO] Submetendo ao canal seguro da Fundação...');
+setActivePhoneCall({ contactId: 'agente_scp', nodeId: 'deduction_correct', linesShown: 0, visitedNodes: [] });
 } else {
-setDeductionResult('wrong');
-addLog('[DEDUÇÃO] ❌ Dedução incorreta. Revise as pistas.');
-Audio.playDenied();
+addLog('[DEDUÇÃO] Submetendo ao canal seguro da Fundação...');
+setActivePhoneCall({ contactId: 'agente_scp', nodeId: 'deduction_wrong', linesShown: 0, visitedNodes: [] });
 }
 }}
-onMouseEnter={() => Audio.playHover()}
-className="border-2 border-noir-amber text-noir-amber px-6 py-2 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors text-sm"
->
-SUBMETER DEDUÇÃO
-</Button>
-</div>
-</DialogBody>
+          onClose={() => { Audio.playHover(); setDeductionOpen(false); Audio.stopSpeak(); }}
+          playHover={Audio.playHover}
+          playTypewriter={Audio.playTypewriter}
+        />
+      )}
 
-<DialogFooter className="h-8 text-noir-amber text-xs flex items-center px-4 justify-between">
-<span>QUADRO DE DEDUÇÃO — DELEGACIA</span>
-<Badge classification="euclid" size="sm" className="animate-pulse">RASTREAMENTO ATIVO</Badge>
-</DialogFooter>
-</DialogContent>
-</Dialog>
 
 {/* Game Completion Overlay */}
 {gameCompleted && (() => {
@@ -1439,6 +1455,12 @@ FALL HELENA KRAFT
 <span className="text-zinc-400 text-xs tracking-wide">Dedução correta</span>
 <span className={`text-xs font-bold ${completion.deductionCorrect ? 'text-green-500' : 'text-noir-red'}`}>{completion.deductionCorrect ? 'SIM' : 'NÃO'}</span>
 </div>
+{completion.deductionCorrect && completion.deductionAttempts > 1 && (
+<div className="flex justify-between items-center">
+<span className="text-zinc-400 text-xs tracking-wide">Tentativas de dedução</span>
+<span className="text-noir-amber text-xs font-bold">{completion.deductionAttempts} {completion.deductionAttempts === 1 ? 'tentativa' : 'tentativas'}</span>
+</div>
+)}
 <div className="flex justify-between items-center border-t border-zinc-800 pt-3">
 <span className="text-zinc-400 text-xs tracking-wide">Estratégia Tit-for-Tat</span>
 <span className={`text-xs font-bold ${completion.tftCompliant ? 'text-noir-amber' : 'text-noir-red'}`}>{completion.tftCompliant ? 'CONFORME' : 'NÃO CONFORME'}</span>

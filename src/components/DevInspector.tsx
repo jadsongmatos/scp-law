@@ -1,6 +1,7 @@
-import React, { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useLayoutEffect, lazy, Suspense } from 'react';
 import { Interactable, Room, ITEM_NAMES } from '@/data';
 import { FolderTree, FileJson2, Plus, Trash2, ChevronRight, ChevronDown, Download } from 'lucide-react';
+import { adjustMenuPosition } from '@/lib/useMenuPosition';
 
 const MonacoEditor = lazy(() => import('@monaco-editor/react'));
 
@@ -34,6 +35,9 @@ export function DevInspector({
   const [editingObj, setEditingObj] = useState<Interactable | null>(null);
   const [editorKey, setEditorKey] = useState(0);
   const contextMenuRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (contextMenu && contextMenuRef.current) adjustMenuPosition(contextMenuRef.current, contextMenu.x, contextMenu.y);
+  }, [contextMenu]);
 
   useEffect(() => {
     if (!expandedRooms.has(currentRoomId)) {
