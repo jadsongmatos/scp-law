@@ -829,6 +829,98 @@
           "Até que não tem mais como devolver. O prontuário médico é a prova de que a extorsão partiu de ameaça."
         ]
       }
+    },
+    "agente_scp": {
+      "name": "Agente Stern",
+      "number": "SCP-████-7",
+      "discoveredFrom": "auto",
+      "voice": "feminine",
+      "greeting": "*estática criptografada* ... Canal seguro da Fundação. Agente Stern.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Agente Stern",
+          "lines": [
+            "Law. Ainda trabalhando no caso Kraft?",
+            "A Fundação está perdendo paciência. Os relatórios precisam ser conclusivos.",
+            "Quando tiver uma dedução completa, submeta pelo quadro. Eu avalio pessoalmente.",
+            "Boa sorte, Privatermittler."
+          ],
+          "choices": [
+            {
+              "text": "Entendido. Volto quando tiver algo concreto.",
+              "goto": "as_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "as_end_e": {
+          "speaker": "Agente Stern",
+          "lines": [
+            "Stern encerra a transmissão. *bip*"
+          ],
+          "choices": []
+        },
+        "deduction_correct": {
+          "speaker": "Agente Stern",
+          "lines": [
+            "...",
+            "Law. Você tem certeza?",
+            "Deixe-me cruzar com os dados da Fundação...",
+            "...",
+            "Confirmado. Cada peça encaixa. A Fundação aceita sua dedução.",
+            "Fall Helena Kraft — encerrado.",
+            "O relatório vai constar como resolução por investigação privada. Você será compensado.",
+            "Law... obrigada. Nem todos os casos da Fundação terminam assim.",
+            "*canal seguro encerrado*"
+          ],
+          "choices": []
+        },
+        "deduction_wrong": {
+          "speaker": "Agente Stern",
+          "lines": [
+            "...",
+            "Law, enviei sua dedução para análise.",
+            "Há inconsistências. As evidências não sustentam essa conclusão.",
+            "Volte ao quadro. Revise as pistas. Algo está fora do lugar.",
+            "A Fundação não fecha casos com deduções falhas. Nem você deveria.",
+            "*canal seguro encerrado*"
+          ],
+          "choices": []
+        },
+        "deduction_incomplete": {
+          "speaker": "Agente Stern",
+          "lines": [
+            "...",
+            "Law, sua dedução está incompleta. Há campos vazios.",
+            "A Fundação não avalia trabalhos pela metade.",
+            "Preencha todos os campos e submeta novamente.",
+            "*canal seguro encerrado*"
+          ],
+          "choices": []
+        }
+      },
+      "axelrodStrategy": "Forgiver",
+      "murphyCommentary": {
+        "initial": [
+          "A Agente Stern é minha contato na Fundação. Fria como a neve de Königsberg, mas competente.",
+          "Ela trouxe o caso. Se resolver, a Fundação paga. Se não resolver... bem, não quero pensar nisso."
+        ],
+        "as_end_e": [
+          "Stern não é de conversa fiada. Melhor voltar ao trabalho."
+        ],
+        "deduction_correct": [
+          "Consegui. Depois de tudo — as pistas, as ligações, as mentiras — finalmente encaixou.",
+          "Stern raramente diz 'obrigada'. Deve ter significado algo."
+        ],
+        "deduction_wrong": [
+          "Errado. Volta ao quadro. Não é o fim — é a chance de prestar mais atenção.",
+          "Cada erro me ensina o que não é a resposta."
+        ],
+        "deduction_incomplete": [
+          "Incompleto. Preciso preencher tudo antes de submeter.",
+          "Não se pode resolver um caso com espaços em branco."
+        ]
+      }
     }
   },
   "GAME_ROOMS": {
@@ -929,9 +1021,9 @@
           "width": 7,
           "height": 6,
           "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
-},
-{
-"id": "isqueiro_mesa",
+        },
+        {
+          "id": "isqueiro_mesa",
           "icon": "Key",
           "x": 34,
           "y": 84,
@@ -979,6 +1071,17 @@
           "width": 7,
           "height": 15,
           "description": "Um espelho pequeno pendurado no canto escuro do fichário, coberto de fuligem. Seu reflexo mal aparece. Olheiras profundas, barba por fazer, olhos de quem não dorme há dias. Você parece um fantasma que ainda não percebeu que morreu."
+        },
+        {
+          "id": "detective_board",
+          "icon": "Monitor",
+          "x": 10,
+          "y": 20,
+          "type": "inspect",
+          "label": "Quadro de Investigações",
+          "width": 25,
+          "height": 40,
+          "description": "Um quadro de cortiça com fios vermelhos conectando fotos e recortes. O centro do caso."
         },
         {
           "id": "puzzle_hint_1",
@@ -1064,7 +1167,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.3
+      }
     },
     "rua_chuva": {
       "id": "rua_chuva",
@@ -1248,7 +1354,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.9
+      }
     },
     "bar": {
       "id": "bar",
@@ -1509,7 +1618,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.15
+      }
     },
     "escola": {
       "id": "escola",
@@ -1715,7 +1827,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.2
+      }
     },
     "diretoria": {
       "id": "diretoria",
@@ -1839,7 +1954,7 @@
         },
         {
           "id": "terminal_fosforo",
-          "icon": "Monitor",
+          "icon": "Pin",
           "x": 55,
           "y": 72,
           "type": "terminal_read",
@@ -1913,7 +2028,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.2
+      }
     },
     "delegacia": {
       "id": "delegacia",
@@ -2179,7 +2297,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.1
+      }
     },
     "beco": {
       "id": "beco",
@@ -2322,7 +2443,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.9
+      }
     },
     "armazem": {
       "id": "armazem",
@@ -2558,7 +2682,10 @@
             ]
           }
         }
-      ]
+      ],
+      "rain": {
+        "volume": 0.05
+      }
     }
   },
   "_interviewClueMap": {

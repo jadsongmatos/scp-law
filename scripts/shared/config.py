@@ -29,23 +29,11 @@ Film noir aesthetic — high contrast, deep shadows, warm amber highlight.
 Dark background, cinematic lighting, isolated object, no text, no people.
 Square composition, item icon style, dark moody atmosphere."""
 
-MALE_VOICE = "pt-BR-AntonioNeural"
-FEMALE_VOICE = "pt-BR-FranciscaNeural"
-GERMAN_MALE_VOICE = "de-DE-KillianNeural"
-
-CHARACTER_VOICES = {
-    "telefone_zeca": MALE_VOICE,
-    "telefone_diretora": FEMALE_VOICE,
-    "telefone_santos": MALE_VOICE,
-    "carta_jonas": MALE_VOICE,
-    "ficheiro_helena": MALE_VOICE,
-    "bilhete_anonimo": GERMAN_MALE_VOICE,
-    "terminal_fosforo": MALE_VOICE,
-    "terminal_final": MALE_VOICE,
-    "arquivo_mendes": MALE_VOICE,
-    "puzzle_deduction_terminal": MALE_VOICE,
-    "puzzle_solution_terminal": MALE_VOICE,
-}
+S2_DIR = PROJECT_ROOT / "s2.cpp"
+S2_MODELS = PROJECT_ROOT / "s2-models"
+S2_TRANSFORMER = S2_MODELS / "s2-pro-q4_k_m-transformer-only.gguf"
+S2_CODEC = S2_MODELS / "s2-pro-q4_k_m-codec-only.gguf"
+S2_OUTPUT_DIR = PROJECT_ROOT / "s2-output"
 
 DEFAULT_RETRIES = 3
 DEFAULT_BACKOFF = 10

@@ -43,6 +43,7 @@ export interface Room {
   description: string;
   bgImage?: string;
   mapImage?: string;
+  rain?: { volume: number };
   interactables: Interactable[];
 }
 

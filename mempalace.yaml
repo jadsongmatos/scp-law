@@ -40,6 +40,21 @@ rooms:
   keywords:
   - axelrod_workers
   - axelrod_workers
+- name: s2.cpp
+  description: Files from s2.cpp/
+  keywords:
+  - s2.cpp
+  - s2.cpp
+- name: s2_models
+  description: Files from s2-models/
+  keywords:
+  - s2_models
+  - s2-models
+- name: s2_output
+  description: Files from s2-output/
+  keywords:
+  - s2_output
+  - s2-output
 - name: design
   description: Files from assets/
   keywords:

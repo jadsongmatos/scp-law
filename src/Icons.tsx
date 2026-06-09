@@ -26,6 +26,7 @@ import {
   Phone,
   PhoneCall,
   Mail,
+  Pin,
 } from 'lucide-react';
 
 export const IconMap: Record<string, React.ElementType> = {
@@ -55,4 +56,5 @@ export const IconMap: Record<string, React.ElementType> = {
   Phone,
   PhoneCall,
   Mail,
+  Pin,
 };

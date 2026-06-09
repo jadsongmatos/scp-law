@@ -7,6 +7,7 @@ export class SoundEngine {
 
   rainAudio: HTMLAudioElement | null = null;
   rainSource: MediaElementAudioSourceNode | null = null;
+  rainGainNode: GainNode | null = null;
   jazzInterval: ReturnType<typeof setInterval> | null = null;
 
   volumes = {
@@ -16,12 +17,12 @@ export class SoundEngine {
     voice: 0.8
   };
 
-  init() {
+  async init() {
     if (!this.ctx) {
       this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      await this.ctx.resume();
     }
 
     if (!this.masterGain) {
@@ -70,19 +71,38 @@ export class SoundEngine {
     }
   }
 
-  startAmbient() {
+  async startAmbient() {
+    await this.init();
     if (!this.ctx || !this.ambientGain) return;
     if (this.rainAudio) return;
 
     this.rainAudio = new window.Audio('/rainstorm.mp3');
     this.rainAudio.loop = true;
+    this.rainAudio.crossOrigin = 'anonymous';
+    this.rainAudio.volume = 1;
 
     this.rainSource = this.ctx.createMediaElementSource(this.rainAudio);
-    this.rainSource.connect(this.ambientGain);
+    this.rainGainNode = this.ctx.createGain();
+    this.rainGainNode.gain.value = 0.3;
+    this.rainSource.connect(this.rainGainNode);
+    this.rainGainNode.connect(this.ambientGain);
 
-    this.rainAudio.play().catch(e => console.warn('Rain audio autoplay blocked:', e));
+    try {
+      await this.rainAudio.play();
+    } catch (e) {
+      console.warn('Rain audio play failed:', e);
+      this.rainAudio = null;
+      this.rainSource = null;
+      this.rainGainNode = null;
+    }
 
     this.startJazzAmbient();
+  }
+
+  setRainVolume(volume: number) {
+    if (this.rainGainNode && this.ctx) {
+      this.rainGainNode.gain.setTargetAtTime(volume, this.ctx.currentTime, 0.5);
+    }
   }
 
   startJazzAmbient() {

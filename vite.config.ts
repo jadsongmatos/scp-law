@@ -2,8 +2,8 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
-import {defineConfig, loadEnv} from 'vite';
-import {execSync} from 'child_process';
+import { defineConfig, loadEnv } from 'vite';
+import { execSync } from 'child_process';
 
 function voiceGenPlugin() {
   return {
@@ -14,7 +14,7 @@ function voiceGenPlugin() {
       const isBuild = process.env.VITE_VOICE_GEN === '1';
       if (isBuild) {
         try {
-          execSync(`python3 "${script}"`, {stdio: 'inherit', cwd: __dirname, timeout: 300000});
+          execSync(`python3 "${script}"`, { stdio: 'inherit', cwd: __dirname, timeout: 300000 });
         } catch (e) {
           console.warn('[voice-gen] Failed to generate voices:', e);
         }
@@ -25,7 +25,7 @@ function voiceGenPlugin() {
   };
 }
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, '.', '');
   return {
     plugins: [voiceGenPlugin(), react(), tailwindcss()],
@@ -53,6 +53,8 @@ export default defineConfig(({mode}) => {
     },
     server: {
       hmr: process.env.DISABLE_HMR !== 'true',
+      port: 3000,
+      host: '0.0.0.0',
     },
   };
 });
