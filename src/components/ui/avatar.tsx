@@ -1,11 +1,11 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const avatarVariants = cva("institutional relative", {
   variants: {
     classification: {
-      safe: "scp-avatar-default",
+      safe: "scp-avatar-safe",
       keter: "scp-avatar-keter",
       thaumiel: "scp-avatar-thaumiel",
       euclid: "scp-avatar-euclid",
@@ -24,8 +24,7 @@ const avatarVariants = cva("institutional relative", {
 });
 
 export interface AvatarProps
-  extends Omit<React.ComponentProps<"div">, "children">,
-  VariantProps<typeof avatarVariants> {
+  extends Omit<React.ComponentProps<"div">, "children"> {
   src?: string;
   alt?: string;
   fallback?: React.ReactNode;

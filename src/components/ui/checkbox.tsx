@@ -52,7 +52,7 @@ function Checkbox({
     >
       <CheckboxPrimitive.Root
         data-slot="checkbox"
-        className={cn("scp-checkbox", `scp-checkbox-${classification === "safe" ? "default" : classification}`, className)}
+        className={cn("scp-checkbox", `scp-checkbox-${classification}`, className)}
         disabled={disabled}
         id={id}
         {...props}

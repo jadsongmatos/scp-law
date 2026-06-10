@@ -1,6 +1,6 @@
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const tabVariants = cva(
@@ -33,7 +33,7 @@ const triggerVariants = cva(
 );
 
 type ClassificationType = "safe" | "euclid" | "keter" | "thaumiel" | "apollyon";
-type TabsProps = Omit<React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>, "orientation"> & VariantProps<typeof tabVariants> & { classification?: ClassificationType };
+type TabsProps = Omit<React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root>, "orientation"> & { classification?: ClassificationType };
 
 const Tabs = React.forwardRef<React.ComponentRef<typeof TabsPrimitive.Root>, TabsProps>(
   ({ className, classification = "safe", ...props }, ref) => (

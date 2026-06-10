@@ -5,8 +5,9 @@ import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { cn } from "@/lib/utils";
 
 interface RadioGroupProps
-  extends React.ComponentProps<typeof RadioGroupPrimitive> {
+  extends Omit<React.ComponentProps<typeof RadioGroupPrimitive>, 'className'> {
   orientation?: "vertical" | "horizontal";
+  className?: string;
 }
 
 type RadioGroupItemProps = React.ComponentProps<

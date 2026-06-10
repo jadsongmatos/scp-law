@@ -462,7 +462,7 @@
    Avatar CLASSIFICATION VARIANTS
    ============================================ */
 
-.scp-avatar-default {
+.scp-avatar-safe {
   --scp-frame-url: url("/scp_assets/avatar-safe.webp");
 }
 
@@ -541,11 +541,11 @@
   cursor: not-allowed;
 }
 
-.scp-checkbox-default {
+.scp-checkbox-safe {
   background-image: url("/scp_assets/checkbox-safe.webp");
 }
 
-.scp-checkbox-default[data-state="checked"] {
+.scp-checkbox-safe[data-state="checked"] {
   background-image: url("/scp_assets/checkbox-safe-checked.webp");
 }
 

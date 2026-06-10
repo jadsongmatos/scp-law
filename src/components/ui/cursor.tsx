@@ -1,5 +1,5 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cursorVariants = cva("", {
@@ -17,7 +17,7 @@ const cursorVariants = cva("", {
   },
 });
 
-export interface CursorProps extends React.ComponentProps<"div">, VariantProps<typeof cursorVariants> {
+export interface CursorProps extends React.ComponentProps<"div"> {
   classification?: "safe" | "keter" | "thaumiel" | "euclid" | "apollyon";
 }
 

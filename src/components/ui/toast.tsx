@@ -151,7 +151,7 @@ const ScrollToast: React.FC<ScrollToastProps> = ({
           className={cn("h-[100px] z-10 overflow-hidden relative shrink-0 -mx-2", theme.centerBgClass)}
         >
           <motion.div
-            className={toastTextVariants({ variant })}
+            className={toastTextVariants({ variant: variant as "default" | "success" | "error" | "warning" | "info" | undefined })}
             initial={{ opacity: 0, scale: 0.9, filter: "blur(4px)" }}
             animate={{
               opacity: phase === 1 ? 1 : 0,
@@ -168,7 +168,7 @@ const ScrollToast: React.FC<ScrollToastProps> = ({
               {Icon && (
                 <Icon
                   size={18}
-                  className={iconVariants({ variant })}
+                  className={iconVariants({ variant: variant as "default" | "success" | "error" | "warning" | "info" | undefined })}
                   aria-hidden="true"
                 />
               )}
