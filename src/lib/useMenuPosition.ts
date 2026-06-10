@@ -21,7 +21,7 @@ export function adjustMenuPosition(
   el.style.top = `${y}px`;
 }
 
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export function useMenuPosition(
   ref: React.RefObject<HTMLDivElement | null>,
