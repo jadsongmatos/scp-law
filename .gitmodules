@@ -1,0 +1,3 @@
+[submodule "scpcn-ui"]
+	path = scpcn-ui
+	url = git@github.com:jadsongmatos/scpcn-ui.git
