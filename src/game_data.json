@@ -1022,19 +1022,17 @@
           "height": 6,
           "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
         },
-        {
-          "id": "isqueiro_mesa",
-          "icon": "Key",
-          "x": 34,
-          "y": 84,
-          "type": "pickup",
-          "label": "Isqueiro de Prata",
-          "width": 5,
-          "height": 5,
-          "description": "Um isqueiro antigo com as iniciais M.L. gravadas. Um presente de alguém que não está mais aqui.",
-          "pickupItem": "isqueiro",
-          "hideAfterInteract": true
-        },
+{
+      "id": "isqueiro_mesa",
+      "icon": "Key",
+      "x": 34,
+      "y": 84,
+      "type": "inspect",
+      "label": "Isqueiro de Prata",
+      "width": 5,
+      "height": 5,
+      "description": "Um isqueiro antigo com as iniciais M.L. gravadas. Um presente de alguém que não está mais aqui."
+    },
         {
           "id": "bilhete_anonimo",
           "icon": "FileText",

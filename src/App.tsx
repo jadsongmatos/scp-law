@@ -3,7 +3,7 @@ import { GAME_ROOMS, Interactable, ITEM_NAMES, ITEM_IMAGES, Room, PHONE_CONTACTS
 import { IconMap } from './Icons';
 import { Audio } from './audio';
 import { FileText, Map as MapIcon, X, Bug, Download, Wine, Briefcase, CheckCircle, AlertTriangle, Settings, Volume2, Phone, PhoneCall, Mail, Play, Archive, Package, Terminal, Eye } from 'lucide-react';
-import { useXTerm } from 'react-xtermjs';
+import { useXTerm } from './useXTerm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
 import { Button } from '@/components/ui/button';
@@ -564,6 +564,8 @@ if (obj.phoneCallId) {
     Audio.playDoor();
     setIsMapOpen(false);
     setCurrentRoomId(roomId);
+    const room = localRooms[roomId];
+    if (room?.rain?.volume !== undefined) Audio.setRainVolume(room.rain.volume);
     addLog(`[NAVEGAÇÃO] Indo para: ${GAME_ROOMS[roomId].name}`);
   };
 
@@ -1115,12 +1117,13 @@ const isCallEnded = node.choices.length === 0;
             const targetNode = ct.dialogue[choice.goto];
             if (targetNode && targetNode.choices.length === 0) {
               const strategy = ct.axelrodStrategy;
-              const isCutoff = strategy === 'Grudger'
-                || strategy === 'TitForTat'
-                || (strategy === 'SoftGrudger' && activePhoneCall.visitedNodes.reduce((count, prev) => {
-                  const prevNode = ct.dialogue[prev];
-                  return count + (prevNode?.choices.filter(c => c.pdAction === 'D').length || 0);
-                }, 0) >= 3);
+                const isCutoff = strategy === 'Grudger'
+                  || strategy === 'TitForTat'
+                  || (strategy === 'SoftGrudger' && activePhoneCall.visitedNodes.reduce((count, prev) => {
+                    const prevNode = ct.dialogue[prev];
+                    return count + (prevNode?.choices.filter(c => c.pdAction === 'D').length || 0);
+                  }, 0) >= 3)
+                  || (strategy === 'Forgiver' && Math.random() >= 0.1);
               if (isCutoff) {
                 setPdCutoffContacts(prev => { const next = new Set(prev); next.add(activePhoneCall.contactId); return next; });
               }
@@ -1209,6 +1212,7 @@ const isCallEnded = node.choices.length === 0;
           <p className="text-zinc-600 text-xs text-center py-8 tracking-widest">NENHUMA GRAVAÇÃO</p>
         ) : (
           Object.entries(phoneRecordings).map(([contactId, recording]) => {
+    const blocks = recording as { speaker: string; lines: string[] }[];
             const contact = PHONE_CONTACTS[contactId];
             if (!contact) return null;
             const isLetter = contactId === 'seu_jonas';
@@ -1219,7 +1223,7 @@ const isCallEnded = node.choices.length === 0;
                 variant="ghost"
                 onClick={() => {
                   setCassetteMenuOpen(false);
-                  setCassettePlayback({ contactId, lines: recording });
+                  setCassettePlayback({ contactId, lines: blocks });
                   Audio.playTerminal();
                   addLog(isLetter
                     ? `[FITA] Reouvido gravação da carta de ${contact.name}...`
@@ -1233,7 +1237,7 @@ const isCallEnded = node.choices.length === 0;
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-zinc-300 text-xs font-bold tracking-wider truncate group-hover:text-noir-amber transition-colors">{contact.name}</p>
-                  <p className="text-zinc-600 text-[10px] tracking-wide">{isLetter ? 'CARTA' : contact.number} — {recording.length} blocos</p>
+                  <p className="text-zinc-600 text-[10px] tracking-wide">{isLetter ? 'CARTA' : contact.number} — {blocks.length} blocos</p>
                 </div>
                 <Badge classification={commentary ? 'safe' : 'euclid'} size="sm">
                   {commentary ? 'COM NOTAS' : 'GELESEN'}
@@ -1384,7 +1388,7 @@ const isCallEnded = node.choices.length === 0;
         <DetectiveBoard
           grid={deductionGrid}
           onGridChange={setDeductionGrid}
-          readHints={readHints}
+          readHints={Array.from(readHints)}
           result={deductionResult}
 onSubmit={() => {
 Audio.playTerminal();
@@ -1594,7 +1598,7 @@ export default function App() {
       Murphy Law não esquece.
     </p>
         <button
-          onClick={() => { Audio.init(); Audio.startAmbient(); setHasStarted(true); }}
+          onClick={async () => { await Audio.init(); await Audio.startAmbient(); const startRoom = GAME_ROOMS['escritorio']; if (startRoom?.rain?.volume !== undefined) Audio.setRainVolume(startRoom.rain.volume); setHasStarted(true); }}
           className="relative z-50 border-2 border-noir-amber text-noir-amber px-8 py-4 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors"
         >
           ACEITAR O CASO
