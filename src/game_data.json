@@ -295,7 +295,7 @@
           ]
         }
       },
-      "axelrodStrategy": "Grudger",
+      "axelrodStrategy": "SneakyTitForTat",
       "murphyCommentary": {
         "st_r1_d": [
           "Santos tentou três vezes e eu o tratei como covarde. Uma traição e a porta se fecha — Grudger é assim.",
@@ -522,7 +522,7 @@
           "speaker": "Carta de Seu Jonas",
           "lines": [
             "Fazer o quê? Atravessar a rua e morrer?",
-            "Vigia, mendigo, padre — quem abre a boca some.",
+            "Vigia, mendigo — quem abre a boca some. Mas o padre ajudou.",
             "Estou repensando se continuo escrevendo."
           ],
           "choices": []
@@ -725,7 +725,7 @@
             "Porque eu tenho medo. Esta cidade come quem fala.",
             "Ouvi o nome: Wohltat. Um envelope chegou ao posto.",
             "Dinheiro pra 'programa de assistência'. Eu não aceitei.",
-            "Mas outros aceitaram. O vigia. Mendes. Até o padre."
+            "Mas outros aceitaram. O vigia. Mendes. O padre recusou."
           ],
           "choices": [
             {
@@ -758,7 +758,7 @@
           "speaker": "Dra. Cunha",
           "lines": [
             "O vigia da escola recebeu 5.000 Marks.",
-            "Mendes arquiva os casos. O padre dá abrigo temporário.",
+            "Mendes arquiva os casos. O padre deu abrigo à menina.",
             "A Diretora foi ameaçada. Não comprou.",
             "O nome no envelope era sempre o mesmo: W.",
             "É uma rede, Law. Não é um homem.",
@@ -825,8 +825,200 @@
         ],
         "dc_clue": [
           "A Dra. Cunha abriu a gaveta. Wohltat não é um homem — é uma teia.",
-          "Vigia comprado. Mendes arquivando. Padre dando abrigo. Todo mundo aceita nesta cidade.",
+          "Vigia comprado. Mendes arquivando. O padre foi o único que ajudou.",
           "Até que não tem mais como devolver. O prontuário médico é a prova de que a extorsão partiu de ameaça."
+        ]
+      }
+    },
+    "padre_miguel": {
+      "name": "Padre Miguel",
+      "number": "sem número — encontro na igreja",
+      "discoveredFrom": "auto",
+      "voice": "masculine",
+      "greeting": "Herr Law. Sabia que viria. A verdade pesa nos ombros de quem a carrega sozinho.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Padre Miguel",
+          "lines": [
+            "Eu vi o carro preto. Vi Mendes entrar no armazém.",
+            "Não fiz nada porque tinha medo. Medo de acabar como os outros.",
+            "Mas Helena me procurou. Rezamos juntos antes de a levarem.",
+            "Ela disse: 'O tio Murphy vai me encontrar.'"
+          ],
+          "choices": [
+            {
+              "text": "Cadê Helena agora? O senhor sabe onde a levaram?",
+              "goto": "pm_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "O senhor viu tudo e não fez nada. Isso é covardia.",
+              "goto": "pm_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado, padre. Vou encontrá-la.",
+              "goto": "pm_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "pm_r1_d": {
+          "speaker": "Padre Miguel",
+          "lines": [
+            "Covardia? Eu enterrei crianças que ninguém reclamou.",
+            "Se quer alguém para julgar, comece pela cidade inteira.",
+            "*silêncio* Reze, Law. Reze por ela."
+          ],
+          "choices": []
+        },
+        "pm_clue": {
+          "speaker": "Padre Miguel",
+          "lines": [
+            "Levaram ela de madrugada. Caminhonete preta, placa do Estado.",
+            "Ouvi o motorista falar: 'Container 14-B. Santos. 06:00.'",
+            "Wohltat não é um homem. É o sistema que engole crianças.",
+            "Vá ao porto, Law. Ainda há tempo."
+          ],
+          "choices": []
+        },
+        "pm_end_e": {
+          "speaker": "Padre Miguel",
+          "lines": [
+            "Que Deus a proteja. Que Ele proteja o senhor também.",
+            "A porta da igreja está sempre aberta."
+          ],
+          "choices": []
+        }
+      },
+      "axelrodStrategy": "EugineNier",
+      "murphyCommentary": {
+        "pm_r1_d": [
+          "Padre Miguel não merecia isso. Ele ajudou no que podia.",
+          "EugineNier: coopera, espelha. Mas cinco traições e ele some."
+        ],
+        "pm_clue": [
+          "O padre confirmou o que eu suspeitava. Container 14-B, Santos.",
+          "Helena ainda está viva. E eu vou achá-la."
+        ],
+        "pm_end_e": [
+          "Padre Miguel está do lado certo. Pena que a cidade inteira está do outro."
+        ]
+      }
+    },
+    "wohltat": {
+      "name": "Wohltat — Contato Desconhecido",
+      "number": "314-0000",
+      "discoveredFrom": "auto",
+      "voice": "masculine",
+      "greeting": "Herr Law. Finalmente nos falamos. Ou devo dizer: Privatermittler.",
+      "dialogue": {
+        "initial": {
+          "speaker": "???",
+          "lines": [
+            "Você está remexendo o que não devia, Law.",
+            "Helena? Uma pena. Mas negócios são negócios.",
+            "Cinquenta mil é muito dinheiro para uma menina de rua."
+          ],
+          "choices": [
+            {
+              "text": "Onde está Helena? Solta ela agora e eu esqueço o resto.",
+              "goto": "wh_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "O que a Wohltat quer com crianças? Isso não é negócio.",
+              "goto": "wh_r2_c",
+              "pdAction": "C"
+            },
+            {
+              "text": "*desligo* Não negocio com monstros.",
+              "goto": "wh_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "wh_r1_d": {
+          "speaker": "???",
+          "lines": [
+            "Esquecer? Você não sabe com quem está lidando, Law.",
+            "Já tentei ser bonzinho. Não funciona.",
+            "Agora Helena vai mais longe ainda. *estática*"
+          ],
+          "choices": []
+        },
+        "wh_r2_c": {
+          "speaker": "???",
+          "lines": [
+            "Wohltat não quer nada. Wohltat é.",
+            "Existe porque a cidade deixa. Porque o Estado fecha os olhos.",
+            "Helena está no Container 14-B. Porto de Santos.",
+            "Mas o navio parte em uma hora. Você nunca vai chegar a tempo."
+          ],
+          "choices": [
+            {
+              "text": "Vou chegar sim. E vou fechar a Wohltat para sempre.",
+              "goto": "wh_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "Se Helena morrer, eu juro que vou atrás de cada um de vocês.",
+              "goto": "wh_r3_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Meu trabalho é achar Helena. O resto vem depois.",
+              "goto": "wh_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "wh_r3_d": {
+          "speaker": "???",
+          "lines": [
+            "Ameaças? Adorável. Você não é o primeiro detetive que tenta.",
+            "Os outros estão no fundo do rio.",
+            "Pense nisso enquanto Helena navega. *estática* ... *clic*"
+          ],
+          "choices": []
+        },
+        "wh_clue": {
+          "speaker": "???",
+          "lines": [
+            "Coragem. Ou burrice. A linha é tênue.",
+            "Container 14-B. Cargueiro 'Estrela do Norte'. Partiu às 05:30.",
+            "Você perdeu, Law. Aceite.",
+            "*estática longa* ... *clic*"
+          ],
+          "choices": []
+        },
+        "wh_end_e": {
+          "speaker": "???",
+          "lines": [
+            "Curioso. A maioria tenta negociar.",
+            "Boa sorte com a consciência pesada, Privatermittler."
+          ],
+          "choices": []
+        }
+      },
+      "axelrodStrategy": "HardProber",
+      "murphyCommentary": {
+        "wh_r1_d": [
+          "Wohltat devolveu na mesma moeda. HardProber: testa, e se eu for bonzinho demais, explora."
+        ],
+        "wh_r2_c": [
+          "Wohltat jogou as cartas na mesa. Container 14-B.",
+          "Não sei se é verdade. Mas é a única pista que tenho."
+        ],
+        "wh_r3_d": [
+          "Wohltat não recua. HardProber: se eu cooperar nos turnos 2 e 3, ele me pune para sempre."
+        ],
+        "wh_clue": [
+          "Navio 'Estrela do Norte'. Container 14-B. 05:30.",
+          "Wohltat disse que perdi. Mas Murphy Law não desiste."
+        ],
+        "wh_end_e": [
+          "Não negociei. HardProber respeita quem não se curva."
         ]
       }
     },
@@ -835,15 +1027,17 @@
       "number": "SCP-████-7",
       "discoveredFrom": "auto",
       "voice": "feminine",
-      "greeting": "*estática criptografada* ... Canal seguro da Fundação. Agente Stern.",
+      "greeting": "*estática criptografada* ... Law. Sou eu. Stern. Finalmente consegui autorização para contato direto.",
       "dialogue": {
         "initial": {
           "speaker": "Agente Stern",
           "lines": [
-            "Law. Ainda trabalhando no caso Kraft?",
-            "A Fundação está perdendo paciência. Os relatórios precisam ser conclusivos.",
-            "Quando tiver uma dedução completa, submeta pelo quadro. Eu avalio pessoalmente.",
-            "Boa sorte, Privatermittler."
+            "Lembra quando te liguei? 'Law, preciso de você.'",
+            "Disse que era sobre uma menina. Helena Kraft.",
+            "Maria Kraft procurou a Fundação há um mês. Pediu ajuda.",
+            "A burocracia é lenta. Muito lenta. Enquanto eles decidiam, o rastro esfriava.",
+            "Por isso te chamei. Você é de fora. Você é rápido. Você é bom.",
+            "Quando tiver uma dedução completa, submeta pelo quadro. Eu avalio."
           ],
           "choices": [
             {
@@ -856,7 +1050,8 @@
         "as_end_e": {
           "speaker": "Agente Stern",
           "lines": [
-            "Stern encerra a transmissão. *bip*"
+            "A Fundação está de olho, Law. Não atrapalhe.",
+            "*bip*"
           ],
           "choices": []
         },
@@ -869,8 +1064,9 @@
             "...",
             "Confirmado. Cada peça encaixa. A Fundação aceita sua dedução.",
             "Fall Helena Kraft — encerrado.",
-            "O relatório vai constar como resolução por investigação privada. Você será compensado.",
-            "Law... obrigada. Nem todos os casos da Fundação terminam assim.",
+            "Maria Kraft vai ter a filha de volta. É o que importa.",
+            "O relatório vai constar como resolução por investigação privada.",
+            "Law... Eu sabia que podia contar com você. Obrigada.",
             "*canal seguro encerrado*"
           ],
           "choices": []
@@ -882,7 +1078,7 @@
             "Law, enviei sua dedução para análise.",
             "Há inconsistências. As evidências não sustentam essa conclusão.",
             "Volte ao quadro. Revise as pistas. Algo está fora do lugar.",
-            "A Fundação não fecha casos com deduções falhas. Nem você deveria.",
+            "A Fundação não fecha casos com deduções falhas. Nem eu.",
             "*canal seguro encerrado*"
           ],
           "choices": []
@@ -902,11 +1098,14 @@
       "axelrodStrategy": "Forgiver",
       "murphyCommentary": {
         "initial": [
-          "A Agente Stern é minha contato na Fundação. Fria como a neve de Königsberg, mas competente.",
-          "Ela trouxe o caso. Se resolver, a Fundação paga. Se não resolver... bem, não quero pensar nisso."
+          "Stern. Minha amiga na Fundação. Fazia meses que não nos falávamos.",
+          "Quando ela ligou dizendo 'Law, preciso de você', eu soube que era grave.",
+          "Helena é o nome que ela disse. Nove anos. Desaparecida.",
+          "Não aceitei dinheiro. Amigos não cobram amigos. Crianças não esperam."
         ],
         "as_end_e": [
-          "Stern não é de conversa fiada. Melhor voltar ao trabalho."
+          "Stern não é minha chefe. Ela é minha amiga que trabalha na Fundação.",
+          "Mas quando a burocracia trava, a gente dá um jeito."
         ],
         "deduction_correct": [
           "Consegui. Depois de tudo — as pistas, as ligações, as mentiras — finalmente encaixou.",
@@ -984,14 +1183,16 @@
               "LETZTER AUFENTHALTSORT: Volksschule Vila Nova",
               "VERSCHWUNDEN SEIT: 3 Wochen",
               "",
-              "NOTIZEN DES DETEKTIVS:",
-              "",
-              "Die Mutter hat kein Geld. 500 Marks — alles, was sie hatte.",
-              "Ich sagte, es reicht.",
-              "",
-              "Die Volkspolizei hat keinen Finger gerührt. Kinder aus",
-              "dem Arbeiterbezirk machen keine Schlagzeile. Aber ich",
-              "habe Marias Augen gesehen und konnte nicht nein sagen.",
+      "NOTIZEN DES DETEKTIVS:",
+      "",
+      "Eine Freundin aus der Stiftung rief mich an. 'Law, ich brauche dich.'",
+      "Sie sagte, das Mädchen heiße Helena. Neun Jahre alt.",
+      "Die Stiftung ist zu langsam. Sie wollte jemanden von außen.",
+      "Ich sagte ja, bevor sie den Preis nennen konnte.",
+      "",
+      "Die Volkspolizei hat keinen Finger gerührt. Kinder aus",
+      "dem Arbeiterbezirk machen keine Schlagzeile. Aber ich",
+      "habe die Stimme meiner Freundin gehört und konnte nicht nein sagen.",
               "",
               "Erste Spur: die Direktorin hat über die Uhrzeit gelogen.",
               "Jemand hat Helena innerhalb der Schule abgeholt.",
@@ -1022,17 +1223,17 @@
           "height": 6,
           "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
         },
-{
-      "id": "isqueiro_mesa",
-      "icon": "Key",
-      "x": 34,
-      "y": 84,
-      "type": "inspect",
-      "label": "Isqueiro de Prata",
-      "width": 5,
-      "height": 5,
-      "description": "Um isqueiro antigo com as iniciais M.L. gravadas. Um presente de alguém que não está mais aqui."
-    },
+        {
+          "id": "isqueiro_mesa",
+          "icon": "Key",
+          "x": 34,
+          "y": 84,
+          "type": "inspect",
+          "label": "Isqueiro de Prata",
+          "width": 5,
+          "height": 5,
+          "description": "Um isqueiro antigo com as iniciais M.L. gravadas. Um presente de alguém que não está mais aqui."
+        },
         {
           "id": "bilhete_anonimo",
           "icon": "FileText",
@@ -1946,7 +2147,7 @@
           "label": "Cédulas no Armário",
           "width": 12,
           "height": 20,
-          "description": "500 Marks em cédulas usadas do Banco Estatal. O dinheiro do sangue. Você guarda — vai servir para pagar a Maria de volta.",
+          "description": "500 Marks em cédulas usadas do Banco Estatal. O dinheiro do crime. Provas materiais — suborno de funcionário público. A assinatura de Mendes está em cada nota.",
           "pickupItem": "cedula_500",
           "hideAfterInteract": true
         },
@@ -2062,7 +2263,7 @@
             "title": "RECADO TELEFÔNICO — SANTOS",
             "content": [
               "═══════════════════════════════════════",
-              " POLIZIST SANTOS — OFF THE RECORD",
+              " POLIZIST SANTOS — FORA DO EXPEDIENTE",
               "═══════════════════════════════════════",
               "",
               "*BIP* 'Law. Eu sei quem é você.'",

@@ -59,10 +59,8 @@ import imgArmazem from './assets/images/noir/bg_armazem.png';
 import mapEscritorio from './assets/images/noir/maps/map_escritorio.png';
 import mapRuaChuva from './assets/images/noir/maps/map_rua_chuva.png';
 import mapBar from './assets/images/noir/maps/map_bar.png';
-import mapEscola from './assets/images/noir/maps/map_escola.png';
 import mapDiretoria from './assets/images/noir/maps/map_diretoria.png';
 import mapDelegacia from './assets/images/noir/maps/map_delegacia.png';
-import mapBeco from './assets/images/noir/maps/map_beco.png';
 import mapArmazem from './assets/images/noir/maps/map_armazem.png';
 
 import gameData from './game_data.json';
@@ -102,10 +100,8 @@ const MAP_IMG: Record<string, string> = {
   escritorio: mapEscritorio,
   rua_chuva: mapRuaChuva,
   bar: mapBar,
-  escola: mapEscola,
   diretoria: mapDiretoria,
   delegacia: mapDelegacia,
-  beco: mapBeco,
   armazem: mapArmazem,
 };
 

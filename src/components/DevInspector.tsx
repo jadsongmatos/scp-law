@@ -142,7 +142,7 @@ export function DevInspector({
     <div className="flex flex-col h-full bg-zinc-950/95 text-zinc-300 text-xs font-mono select-none">
       <div className="flex items-center justify-between px-3 py-2 border-b border-zinc-800/60 shrink-0">
         <span className="flex items-center gap-2 text-noir-amber tracking-widest text-[10px]">
-          <FolderTree size={12} /> EXPLORER
+          <FolderTree size={12} /> EXPLORADOR
         </span>
         <div className="flex items-center gap-1">
           <button

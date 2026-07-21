@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useLayoutEffect } from
 import { GAME_ROOMS, Interactable, ITEM_NAMES, ITEM_IMAGES, Room, PHONE_CONTACTS, PhoneContact } from './data';
 import { IconMap } from './Icons';
 import { Audio } from './audio';
-import { FileText, Map as MapIcon, X, Bug, Download, Wine, Briefcase, CheckCircle, AlertTriangle, Settings, Volume2, Phone, PhoneCall, Mail, Play, Archive, Package, Terminal, Eye } from 'lucide-react';
+import { FileText, Map as MapIcon, X, Bug, Download, Wine, Briefcase, CheckCircle, AlertTriangle, Settings, Volume2, Phone, PhoneCall, Radio, Mail, Play, Archive, Package, Terminal, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useXTerm } from './useXTerm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
@@ -15,6 +15,9 @@ import { DevInspector } from '@/components/DevInspector';
 import DetectiveBoard from '@/components/DetectiveBoard';
 import { resolveItemUse, INTERACT } from '@/lib/itemUse';
 import { adjustMenuPosition } from '@/lib/useMenuPosition';
+import { createEugineNier } from '@/lib/eugineNier';
+import { HardProber, C, D } from '@/lib/hardProber';
+import { SneakyTitForTat, ZDGTFT2 } from '@/lib/axelrod';
 
 function Game() {
   const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
@@ -86,51 +89,80 @@ const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
 const [deductionAttempts, setDeductionAttempts] = useState(0);
 
 const calculateGameCompletion = () => {
-const totalHints = 18;
-const totalContacts = 5;
-const hintsFound = readHints.size / totalHints;
-const interviewsCompleted = [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length / totalContacts;
-const cluesRead = readInterviewClues.size / totalContacts;
-const deductionScore = deductionResult === 'correct' ? Math.max(0.5, 1 - 0.1 * Math.max(0, deductionAttempts - 1)) : 0;
+  const deductionCorrect = deductionResult === 'correct';
+  if (!deductionCorrect) {
+    return { percent: 0, zdgtft2Compliant: false, deductionCorrect: false, hintsFound: readHints.size, interviewsCompleted: 0, cluesRead: 0, deductionAttempts };
+  }
 
-let tftCompliant = true;
-const contactIds = Object.keys(PHONE_CONTACTS);
-let anyInterviewHeld = false;
-for (const cid of contactIds) {
-if (cid === 'agente_scp') continue;
-const history = pdChoiceHistory[cid] || [];
-const contact = PHONE_CONTACTS[cid];
-if (!contact || history.length === 0) continue;
-anyInterviewHeld = true;
-if (history[0] !== 'C') { tftCompliant = false; continue; }
-const npcMoves: string[] = ['C'];
-for (let i = 1; i < history.length; i++) {
-const strategy = contact.axelrodStrategy;
-const playerPrev = history[i - 1];
-const playerAllDs = history.slice(0, i).filter(a => a === 'D').length;
-let npcMove = 'C';
-if (strategy === 'Grudger' && playerAllDs > 0) npcMove = 'D';
-else if (strategy === 'TitForTat') npcMove = playerPrev === 'D' ? 'D' : 'C';
-else if (strategy === 'SoftGrudger' && playerAllDs >= 2) npcMove = 'D';
-else if (strategy === 'WinStayLoseShift') npcMove = playerPrev === 'D' ? 'D' : (i >= 2 && history[i - 2] === 'D' ? 'D' : 'C');
-npcMoves.push(npcMove);
-}
-for (let i = 1; i < history.length; i++) {
-if (history[i] === 'E') continue;
-const expectedTft = npcMoves[i - 1];
-if (history[i] !== expectedTft && history[i] !== 'E') { tftCompliant = false; break; }
-}
-}
-if (!anyInterviewHeld) tftCompliant = false;
+  let zdgtft2Compliant = true;
+  const contactIds = Object.keys(PHONE_CONTACTS);
+  let anyInteraction = false;
 
-const weights = { hints: 0.20, interviews: 0.25, clues: 0.15, deduction: 0.25, tft: 0.15 };
-const base = hintsFound * weights.hints
-+ interviewsCompleted * weights.interviews
-+ cluesRead * weights.clues
-+ deductionScore * weights.deduction;
-const tftBonus = tftCompliant ? weights.tft : 0;
-const percent = Math.round((base + tftBonus) * 100);
-return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted: [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length, cluesRead: readInterviewClues.size, deductionCorrect: deductionResult === 'correct', deductionAttempts };
+  for (const cid of contactIds) {
+    if (cid === 'agente_scp') continue;
+    const history = pdChoiceHistory[cid] || [];
+    if (!history.length) continue;
+    anyInteraction = true;
+
+    const contact = PHONE_CONTACTS[cid];
+    const strategy = contact.axelrodStrategy;
+    let npcMoves: string[] = [];
+
+      const playerMoves = history.filter(a => a !== 'E') as ("C" | "D")[];
+
+      if (strategy === 'EugineNier') {
+        const eugine = createEugineNier();
+        for (let i = 0; i < playerMoves.length; i++) {
+          const npcMove = eugine(playerMoves.slice(0, i));
+          npcMoves.push(npcMove);
+        }
+      } else if (strategy === 'HardProber') {
+        const prober = new HardProber();
+        for (let i = 0; i < playerMoves.length; i++) {
+          const npcMove = prober.play(playerMoves[i]);
+          npcMoves.push(npcMove);
+        }
+      } else if (strategy === 'SneakyTitForTat') {
+        const sneaky = new SneakyTitForTat();
+        for (let i = 0; i < playerMoves.length; i++) {
+          const npcMove = sneaky.play(playerMoves[i]);
+          npcMoves.push(npcMove);
+        }
+      } else {
+        npcMoves = ['C'];
+        for (let i = 1; i < playerMoves.length; i++) {
+          const playerPrev = playerMoves[i - 1];
+        const playerAllDs = playerMoves.slice(0, i).filter(a => a === 'D').length;
+        let npcMove = 'C';
+        if (strategy === 'Grudger' && playerAllDs > 0) npcMove = 'D';
+        else if (strategy === 'TitForTat') npcMove = playerPrev === 'D' ? 'D' : 'C';
+        else if (strategy === 'SoftGrudger' && playerAllDs >= 2) npcMove = 'D';
+        else if (strategy === 'WinStayLoseShift') npcMove = playerPrev === 'D' ? 'D' : (i >= 2 && playerMoves[i - 2] === 'D' ? 'D' : 'C');
+        else if (strategy === 'Forgiver' && playerAllDs > 0) npcMove = 'D';
+        npcMoves.push(npcMove);
+      }
+    }
+
+    const npcMirror = npcMoves.slice(0, playerMoves.length);
+    for (let i = 0; i < playerMoves.length; i++) {
+      if (playerMoves[i] === 'D' && npcMirror[i] === 'C') {
+        zdgtft2Compliant = false;
+        break;
+      }
+    }
+    if (!zdgtft2Compliant) break;
+  }
+
+  if (!anyInteraction) zdgtft2Compliant = false;
+
+  const interviewsCompleted = [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length;
+  const totalContacts = 5;
+  const cluesRead = readInterviewClues.size;
+  const hintsFound = readHints.size;
+  const base = 50;
+  const percent = zdgtft2Compliant ? 100 : base;
+
+  return { percent, zdgtft2Compliant, deductionCorrect, hintsFound, interviewsCompleted, cluesRead, deductionAttempts };
 };
 
   const DEDUCTION_LOCATIONS = ['Escritório Murphy', 'Rua Sieben', 'Gasthof Vila Nova', 'Volksschule', 'Volkspolizeistation 8º'] as const;
@@ -174,8 +206,10 @@ return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted:
       const initialLogs = [
         'MURPHY LAW — INVESTIGAÇÕES PRIVADAS.',
         'A chuva não para. O schnapps acabou. O caso não.',
-        'Maria Kraft depositou Mk 500 na mesa. Tudo que tinha.',
+        'Maria Kraft pediu ajuda à Fundação. Burocracia travou.',
         'Helena, 9 anos, desaparecida há 3 semanas.',
+        'Uma amiga na Fundação me chamou. Disse que precisam de mim.',
+        'Não aceitei dinheiro. Não quando é uma criança.',
       ];
       initialLogs.forEach(log => {
         xtermInstance.writeln('\x1b[32;1m> ' + log + '\x1b[0m');
@@ -190,6 +224,7 @@ return { percent, tftCompliant, hintsFound: readHints.size, interviewsCompleted:
 
 useEffect(() => {
 discoverContact('agente_scp');
+discoverContact('padre_miguel');
 }, []);
 
   const addLog = (msg: string) => {
@@ -301,8 +336,31 @@ discoverContact('agente_scp');
     requestAnimationFrame(() => { wasPanning.current = false; });
   }, []);
 
+  const [scrollPos, setScrollPos] = useState(0);
+  const handleViewportScroll = useCallback(() => {
+    const vp = viewportRef.current;
+    if (vp) setScrollPos(vp.scrollLeft);
+  }, []);
+
+  const canPanLeft = scrollPos > 0;
+  const canPanRight = (() => {
+    const vp = viewportRef.current;
+    const sc = sceneRef.current;
+    if (!vp || !sc) return false;
+    return scrollPos < sc.clientWidth - vp.clientWidth;
+  })();
+
+  const panNudge = useCallback((direction: 'left' | 'right') => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    vp.scrollBy({ left: direction === 'left' ? -120 : 120, behavior: 'smooth' });
+  }, []);
+
   useEffect(() => {
+    const vp = viewportRef.current;
+    if (vp) vp.scrollLeft = 0;
     setPanX(0);
+    setScrollPos(0);
   }, [currentRoomId]);
 
   const handleDragMouseDown = useCallback((e: React.MouseEvent, obj: Interactable, type: 'move' | 'resize') => {
@@ -616,20 +674,11 @@ if (obj.phoneCallId) {
       {/* Environment Viewport */}
       <div
         ref={viewportRef}
-        className="flex-1 bg-zinc-950 relative md:border-r border-zinc-900 overflow-hidden shadow-inner group cursor-grab active:cursor-grabbing"
-        onMouseDown={(e) => { if (!devMode) handlePanStart(e.clientX); }}
-        onMouseMove={(e) => { if (panState.current?.dragging) handlePanMove(e.clientX); }}
-        onMouseUp={handlePanEnd}
-        onMouseLeave={handlePanEnd}
-        onTouchStart={(e) => { if (!devMode && e.touches.length === 1) handlePanStart(e.touches[0].clientX); }}
-        onTouchMove={(e) => { if (panState.current?.dragging && e.touches.length === 1) handlePanMove(e.touches[0].clientX); }}
-        onTouchEnd={handlePanEnd}
+        className="flex-1 bg-zinc-950 relative md:border-r border-zinc-900 overflow-x-auto overflow-y-hidden shadow-inner group scp-scrollbar"
       >
-{/* Scene layer: image at natural aspect, panned horizontally */}
         <div
           ref={sceneRef}
           className="relative h-full inline-block"
-          style={{ transform: `translateX(${panX}px)`, transition: panState.current?.dragging ? 'none' : 'transform 0.15s ease-out' }}
         >
           {currentRoom.bgImage && (
             <img
@@ -714,38 +763,53 @@ if (obj.phoneCallId) {
 
   // Play mode: left-click (or right-click) opens the item context menu at the
   // cursor. The menu itself is rendered once below the map (see {objMenu}).
-  const triggerTitle = obj.description ? `${obj.label} — ${obj.description.slice(0, 120)}${obj.description.length > 120 ? '…' : ''}` : obj.label;
   const openObjMenu = (e: React.MouseEvent) => {
     if (panState.current?.dragging || wasPanning.current) return;
     e.preventDefault();
     e.stopPropagation();
-    Audio.playHover();
     setObjMenu({ x: e.clientX, y: e.clientY, obj });
   };
   return (
     <button
       key={obj.id}
       type="button"
-      title={triggerTitle}
       aria-label={obj.label}
-      className={`${wrapperClassName} min-w-[44px] min-h-[44px] flex flex-col items-center justify-center text-zinc-300 hover:text-noir-amber cursor-pointer transition-colors duration-200 ${isBoxArea ? '' : 'p-4'} border-none bg-transparent`}
+      className={`${wrapperClassName} min-w-[44px] min-h-[44px] flex flex-col items-center justify-center text-zinc-300 cursor-pointer transition-colors duration-200 ${isBoxArea ? '' : 'p-4'} border-none bg-transparent`}
       style={wrapperStyle}
-      onMouseEnter={() => Audio.playHover()}
       onClick={openObjMenu}
       onContextMenu={openObjMenu}
-    >
-      {!isHiddenIcon && hasItemImage ? (
-        <img src={ITEM_IMAGES[obj.pickupItem!]} alt={obj.label} className="w-16 h-16 object-cover border border-zinc-500 rounded shadow-[0_0_15px_rgba(212,168,71,0.3)] transition-all opacity-0" />
-      ) : (!isHiddenIcon ? (
-        <IconCmp size={isBoxArea ? 24 : 48} className="drop-shadow-[0_0_8px_rgba(0,0,0,0.8)] filter opacity-0" />
-      ) : null)}
-    </button>
+    />
         );
         })}
           </div>{/* end scene layer */}
 
         <div className="fog-overlay" style={{ position: 'absolute' }} />
         <div className="vignette-overlay" style={{ position: 'absolute' }} />
+
+        {!devMode && (canPanLeft || canPanRight) && (
+          <>
+            {canPanLeft && (
+              <button
+                type="button"
+                onClick={() => panNudge('left')}
+                className="absolute left-2 bottom-2 z-40 w-8 h-8 flex items-center justify-center bg-black/50 hover:bg-black/80 text-zinc-500 hover:text-noir-amber transition-colors rounded border border-zinc-700/50 border-none cursor-pointer"
+                aria-label="Mover câmera à esquerda"
+              >
+                <ChevronLeft size={18} />
+              </button>
+            )}
+            {canPanRight && (
+              <button
+                type="button"
+                onClick={() => panNudge('right')}
+                className="absolute right-2 bottom-2 z-40 w-8 h-8 flex items-center justify-center bg-black/50 hover:bg-black/80 text-zinc-500 hover:text-noir-amber transition-colors rounded border border-zinc-700/50 border-none cursor-pointer"
+                aria-label="Mover câmera à direita"
+              >
+                <ChevronRight size={18} />
+              </button>
+            )}
+          </>
+        )}
 
         {objMenu && (
     <div
@@ -790,6 +854,12 @@ if (obj.phoneCallId) {
     ) : (
       <>
         <div className="p-4 pb-2">
+          <Button variant="ghost" onClick={() => { Audio.playTypewriter(); setIsMapOpen(true); }} onMouseEnter={() => Audio.playHover()} className="w-full text-zinc-300 hover:text-noir-amber transition-colors text-xs tracking-widest justify-start">
+            <MapIcon size={14} /> MAPA DA CIDADE
+          </Button>
+        </div>
+        <div className="border-t border-zinc-800/40" />
+        <div className="p-4 pb-2">
           <p className="text-noir-amber text-sm tracking-widest">FERRAMENTAS</p>
         </div>
         <div className="flex flex-col gap-2 px-4 pb-2">
@@ -827,9 +897,6 @@ if (obj.phoneCallId) {
           })()}
         </div>
         <div className="p-4 space-y-2">
-          <Button variant="ghost" onClick={() => { Audio.playTypewriter(); setIsMapOpen(true); }} onMouseEnter={() => Audio.playHover()} className="w-full text-zinc-300 hover:text-noir-amber transition-colors text-xs tracking-widest justify-start">
-            <MapIcon size={14} /> MAPA DA CIDADE
-          </Button>
           <Button variant="ghost" onClick={() => {
             if (currentRoomId !== 'escritorio') {
               Audio.playDenied();
@@ -902,7 +969,7 @@ if (obj.phoneCallId) {
     </button>
     <button onClick={() => setMobileTerminalOpen(!mobileTerminalOpen)} className={`flex flex-col items-center gap-0.5 transition-colors px-2 py-1 min-w-[44px] min-h-[44px] justify-center ${mobileTerminalOpen ? 'text-noir-amber' : 'text-zinc-500 hover:text-noir-amber active:text-noir-amber'}`}>
       <Terminal size={18} />
-      <span className="text-[8px] tracking-widest">LOG</span>
+      <span className="text-[8px] tracking-widest">DIÁRIO</span>
     </button>
   </div>
 
@@ -1117,13 +1184,22 @@ const isCallEnded = node.choices.length === 0;
             const targetNode = ct.dialogue[choice.goto];
             if (targetNode && targetNode.choices.length === 0) {
               const strategy = ct.axelrodStrategy;
-                const isCutoff = strategy === 'Grudger'
-                  || strategy === 'TitForTat'
-                  || (strategy === 'SoftGrudger' && activePhoneCall.visitedNodes.reduce((count, prev) => {
+                let isCutoff = false;
+                if (strategy === 'Grudger' || strategy === 'TitForTat' || strategy === 'HardProber') {
+                  isCutoff = true;
+                } else if (strategy === 'EugineNier') {
+                  const playerAllDs = (pdChoiceHistory[activePhoneCall.contactId] || []).filter(a => a === 'D').length;
+                  if (playerAllDs >= 5) isCutoff = true;
+                } else if (strategy === 'SneakyTitForTat') {
+                  isCutoff = false;
+                } else if (strategy === 'SoftGrudger' && activePhoneCall.visitedNodes.reduce((count, prev) => {
                     const prevNode = ct.dialogue[prev];
                     return count + (prevNode?.choices.filter(c => c.pdAction === 'D').length || 0);
-                  }, 0) >= 3)
-                  || (strategy === 'Forgiver' && Math.random() >= 0.1);
+                  }, 0) >= 3) {
+                  isCutoff = true;
+                } else if (strategy === 'Forgiver' && Math.random() >= 0.1) {
+                  isCutoff = true;
+                }
               if (isCutoff) {
                 setPdCutoffContacts(prev => { const next = new Set(prev); next.add(activePhoneCall.contactId); return next; });
               }
@@ -1136,62 +1212,128 @@ const isCallEnded = node.choices.length === 0;
         return (
           <>
             <DialogHeader>
-<DialogTitle className="flex items-center gap-3">
-{isScp ? <Eye size={18} /> : isLetter ? <Mail size={18} /> : <PhoneCall size={18} />}
-{isScp ? `CANAL SEGURO — ${contact.name.toUpperCase()}` : isLetter ? `CARTA — ${contact.name.toUpperCase()}` : `${contact.number} — ${contact.name.toUpperCase()}`}
-</DialogTitle>
+              <DialogTitle className="flex items-center gap-3">
+                {isScp ? <Eye size={18} /> : isLetter ? <Mail size={18} /> : <Radio size={18} />}
+                {isScp ? `CANAL SEGURO — ${contact.name.toUpperCase()}` : isLetter ? `CARTA — ${contact.name.toUpperCase()}` : `${contact.number} — ${contact.name.toUpperCase()}`}
+              </DialogTitle>
               <DialogClose />
             </DialogHeader>
 
-            <DialogBody className="p-4 md:p-6 space-y-4 min-h-[200px] max-h-[50vh] overflow-y-auto flex-1">
-              {activePhoneCall.nodeId === 'initial' && contact.greeting && (
-                <p className="text-zinc-500 text-xs italic tracking-wide border-b border-zinc-800 pb-3">
-                  {contact.greeting}
-                </p>
-              )}
+            {isLetter ? (
+              <>
+                <DialogBody className="dlg-carta-body min-h-[200px] max-h-[50vh] flex-1 space-y-3">
+                  <div className="dlg-carta-static" />
+                  {activePhoneCall.nodeId === 'initial' && contact.greeting && (
+                    <div className="dlg-carta-balloon dlg-carta-balloon-left" style={{ animationDelay: '0s' }}>
+                      <div className="dlg-carta-speaker">{node.speaker.toUpperCase()}</div>
+                      <div>{contact.greeting}</div>
+                    </div>
+                  )}
 
-              <div className="space-y-2">
-                <p className="text-noir-amber text-[10px] font-bold tracking-widest border-b border-zinc-900 pb-1">
-                  {node.speaker.toUpperCase()}:
-                </p>
-                {node.lines.map((line, i) => (
-                  <p key={i} className="text-zinc-300 text-sm tracking-wide leading-relaxed pl-2 border-l-2 border-zinc-800">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </DialogBody>
+                  <div className="dlg-carta-balloon dlg-carta-balloon-left" style={{ animationDelay: '0.05s' }}>
+                    <div className="dlg-carta-speaker">{node.speaker.toUpperCase()}</div>
+                    {node.lines.map((line, i) => (
+                      <p key={i} style={{ marginBottom: i < node.lines.length - 1 ? 4 : 0 }}>{line}</p>
+                    ))}
+                    <div className="dlg-carta-time">{new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</div>
+                  </div>
+                </DialogBody>
 
-            {!isCallEnded ? (
-              <DialogFooter className="p-3 md:p-4 bg-black/50 space-y-2 flex-col items-stretch">
-                <p className="text-zinc-600 text-[10px] tracking-widest mb-2">SUAS OPÇÕES:</p>
-                {node.choices.map((choice, i) => (
-                  <Button
-                    key={i}
-                    variant="ghost"
-                    onClick={() => handleChoice(choice)}
-                    onMouseEnter={() => Audio.playHover()}
-                    className="w-full text-left bg-zinc-900 border border-zinc-800 hover:border-noir-amber text-zinc-300 hover:text-noir-amber p-3 text-xs tracking-wide transition-colors flex items-center gap-3 justify-start min-h-[44px]"
-                  >
-                    <span className="text-noir-amber font-bold text-[10px]">{String(i + 1).padStart(2, '0')}</span>
-                    <span className="flex-1">{choice.text}</span>
-                  </Button>
-                ))}
-              </DialogFooter>
+                {!isCallEnded ? (
+                  <div className="dlg-carta-body border-t border-noir-amber/20 space-y-2 p-3">
+                    <p className="dlg-carta-speaker" style={{ opacity: 1, color: 'rgba(212,168,71,0.5)', marginBottom: 6 }}>RESPOSTA:</p>
+                    {node.choices.map((choice, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleChoice(choice)}
+                        onMouseEnter={() => Audio.playHover()}
+                        className="dlg-carta-balloon dlg-carta-balloon-right dlg-carta-choice-row"
+                        style={{ cursor: 'pointer', animationDelay: `${i * 0.06}s` }}
+                      >
+                        <span className="dlg-carta-choice-num" style={{ fontSize: '9px', opacity: 0.5, marginRight: 8 }}>{String(i + 1).padStart(2, '0')}</span>
+                        <span>{choice.text}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="dlg-carta-body border-t border-noir-amber/20 py-4">
+                    <Badge classification="safe" className="mx-auto">— FIM DA CARTA —</Badge>
+                  </div>
+                )}
+
+                <div className="dlg-radio-status-bar">
+                  <span>BRIEF</span>
+                  <Badge classification={isCallEnded ? 'safe' : 'euclid'} size="sm" className="animate-pulse">
+                    {isCallEnded ? 'GELESEN' : 'UNGELESEN'}
+                  </Badge>
+                </div>
+              </>
             ) : (
-              <DialogFooter className="p-4 bg-black/50">
-<Badge classification="keter" className="mx-auto animate-pulse">
-{isScp ? '*CANAL ENCERRADO*' : isLetter ? '— FIM DA CARTA —' : '*C L I C*'}
-</Badge>
-              </DialogFooter>
-            )}
+              <>
+                <div className="dlg-radio-freq-bar">
+                  <span>{isScp ? '█ SICHERHEITSKANAL' : '● FUNK'}</span>
+                  <div className="dlg-radio-signal">
+                    {[8, 11, 14, 14, 14].map((h, i) => (
+                      <div
+                        key={i}
+                        className={`dlg-radio-signal-bar ${isCallEnded ? (i < 2 ? 'active' : 'inactive') : 'active'}`}
+                        style={{ height: h }}
+                      />
+                    ))}
+                  </div>
+                  <span>{isScp ? '147.520' : contact.number}</span>
+                </div>
 
-            <div className="h-8 bg-black border-t border-noir-amber text-noir-amber text-xs flex items-center px-4 justify-between">
-<span>{isScp ? 'SICHERHEITSKANAL' : isLetter ? 'BRIEF' : 'TELEFON'}</span>
-<Badge classification={isCallEnded ? 'keter' : 'thaumiel'} size="sm" className="animate-pulse">
-{isScp ? (isCallEnded ? 'ABGESCHLOSSEN' : 'VERSCHLÜSSELT') : isLetter ? 'GELESEN' : isCallEnded ? 'GETRENNT' : 'VERBUNDEN'}
-</Badge>
-            </div>
+                <div className="dlg-radio-body flex-1 flex flex-col min-h-[200px] max-h-[50vh]">
+                  <div className="dlg-radio-static" />
+                  <div className="dlg-radio-content space-y-3">
+                    {activePhoneCall.nodeId === 'initial' && contact.greeting && (
+                      <p className="dlg-radio-transmission" style={{ fontSize: '11px', opacity: 0.4, fontStyle: 'italic' }}>
+                        {contact.greeting}
+                      </p>
+                    )}
+
+                    <div className="dlg-radio-speaker">{node.speaker.toUpperCase()}</div>
+                    {node.lines.map((line, i) => (
+                      <p key={i} className="dlg-radio-transmission dlg-radio-line">{line}</p>
+                    ))}
+                  </div>
+                  <div className="dlg-radio-wave">
+                    <div className="dlg-radio-wave-line" />
+                  </div>
+                </div>
+
+                {!isCallEnded ? (
+                  <div className="dlg-radio-choice-area space-y-1">
+                    <p className="dlg-radio-choice-label">TRANSMITIR:</p>
+                    {node.choices.map((choice, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleChoice(choice)}
+                        onMouseEnter={() => Audio.playHover()}
+                        className="dlg-radio-choice-btn"
+                      >
+                        <span className="dlg-radio-choice-num">{String(i + 1).padStart(2, '0')}</span>
+                        <span className="flex-1">{choice.text}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="dlg-radio-choice-area">
+                    <div className="dlg-radio-ended-indicator">
+                      {isScp ? '*CANAL ENCERRADO*' : '*C L I C*'}
+                    </div>
+                  </div>
+                )}
+
+                <div className="dlg-radio-status-bar">
+                  <span>{isScp ? 'SICHERHEITSKANAL' : 'TELEFON'}</span>
+                  <Badge classification={isCallEnded ? 'keter' : 'thaumiel'} size="sm" className="animate-pulse">
+                    {isScp ? (isCallEnded ? 'ABGESCHLOSSEN' : 'VERSCHLÜSSELT') : isCallEnded ? 'GETRENNT' : 'VERBUNDEN'}
+                  </Badge>
+                </div>
+              </>
+            )}
           </>
         );
       })()}
@@ -1466,18 +1608,18 @@ FALL HELENA KRAFT
 </div>
 )}
 <div className="flex justify-between items-center border-t border-zinc-800 pt-3">
-<span className="text-zinc-400 text-xs tracking-wide">Estratégia Tit-for-Tat</span>
-<span className={`text-xs font-bold ${completion.tftCompliant ? 'text-noir-amber' : 'text-noir-red'}`}>{completion.tftCompliant ? 'CONFORME' : 'NÃO CONFORME'}</span>
+<span className="text-zinc-400 text-xs tracking-wide">Estratégia ZD-GTFT-2</span>
+<span className={`text-xs font-bold ${completion.zdgtft2Compliant ? 'text-noir-amber' : 'text-noir-red'}`}>{completion.zdgtft2Compliant ? 'CONFORME' : 'NÃO CONFORME'}</span>
 </div>
 </div>
-{!completion.tftCompliant && (
+{!completion.zdgtft2Compliant && (
 <p className="text-zinc-600 text-[10px] tracking-wider italic border-t border-zinc-900 pt-4">
-O investigador ideal segue Tit-for-Tat: cooperar primeiro, espelhar o oponente. 100% exige conformidade.
+50% do caso resolvido. Para 100%, o investigador deve agir como ZD-GTFT-2: cooperar sempre que o oponente cooperar, punir se necessário mas perdoar, e nunca trair primeiro.
 </p>
 )}
-{completion.tftCompliant && completion.percent === 100 && (
+{completion.zdgtft2Compliant && completion.percent === 100 && (
 <p className="text-noir-amber text-xs tracking-widest font-bold border-t border-noir-amber pt-4">
-INVESTIGADOR EXEMPLAR — TIT-FOR-TAT
+INVESTIGADOR EXEMPLAR — ZD-GTFT-2
 </p>
 )}
 </div>

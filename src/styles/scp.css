@@ -910,3 +910,410 @@
   background-image: url('/scp_assets/toast/scroll-content-apollyon.webp');
   background-size: 100% 100%;
 }
+
+/* ============================================
+   DIALOGUE: CARTA — WhatsApp on phosphor terminal
+   ============================================ */
+
+.dlg-carta-body {
+  background: #0a0a0a;
+  position: relative;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.dlg-carta-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%,
+    rgba(0, 0, 0, 0.25) 50%,
+    rgba(0, 0, 0, 0.25)
+  );
+  background-size: 100% 3px;
+  pointer-events: none;
+  opacity: 0.06;
+  z-index: 1;
+}
+
+.dlg-carta-body::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(10, 10, 10, 0.3) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dlg-carta-balloon {
+  max-width: 82%;
+  padding: 8px 12px;
+  border-radius: 2px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  position: relative;
+  z-index: 3;
+  animation: dlg-balloon-in 0.18s ease-out both;
+}
+
+.dlg-carta-balloon-left {
+  margin-right: auto;
+  background: rgba(212, 168, 71, 0.07);
+  border: 1px solid rgba(212, 168, 71, 0.2);
+  border-left: 2px solid #d4a847;
+  color: #d4d4d8;
+}
+
+.dlg-carta-balloon-right {
+  margin-left: auto;
+  background: rgba(212, 168, 71, 0.15);
+  border: 1px solid rgba(212, 168, 71, 0.35);
+  border-right: 2px solid #d4a847;
+  color: #d4a847;
+  text-align: right;
+}
+
+.dlg-carta-speaker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #d4a847;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+.dlg-carta-time {
+  font-size: 8px;
+  color: rgba(212, 168, 71, 0.4);
+  margin-top: 4px;
+  text-align: right;
+}
+
+.dlg-carta-typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 6px 12px;
+  z-index: 3;
+  position: relative;
+}
+
+.dlg-carta-typing span {
+  width: 5px;
+  height: 5px;
+  background: #d4a847;
+  border-radius: 50%;
+  animation: dlg-typing-dot 1.2s infinite ease-in-out;
+}
+
+.dlg-carta-typing span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dlg-carta-typing span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes dlg-balloon-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dlg-typing-dot {
+  0%, 60%, 100% {
+    opacity: 0.15;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.dlg-carta-choice-row {
+  z-index: 3;
+  position: relative;
+  animation: dlg-balloon-in 0.18s ease-out both;
+}
+
+/* ============================================
+   DIALOGUE: PHONE — Radio transmitter style
+   ============================================ */
+
+.dlg-radio-body {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212, 168, 71, 0.04) 0%, transparent 60%),
+    #0a0a0a;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.dlg-radio-static {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    rgba(212, 168, 71, 0.015) 1px,
+    rgba(212, 168, 71, 0.015) 2px
+  );
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 1;
+  animation: dlg-radio-static-scroll 8s linear infinite;
+}
+
+@keyframes dlg-radio-static-scroll {
+  from { background-position: 0 0; }
+  to { background-position: 0 40px; }
+}
+
+.dlg-radio-freq-bar {
+  height: 28px;
+  background: linear-gradient(90deg,
+    #0a0a0a 0%,
+    rgba(212, 168, 71, 0.05) 20%,
+    rgba(212, 168, 71, 0.12) 40%,
+    rgba(212, 168, 71, 0.12) 60%,
+    rgba(212, 168, 71, 0.05) 80%,
+    #0a0a0a 100%
+  );
+  border-bottom: 1px solid rgba(212, 168, 71, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(212, 168, 71, 0.6);
+  position: relative;
+  z-index: 3;
+}
+
+.dlg-radio-freq-bar::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 20%;
+  right: 20%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d4a847, transparent);
+  opacity: 0.3;
+}
+
+.dlg-radio-signal {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+
+.dlg-radio-signal-bar {
+  width: 3px;
+  background: #d4a847;
+  border-radius: 1px;
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.dlg-radio-signal-bar.active {
+  opacity: 1;
+}
+
+.dlg-radio-signal-bar.inactive {
+  opacity: 0.15;
+}
+
+.dlg-radio-content {
+  position: relative;
+  z-index: 3;
+  padding: 16px 14px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 180px;
+  max-height: 50vh;
+}
+
+.dlg-radio-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.15;
+  overflow: hidden;
+}
+
+.dlg-radio-wave-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 32px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    rgba(212, 168, 71, 0.6) 2px,
+    transparent 4px,
+    transparent 20px
+  );
+  animation: dlg-radio-wave-scroll 3s linear infinite;
+  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+@keyframes dlg-radio-wave-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.dlg-radio-transmission {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  line-height: 1.7;
+  color: #d4a847;
+  text-shadow: 0 0 8px rgba(212, 168, 71, 0.3);
+  animation: dlg-radio-flicker 4s ease-in-out infinite;
+}
+
+@keyframes dlg-radio-flicker {
+  0%, 100% { opacity: 1; }
+  4% { opacity: 0.85; }
+  6% { opacity: 1; }
+  42% { opacity: 1; }
+  43% { opacity: 0.78; }
+  44% { opacity: 1; }
+  82% { opacity: 1; }
+  83% { opacity: 0.88; }
+  84% { opacity: 1; }
+}
+
+.dlg-radio-speaker {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(212, 168, 71, 0.5);
+  margin-bottom: 4px;
+}
+
+.dlg-radio-line {
+  padding-left: 12px;
+  border-left: 1px solid rgba(212, 168, 71, 0.15);
+  margin-bottom: 6px;
+}
+
+.dlg-radio-choice-area {
+  background: linear-gradient(0deg, #0a0a0a, rgba(10, 10, 10, 0.9));
+  border-top: 1px solid rgba(212, 168, 71, 0.15);
+  padding: 10px 12px;
+  position: relative;
+  z-index: 3;
+}
+
+.dlg-radio-choice-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: rgba(212, 168, 71, 0.4);
+  margin-bottom: 8px;
+}
+
+.dlg-radio-choice-btn {
+  width: 100%;
+  text-align: left;
+  background: rgba(212, 168, 71, 0.04);
+  border: 1px solid rgba(212, 168, 71, 0.12);
+  color: #d4a847;
+  padding: 10px 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  transition: all 0.12s ease;
+  margin-bottom: 6px;
+}
+
+.dlg-radio-choice-btn:hover {
+  background: rgba(212, 168, 71, 0.1);
+  border-color: rgba(212, 168, 71, 0.35);
+  text-shadow: 0 0 6px rgba(212, 168, 71, 0.4);
+}
+
+.dlg-radio-choice-btn:active {
+  background: rgba(212, 168, 71, 0.15);
+  transform: scale(0.985);
+}
+
+.dlg-radio-choice-num {
+  font-size: 9px;
+  font-weight: 700;
+  opacity: 0.5;
+  min-width: 18px;
+}
+
+.dlg-radio-status-bar {
+  height: 28px;
+  background: #0a0a0a;
+  border-top: 1px solid rgba(212, 168, 71, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(212, 168, 71, 0.6);
+}
+
+.dlg-radio-ended-indicator {
+  text-align: center;
+  padding: 14px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #cc3333;
+  text-shadow: 0 0 10px rgba(204, 51, 51, 0.4);
+  animation: dlg-radio-ended-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dlg-radio-ended-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Accessibility for dialogue animations */
+@media (prefers-reduced-motion: reduce) {
+  .dlg-carta-balloon,
+  .dlg-carta-choice-row,
+  .dlg-radio-transmission,
+  .dlg-radio-ended-indicator {
+    animation: none;
+  }
+  .dlg-carta-typing span {
+    animation: none;
+    opacity: 0.5;
+  }
+  .dlg-radio-static,
+  .dlg-radio-wave-line {
+    animation: none;
+  }
+}
