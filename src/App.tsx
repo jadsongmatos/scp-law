@@ -19,16 +19,55 @@ import { createEugineNier } from '@/lib/eugineNier';
 import { HardProber, C, D } from '@/lib/hardProber';
 import { SneakyTitForTat, ZDGTFT2 } from '@/lib/axelrod';
 
-function Game() {
+function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
-  const [currentRoomId, setCurrentRoomId] = useState<string>('escritorio');
-  const [inventory, setInventory] = useState<string[]>(['isqueiro', 'gravador_cassete']);
-  const [visitedRooms, setVisitedRooms] = useState<string[]>(['escritorio']);
+  const SAVE_KEY = 'scp_law_save';
+
+  const getSavedState = () => {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch { return null; }
+  };
+
+  const initialSaved = loadFromSave ? getSavedState() : null;
+
+  const [currentRoomId, setCurrentRoomId] = useState<string>(initialSaved?.currentRoomId || 'escritorio');
+  const [inventory, setInventory] = useState<string[]>(initialSaved?.inventory || ['isqueiro', 'gravador_cassete']);
+  const [visitedRooms, setVisitedRooms] = useState<string[]>(initialSaved?.visitedRooms || ['escritorio']);
+  const [discoveredContacts, setDiscoveredContacts] = useState<Set<string>>(new Set(initialSaved?.discoveredContacts || []));
+  const [calledContacts, setCalledContacts] = useState<Set<string>>(new Set(initialSaved?.calledContacts || []));
+  const [pdCutoffContacts, setPdCutoffContacts] = useState<Set<string>>(new Set(initialSaved?.pdCutoffContacts || []));
+  const [pdChoiceHistory, setPdChoiceHistory] = useState<Record<string, string[]>>(initialSaved?.pdChoiceHistory || {});
+  const [phoneRecordings, setPhoneRecordings] = useState<Record<string, { speaker: string; lines: string[] }[]>>(initialSaved?.phoneRecordings || {});
+  const [readHints, setReadHints] = useState<Set<string>>(new Set(initialSaved?.readHints || []));
+  const [deductionResult, setDeductionResult] = useState<'correct' | 'wrong' | null>(initialSaved?.deductionResult || null);
+  const [unlockedObjects, setUnlockedObjects] = useState<Set<string>>(new Set(initialSaved?.unlockedObjects || []));
+  const [interactedItems, setInteractedItems] = useState<string[]>(initialSaved?.interactedItems || []);
+  const [readInterviewClues, setReadInterviewClues] = useState<Set<string>>(new Set(initialSaved?.readInterviewClues || []));
+  const [deductionAttempts, setDeductionAttempts] = useState(initialSaved?.deductionAttempts || 0);
+  const [murphyCommentaryMap, setMurphyCommentaryMap] = useState<Record<string, string[]>>(initialSaved?.murphyCommentaryMap || {});
+  const [gameCompleted, setGameCompleted] = useState(initialSaved?.gameCompleted || false);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [devMode, setDevMode] = useState(false);
   const [selectedObjId, setSelectedObjId] = useState<string | null>(null);
   const [localRooms, setLocalRooms] = useState<{ [key: string]: Room }>(GAME_ROOMS);
+  const [documentData, setDocumentData] = useState<{ title: string; content: string[] } | null>(null);
+  const [objMenu, setObjMenu] = useState<{ x: number; y: number; obj: Interactable } | null>(null);
+  const objMenuRef = useRef<HTMLDivElement>(null);
+  const [deductionOpen, setDeductionOpen] = useState(false);
+  const [phoneAgendaOpen, setPhoneAgendaOpen] = useState(false);
+  const [activePhoneCall, setActivePhoneCall] = useState<{
+    contactId: string; nodeId: string; linesShown: number; visitedNodes: string[];
+  } | null>(null);
+  const [cassettePlayback, setCassettePlayback] = useState<{
+    contactId: string; lines: { speaker: string; lines: string[] }[];
+  } | null>(null);
+  const [cassetteMenuOpen, setCassetteMenuOpen] = useState(false);
+  const [mobileInventoryOpen, setMobileInventoryOpen] = useState(false);
+  const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
 
   const fitAddon = useRef(new FitAddon());
   const options = React.useMemo(() => ({
@@ -40,130 +79,8 @@ function Game() {
     convertEol: true,
     scrollback: 1000,
   }), []);
-
   const addons = React.useMemo(() => [fitAddon.current], []);
-
-  const { ref: xtermRef, instance: xtermInstance } = useXTerm({
-    options,
-    addons
-  });
-
-  const [documentData, setDocumentData] = useState<{ title: string; content: string[] } | null>(null);
-  const [interactedItems, setInteractedItems] = useState<string[]>([]);
-  // Objects unlocked by using the right item — persists for the session: a
-  // door/drawer opened once stays open and never asks for the item again.
-  const [unlockedObjects, setUnlockedObjects] = useState<Set<string>>(new Set());
-  // Left-click item context menu, anchored at the cursor (same pattern as
-  // DevInspector's context menu — proven to work over the scene overlays).
-  const [objMenu, setObjMenu] = useState<{ x: number; y: number; obj: Interactable } | null>(null);
-  const objMenuRef = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    if (objMenu && objMenuRef.current) adjustMenuPosition(objMenuRef.current, objMenu.x, objMenu.y);
-  }, [objMenu]);
-  const [readHints, setReadHints] = useState<Set<string>>(new Set());
-  const [deductionOpen, setDeductionOpen] = useState(false);
-  const [deductionResult, setDeductionResult] = useState<'correct' | 'wrong' | null>(null);
-
-  const [discoveredContacts, setDiscoveredContacts] = useState<Set<string>>(new Set());
-  const [calledContacts, setCalledContacts] = useState<Set<string>>(new Set());
-  const [pdCutoffContacts, setPdCutoffContacts] = useState<Set<string>>(new Set());
-const [pdChoiceHistory, setPdChoiceHistory] = useState<Record<string, string[]>>({});
-  const [phoneRecordings, setPhoneRecordings] = useState<Record<string, { speaker: string; lines: string[] }[]>>({});
-  const [phoneAgendaOpen, setPhoneAgendaOpen] = useState(false);
-  const [activePhoneCall, setActivePhoneCall] = useState<{
-    contactId: string;
-    nodeId: string;
-    linesShown: number;
-    visitedNodes: string[];
-  } | null>(null);
-  const [cassettePlayback, setCassettePlayback] = useState<{
-    contactId: string;
-    lines: { speaker: string; lines: string[] }[];
-  } | null>(null);
-  const [murphyCommentaryMap, setMurphyCommentaryMap] = useState<Record<string, string[]>>({});
-  const [gameCompleted, setGameCompleted] = useState(false);
-  const [readInterviewClues, setReadInterviewClues] = useState<Set<string>>(new Set());
-const [cassetteMenuOpen, setCassetteMenuOpen] = useState(false);
-const [mobileInventoryOpen, setMobileInventoryOpen] = useState(false);
-const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
-const [deductionAttempts, setDeductionAttempts] = useState(0);
-
-const calculateGameCompletion = () => {
-  const deductionCorrect = deductionResult === 'correct';
-  if (!deductionCorrect) {
-    return { percent: 0, zdgtft2Compliant: false, deductionCorrect: false, hintsFound: readHints.size, interviewsCompleted: 0, cluesRead: 0, deductionAttempts };
-  }
-
-  let zdgtft2Compliant = true;
-  const contactIds = Object.keys(PHONE_CONTACTS);
-  let anyInteraction = false;
-
-  for (const cid of contactIds) {
-    if (cid === 'agente_scp') continue;
-    const history = pdChoiceHistory[cid] || [];
-    if (!history.length) continue;
-    anyInteraction = true;
-
-    const contact = PHONE_CONTACTS[cid];
-    const strategy = contact.axelrodStrategy;
-    let npcMoves: string[] = [];
-
-      const playerMoves = history.filter(a => a !== 'E') as ("C" | "D")[];
-
-      if (strategy === 'EugineNier') {
-        const eugine = createEugineNier();
-        for (let i = 0; i < playerMoves.length; i++) {
-          const npcMove = eugine(playerMoves.slice(0, i));
-          npcMoves.push(npcMove);
-        }
-      } else if (strategy === 'HardProber') {
-        const prober = new HardProber();
-        for (let i = 0; i < playerMoves.length; i++) {
-          const npcMove = prober.play(playerMoves[i]);
-          npcMoves.push(npcMove);
-        }
-      } else if (strategy === 'SneakyTitForTat') {
-        const sneaky = new SneakyTitForTat();
-        for (let i = 0; i < playerMoves.length; i++) {
-          const npcMove = sneaky.play(playerMoves[i]);
-          npcMoves.push(npcMove);
-        }
-      } else {
-        npcMoves = ['C'];
-        for (let i = 1; i < playerMoves.length; i++) {
-          const playerPrev = playerMoves[i - 1];
-        const playerAllDs = playerMoves.slice(0, i).filter(a => a === 'D').length;
-        let npcMove = 'C';
-        if (strategy === 'Grudger' && playerAllDs > 0) npcMove = 'D';
-        else if (strategy === 'TitForTat') npcMove = playerPrev === 'D' ? 'D' : 'C';
-        else if (strategy === 'SoftGrudger' && playerAllDs >= 2) npcMove = 'D';
-        else if (strategy === 'WinStayLoseShift') npcMove = playerPrev === 'D' ? 'D' : (i >= 2 && playerMoves[i - 2] === 'D' ? 'D' : 'C');
-        else if (strategy === 'Forgiver' && playerAllDs > 0) npcMove = 'D';
-        npcMoves.push(npcMove);
-      }
-    }
-
-    const npcMirror = npcMoves.slice(0, playerMoves.length);
-    for (let i = 0; i < playerMoves.length; i++) {
-      if (playerMoves[i] === 'D' && npcMirror[i] === 'C') {
-        zdgtft2Compliant = false;
-        break;
-      }
-    }
-    if (!zdgtft2Compliant) break;
-  }
-
-  if (!anyInteraction) zdgtft2Compliant = false;
-
-  const interviewsCompleted = [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length;
-  const totalContacts = 5;
-  const cluesRead = readInterviewClues.size;
-  const hintsFound = readHints.size;
-  const base = 50;
-  const percent = zdgtft2Compliant ? 100 : base;
-
-  return { percent, zdgtft2Compliant, deductionCorrect, hintsFound, interviewsCompleted, cluesRead, deductionAttempts };
-};
+  const { ref: xtermRef, instance: xtermInstance } = useXTerm({ options, addons });
 
   const DEDUCTION_LOCATIONS = ['Escritório Murphy', 'Rua Sieben', 'Gasthof Vila Nova', 'Volksschule', 'Volkspolizeistation 8º'] as const;
   const DEDUCTION_CATEGORIES = {
@@ -181,7 +98,16 @@ const calculateGameCompletion = () => {
     'Volksschule': { suspeito: 'Diretora Elvira', local_crime: 'Beco da Rua Sieben', arma: 'Revólver .38', motivo: 'Dívida de Jogo', horario: '23:30' },
     'Volkspolizeistation 8º': { suspeito: 'Kommissar Mendes', local_crime: 'Lagerhaus 7', arma: 'Veneno Injetável', motivo: 'Cobertura de Crime', horario: '22:00' },
   };
+
   const [deductionGrid, setDeductionGrid] = useState<Record<string, Record<DeductionCategory, string>>>(() => {
+    const saved = initialSaved?.deductionGrid;
+    if (saved) {
+      const grid: Record<string, Record<DeductionCategory, string>> = {};
+      DEDUCTION_LOCATIONS.forEach(loc => {
+        grid[loc] = saved[loc] || { suspeito: '', local_crime: '', arma: '', motivo: '', horario: '' };
+      });
+      return grid;
+    }
     const grid: Record<string, Record<DeductionCategory, string>> = {};
     DEDUCTION_LOCATIONS.forEach(loc => {
       grid[loc] = { suspeito: '', local_crime: '', arma: '', motivo: '', horario: '' };
@@ -189,9 +115,103 @@ const calculateGameCompletion = () => {
     return grid;
   });
 
+  const saveGame = () => {
+    const data = {
+      currentRoomId, inventory, visitedRooms,
+      discoveredContacts: Array.from(discoveredContacts),
+      calledContacts: Array.from(calledContacts),
+      pdCutoffContacts: Array.from(pdCutoffContacts),
+      pdChoiceHistory, phoneRecordings,
+      readHints: Array.from(readHints),
+      deductionGrid, deductionResult,
+      unlockedObjects: Array.from(unlockedObjects),
+      interactedItems,
+      readInterviewClues: Array.from(readInterviewClues),
+      deductionAttempts, murphyCommentaryMap, gameCompleted,
+      version: 1,
+    };
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch {}
+  };
+
+  const calculateGameCompletion = () => {
+    const deductionCorrect = deductionResult === 'correct';
+    if (!deductionCorrect) {
+      return { percent: 0, zdgtft2Compliant: false, deductionCorrect: false, hintsFound: readHints.size, interviewsCompleted: 0, cluesRead: 0, deductionAttempts };
+    }
+    let zdgtft2Compliant = true;
+    const contactIds = Object.keys(PHONE_CONTACTS);
+    let anyInteraction = false;
+    for (const cid of contactIds) {
+      if (cid === 'agente_scp') continue;
+      const history = pdChoiceHistory[cid] || [];
+      if (!history.length) continue;
+      anyInteraction = true;
+      const contact = PHONE_CONTACTS[cid];
+      const strategy = contact.axelrodStrategy;
+      let npcMoves: string[] = [];
+      const playerMoves = history.filter(a => a !== 'E') as ("C" | "D")[];
+      if (strategy === 'EugineNier') {
+        const eugine = createEugineNier();
+        for (let i = 0; i < playerMoves.length; i++) npcMoves.push(eugine(playerMoves.slice(0, i)));
+      } else if (strategy === 'HardProber') {
+        const prober = new HardProber();
+        for (let i = 0; i < playerMoves.length; i++) npcMoves.push(prober.play(playerMoves[i]));
+      } else if (strategy === 'SneakyTitForTat') {
+        const sneaky = new SneakyTitForTat();
+        for (let i = 0; i < playerMoves.length; i++) npcMoves.push(sneaky.play(playerMoves[i]));
+      } else {
+        npcMoves = ['C'];
+        for (let i = 1; i < playerMoves.length; i++) {
+          const playerPrev = playerMoves[i - 1];
+          const playerAllDs = playerMoves.slice(0, i).filter(a => a === 'D').length;
+          let npcMove = 'C';
+          if (strategy === 'Grudger' && playerAllDs > 0) npcMove = 'D';
+          else if (strategy === 'TitForTat') npcMove = playerPrev === 'D' ? 'D' : 'C';
+          else if (strategy === 'SoftGrudger' && playerAllDs >= 2) npcMove = 'D';
+          else if (strategy === 'WinStayLoseShift') npcMove = playerPrev === 'D' ? 'D' : (i >= 2 && playerMoves[i - 2] === 'D' ? 'D' : 'C');
+          else if (strategy === 'Forgiver' && playerAllDs > 0) npcMove = 'D';
+          npcMoves.push(npcMove);
+        }
+      }
+      const npcMirror = npcMoves.slice(0, playerMoves.length);
+      for (let i = 0; i < playerMoves.length; i++) {
+        if (playerMoves[i] === 'D' && npcMirror[i] === 'C') { zdgtft2Compliant = false; break; }
+      }
+      if (!zdgtft2Compliant) break;
+    }
+    if (!anyInteraction) zdgtft2Compliant = false;
+    return {
+      percent: zdgtft2Compliant ? 100 : 50,
+      zdgtft2Compliant, deductionCorrect,
+      hintsFound: readHints.size,
+      interviewsCompleted: [...calledContacts].filter(c => c !== 'agente_scp' && !pdCutoffContacts.has(c)).length,
+      cluesRead: readInterviewClues.size,
+      deductionAttempts,
+    };
+  };
+
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Autosave
   useEffect(() => {
+    const data = {
+      currentRoomId, inventory, visitedRooms,
+      discoveredContacts: Array.from(discoveredContacts),
+      calledContacts: Array.from(calledContacts),
+      pdCutoffContacts: Array.from(pdCutoffContacts),
+      pdChoiceHistory, phoneRecordings,
+      readHints: Array.from(readHints),
+      deductionGrid, deductionResult,
+      unlockedObjects: Array.from(unlockedObjects),
+      interactedItems,
+      readInterviewClues: Array.from(readInterviewClues),
+      deductionAttempts, murphyCommentaryMap, gameCompleted,
+      version: 1,
+    };
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(data)); } catch {}
+  }, [currentRoomId, inventory, visitedRooms, discoveredContacts, calledContacts, pdCutoffContacts, pdChoiceHistory, phoneRecordings, readHints, deductionGrid, deductionResult, unlockedObjects, interactedItems, readInterviewClues, deductionAttempts, murphyCommentaryMap, gameCompleted]);
+
+  useEffect(function() {
     const handleResize = () => {
       try { fitAddon.current.fit(); } catch (e) {}
     };
@@ -1721,7 +1741,14 @@ INVESTIGADOR EXEMPLAR — ZD-GTFT-2
 }
 
 export default function App() {
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState<'new' | 'continue' | null>(null);
+  const savedGame = (() => {
+    try {
+      const raw = localStorage.getItem('scp_law_save');
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch { return null; }
+  })();
 
   if (!hasStarted) {
     return (
@@ -1730,24 +1757,37 @@ export default function App() {
         <div className="scanline" />
         <div className="rain-overlay" />
         <div className="vignette-overlay" />
-        <h1 className="text-5xl text-noir-amber font-bold mb-2 tracking-widest text-center shadow-black drop-shadow-lg" style={{ fontFamily: 'Playfair Display, serif' }}>
-          MURPHY LAW
-        </h1>
-        <p className="text-lg text-amber-700 mb-8 tracking-widest">INVESTIGAÇÕES PRIVADAS</p>
-    <p className="text-zinc-500 text-xs mb-8 max-w-md text-center normal-case tracking-normal">
-      A chuva não para. O schnapps acabou. Maria Kraft depositou Mk 500 na mesa — tudo que tinha.
-      Helena, 9 anos, desaparecida há 3 semanas. A Volkspolizei arquiva. A cidade esquece.
-      Murphy Law não esquece.
-    </p>
-        <button
-          onClick={async () => { await Audio.init(); await Audio.startAmbient(); const startRoom = GAME_ROOMS['escritorio']; if (startRoom?.rain?.volume !== undefined) Audio.setRainVolume(startRoom.rain.volume); setHasStarted(true); }}
-          className="relative z-50 border-2 border-noir-amber text-noir-amber px-8 py-4 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors"
-        >
-          ACEITAR O CASO
-        </button>
+        <div className="border border-noir-amber/20 bg-black/40 p-10 md:p-14 relative max-w-lg w-full mx-4">
+          <h1 className="text-5xl text-noir-amber font-bold mb-2 tracking-widest text-center" style={{ fontFamily: 'Playfair Display, serif' }}>
+            MURPHY LAW
+          </h1>
+          <p className="text-lg text-amber-700 mb-10 tracking-widest text-center">INVESTIGAÇÕES PRIVADAS</p>
+          <div className="space-y-4">
+            {savedGame && (
+              <button
+                onClick={async () => { await Audio.init(); await Audio.startAmbient(); const room = GAME_ROOMS[savedGame.currentRoomId]; if (room?.rain?.volume !== undefined) Audio.setRainVolume(room.rain.volume); setHasStarted('continue'); }}
+                className="relative z-50 w-full border border-noir-amber text-noir-amber px-6 py-4 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors text-left flex items-center justify-between"
+              >
+                <span>CONTINUAR</span>
+                <span className="text-[10px] opacity-60 normal-case font-normal">
+                  {savedGame.currentRoomId ? GAME_ROOMS[savedGame.currentRoomId]?.name : ''} · {savedGame.deductionResult === 'correct' ? '100%' : savedGame.visitedRooms?.length || 0}/{Object.keys(GAME_ROOMS).length}
+                </span>
+              </button>
+            )}
+            <button
+              onClick={async () => { localStorage.removeItem('scp_law_save'); await Audio.init(); await Audio.startAmbient(); const startRoom = GAME_ROOMS['escritorio']; if (startRoom?.rain?.volume !== undefined) Audio.setRainVolume(startRoom.rain.volume); setHasStarted('new'); }}
+              className="relative z-50 w-full border-2 border-noir-amber text-noir-amber px-6 py-4 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors"
+            >
+              {savedGame ? 'NOVA PARTIDA' : 'ACEITAR O CASO'}
+            </button>
+          </div>
+          <p className="text-zinc-600 text-[10px] mt-8 text-center tracking-wider">
+            Uma amiga na Fundação pediu minha ajuda. Criança desaparecida. Não aceitei dinheiro.
+          </p>
+        </div>
       </div>
     );
   }
 
-  return <Game />;
+  return <Game loadFromSave={hasStarted === 'continue'} />;
 }
