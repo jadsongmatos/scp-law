@@ -497,8 +497,14 @@ interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height
     // (the left-click context menu). handleInteract just performs the action.
     if (obj.type === 'travel' && obj.targetRoom) {
       Audio.playDoor();
-      setIsMapOpen(true);
-} else if (obj.type === 'pickup' && obj.pickupItem) {
+      if (!visitedRooms.includes(obj.targetRoom)) {
+        setVisitedRooms(prev => [...prev, obj.targetRoom]);
+      }
+      setCurrentRoomId(obj.targetRoom);
+      const targetRoomData = localRooms[obj.targetRoom];
+      if (targetRoomData?.rain?.volume !== undefined) Audio.setRainVolume(targetRoomData.rain.volume);
+      addLog(`[NAVEGAÇÃO] Indo para: ${GAME_ROOMS[obj.targetRoom].name}`);
+    } else if (obj.type === 'pickup' && obj.pickupItem) {
     Audio.playPickup();
     if (!inventory.includes(obj.pickupItem)) {
       setInventory([...inventory, obj.pickupItem]);
