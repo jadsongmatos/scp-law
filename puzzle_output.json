@@ -5,18 +5,18 @@
     "n_rooms": 5,
     "categories": {
       "suspeito": [
-        "Delegado Mendes",
+        "Kommissar Mendes",
         "Diretora Elvira",
         "Seu Jonas",
-        "Zeca do Bar",
+        "Zeca do Gasthof",
         "Dra. Cunha"
       ],
       "local": [
-        "Armazém 7",
-        "Beco da Rua 14",
-        "Escola Vila Nova",
-        "Delegacia 8º",
-        "Bar Vila Nova"
+        "Lagerhaus 7",
+        "Beco da Rua Sieben",
+        "Volksschule Vila Nova",
+        "Volkspolizeistation 8º",
+        "Gasthof Vila Nova"
       ],
       "arma": [
         "Revólver .38",
@@ -42,18 +42,18 @@
     },
     "solution": {
       "suspeito": {
-        "Delegado Mendes": 4,
+        "Kommissar Mendes": 4,
         "Diretora Elvira": 3,
         "Seu Jonas": 2,
-        "Zeca do Bar": 1,
+        "Zeca do Gasthof": 1,
         "Dra. Cunha": 0
       },
       "local": {
-        "Armazém 7": 4,
-        "Beco da Rua 14": 3,
-        "Escola Vila Nova": 2,
-        "Delegacia 8º": 1,
-        "Bar Vila Nova": 0
+        "Lagerhaus 7": 4,
+        "Beco da Rua Sieben": 3,
+        "Volksschule Vila Nova": 2,
+        "Volkspolizeistation 8º": 1,
+        "Gasthof Vila Nova": 0
       },
       "arma": {
         "Revólver .38": 3,
@@ -102,10 +102,10 @@
     {
       "type": "adjacent",
       "c1": "local",
-      "v1": "Beco da Rua 14",
+      "v1": "Beco da Rua Sieben",
       "c2": "horario",
       "v2": "22:00",
-      "text": "O local 'Beco da Rua 14' está em um local adjacente ao horario '22:00'."
+      "text": "O local 'Beco da Rua Sieben' está em um local adjacente ao horario '22:00'."
     },
     {
       "type": "between_unordered",
@@ -114,8 +114,8 @@
       "c1": "arma",
       "v1": "Veneno Injetável",
       "c2": "local",
-      "v2": "Bar Vila Nova",
-      "text": "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Bar Vila Nova' (em qualquer ordem)."
+      "v2": "Gasthof Vila Nova",
+      "text": "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Gasthof Vila Nova' (em qualquer ordem)."
     },
     {
       "type": "between_ordered",
@@ -146,10 +146,10 @@
     {
       "type": "same_room",
       "c1": "suspeito",
-      "v1": "Delegado Mendes",
+      "v1": "Kommissar Mendes",
       "c2": "local",
-      "v2": "Armazém 7",
-      "text": "O suspeito 'Delegado Mendes' e o local 'Armazém 7' estão no mesmo local."
+      "v2": "Lagerhaus 7",
+      "text": "O suspeito 'Kommissar Mendes' e o local 'Lagerhaus 7' estão no mesmo local."
     },
     {
       "type": "between_unordered",
@@ -158,8 +158,8 @@
       "c1": "suspeito",
       "v1": "Dra. Cunha",
       "c2": "suspeito",
-      "v2": "Delegado Mendes",
-      "text": "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Delegado Mendes' (em qualquer ordem)."
+      "v2": "Kommissar Mendes",
+      "text": "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Kommissar Mendes' (em qualquer ordem)."
     },
     {
       "type": "not_adjacent",
@@ -174,31 +174,31 @@
       "cat": "motivo",
       "val": "Dívida de Jogo",
       "room": 3,
-      "text": "O motivo 'Dívida de Jogo' está no Escola Municipal."
+      "text": "O motivo 'Dívida de Jogo' está no Volksschule."
     },
     {
       "type": "left_of",
       "c1": "motivo",
       "v1": "Extorsão",
       "c2": "local",
-      "v2": "Delegacia 8º",
-      "text": "O motivo 'Extorsão' está em um local antes do local 'Delegacia 8º'."
+      "v2": "Volkspolizeistation 8º",
+      "text": "O motivo 'Extorsão' está em um local antes do local 'Volkspolizeistation 8º'."
     },
     {
       "type": "adjacent",
       "c1": "motivo",
       "v1": "Dívida de Jogo",
       "c2": "suspeito",
-      "v2": "Delegado Mendes",
-      "text": "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Delegado Mendes'."
+      "v2": "Kommissar Mendes",
+      "text": "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Kommissar Mendes'."
     },
     {
       "type": "same_room",
       "c1": "local",
-      "v1": "Escola Vila Nova",
+      "v1": "Volksschule Vila Nova",
       "c2": "arma",
       "v2": "Faca de Cozinha",
-      "text": "O local 'Escola Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local."
+      "text": "O local 'Volksschule Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local."
     },
     {
       "type": "same_room",
@@ -213,8 +213,8 @@
       "c1": "suspeito",
       "v1": "Seu Jonas",
       "c2": "local",
-      "v2": "Escola Vila Nova",
-      "text": "O suspeito 'Seu Jonas' e o local 'Escola Vila Nova' estão no mesmo local."
+      "v2": "Volksschule Vila Nova",
+      "text": "O suspeito 'Seu Jonas' e o local 'Volksschule Vila Nova' estão no mesmo local."
     }
   ],
   "interactables": [
@@ -278,7 +278,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O local 'Beco da Rua 14' está em um local adjacente ao horario '22:00'.",
+          "O local 'Beco da Rua Sieben' está em um local adjacente ao horario '22:00'.",
           "",
           "[Tipo de restrição: adjacent]"
         ]
@@ -300,7 +300,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Bar Vila Nova' (em qualquer ordem).",
+          "O motivo 'Vingança Pessoal' está entre o arma 'Veneno Injetável' e o local 'Gasthof Vila Nova' (em qualquer ordem).",
           "",
           "[Tipo de restrição: between_unordered]"
         ]
@@ -388,7 +388,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O suspeito 'Delegado Mendes' e o local 'Armazém 7' estão no mesmo local.",
+          "O suspeito 'Kommissar Mendes' e o local 'Lagerhaus 7' estão no mesmo local.",
           "",
           "[Tipo de restrição: same_room]"
         ]
@@ -410,7 +410,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Delegado Mendes' (em qualquer ordem).",
+          "O arma 'Arame de Piano' está entre o suspeito 'Dra. Cunha' e o suspeito 'Kommissar Mendes' (em qualquer ordem).",
           "",
           "[Tipo de restrição: between_unordered]"
         ]
@@ -454,7 +454,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O motivo 'Dívida de Jogo' está no Escola Municipal.",
+          "O motivo 'Dívida de Jogo' está no Volksschule.",
           "",
           "[Tipo de restrição: exact]"
         ]
@@ -476,7 +476,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O motivo 'Extorsão' está em um local antes do local 'Delegacia 8º'.",
+          "O motivo 'Extorsão' está em um local antes do local 'Volkspolizeistation 8º'.",
           "",
           "[Tipo de restrição: left_of]"
         ]
@@ -498,7 +498,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Delegado Mendes'.",
+          "O motivo 'Dívida de Jogo' está em um local adjacente ao suspeito 'Kommissar Mendes'.",
           "",
           "[Tipo de restrição: adjacent]"
         ]
@@ -520,7 +520,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O local 'Escola Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local.",
+          "O local 'Volksschule Vila Nova' e o arma 'Faca de Cozinha' estão no mesmo local.",
           "",
           "[Tipo de restrição: same_room]"
         ]
@@ -564,7 +564,7 @@
         "content": [
           "> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO",
           "",
-          "O suspeito 'Seu Jonas' e o local 'Escola Vila Nova' estão no mesmo local.",
+          "O suspeito 'Seu Jonas' e o local 'Volksschule Vila Nova' estão no mesmo local.",
           "",
           "[Tipo de restrição: same_room]"
         ]
@@ -591,9 +591,9 @@
           "Determine qual suspeito, local, arma,",
           "motivo e horário se conectam.",
           "",
-          "Locais: Escritório Murphy, Rua Sete, Bar Vila Nova, Escola Municipal, Delegacia 8º",
-          "Suspeitos: Delegado Mendes, Diretora Elvira, Seu Jonas, Zeca do Bar, Dra. Cunha",
-          "Locais do crime: Armazém 7, Beco da Rua 14, Escola Vila Nova, Delegacia 8º, Bar Vila Nova",
+          "Locais: Escritório Murphy, Rua Sieben, Gasthof Vila Nova, Volksschule, Volkspolizeistation 8º",
+          "Suspeitos: Kommissar Mendes, Diretora Elvira, Seu Jonas, Zeca do Gasthof, Dra. Cunha",
+          "Locais do crime: Lagerhaus 7, Beco da Rua Sieben, Volksschule Vila Nova, Volkspolizeistation 8º, Gasthof Vila Nova",
           "Armas: Revólver .38, Faca de Cozinha, Arame de Piano, Chave Inglesa, Veneno Injetável",
           "Motivos: Dívida de Jogo, Vingança Pessoal, Tráfico de Crianças, Extorsão, Cobertura de Crime",
           "Horários: 22:00, 23:30, 01:00, 02:30, 04:00",

@@ -4,12 +4,57 @@
   "difficulty": "medium",
   "n_rooms": 0,
   "categories": {
-    "suspeito": ["Delegado Mendes", "Diretora Elvira", "Seu Jonas", "Zeca do Bar", "Dra. Cunha"],
-    "local": ["Armazém 7", "Beco da Rua 14", "Escola Vila Nova", "Delegacia 8º", "Bar Vila Nova"],
-    "arma": ["Revólver .38", "Faca de Cozinha", "Arame de Piano", "Chave Inglesa", "Veneno Injetável"],
-    "motivo": ["Dívida de Jogo", "Vingança Pessoal", "Tráfico de Crianças", "Extorsão", "Cobertura de Crime"],
-    "horario": ["22:00", "23:30", "01:00", "02:30", "04:00"]
+    "suspeito": [
+      "Kommissar Mendes",
+      "Diretora Elvira",
+      "Seu Jonas",
+      "Zeca do Gasthof",
+      "Dra. Cunha"
+    ],
+    "local": [
+      "Lagerhaus 7",
+      "Beco da Rua Sieben",
+      "Volksschule Vila Nova",
+      "Volkspolizeistation 8º",
+      "Gasthof Vila Nova"
+    ],
+    "arma": [
+      "Revólver .38",
+      "Faca de Cozinha",
+      "Arame de Piano",
+      "Chave Inglesa",
+      "Veneno Injetável"
+    ],
+    "motivo": [
+      "Dívida de Jogo",
+      "Vingança Pessoal",
+      "Tráfico de Crianças",
+      "Extorsão",
+      "Cobertura de Crime"
+    ],
+    "horario": [
+      "22:00",
+      "23:30",
+      "01:00",
+      "02:30",
+      "04:00"
+    ]
   },
-  "room_names": ["Escritório Murphy", "Rua Sete", "Bar Vila Nova", "Escola Municipal", "Delegacia 8º"],
-  "puzzle_rooms": ["escritorio", "rua_chuva", "bar", "escola", "delegacia", "beco", "armazem", "diretoria"]
+  "room_names": [
+    "Escritório Murphy",
+    "Rua Sieben",
+    "Gasthof Vila Nova",
+    "Volksschule",
+    "Volkspolizeistation 8º"
+  ],
+  "puzzle_rooms": [
+    "escritorio",
+    "rua_chuva",
+    "bar",
+    "escola",
+    "delegacia",
+    "beco",
+    "armazem",
+    "diretoria"
+  ]
 }

@@ -45,8 +45,8 @@ function appSolutionAsAssignment(): Assignment {
 describe('src/game_data.json — shipped puzzle is 100% solvable', () => {
   const puzzle = loadGameDataPuzzle(gameData);
 
-  it('parses 18 hints and a coherent 5x5 schema', () => {
-    expect(puzzle.hints).toHaveLength(18);
+  it('parses 23 hints (18 puzzle + 5 interview clues) and a coherent 5x5 schema', () => {
+    expect(puzzle.hints).toHaveLength(23);
     expect(puzzle.nRooms).toBe(5);
     expect(Object.keys(puzzle.categories).sort()).toEqual(['arma', 'horario', 'local', 'motivo', 'suspeito']);
     for (const vals of Object.values(puzzle.categories)) expect(vals).toHaveLength(5);
@@ -56,7 +56,7 @@ describe('src/game_data.json — shipped puzzle is 100% solvable', () => {
     expect(puzzle.solution).toEqual(appSolutionAsAssignment());
   });
 
-  it('the 18 hints entail a UNIQUE solution = the win condition', () => {
+  it('the 23 hints entail a UNIQUE solution = the win condition', () => {
     const sols = solvePuzzle(puzzle.categories, puzzle.hints, puzzle.nRooms, 2);
     expect(sols).toHaveLength(1);
     expect(sols[0]).toEqual(puzzle.solution);

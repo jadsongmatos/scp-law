@@ -1183,16 +1183,16 @@
               "LETZTER AUFENTHALTSORT: Volksschule Vila Nova",
               "VERSCHWUNDEN SEIT: 3 Wochen",
               "",
-      "NOTIZEN DES DETEKTIVS:",
-      "",
-      "Eine Freundin aus der Stiftung rief mich an. 'Law, ich brauche dich.'",
-      "Sie sagte, das Mädchen heiße Helena. Neun Jahre alt.",
-      "Die Stiftung ist zu langsam. Sie wollte jemanden von außen.",
-      "Ich sagte ja, bevor sie den Preis nennen konnte.",
-      "",
-      "Die Volkspolizei hat keinen Finger gerührt. Kinder aus",
-      "dem Arbeiterbezirk machen keine Schlagzeile. Aber ich",
-      "habe die Stimme meiner Freundin gehört und konnte nicht nein sagen.",
+              "NOTIZEN DES DETEKTIVS:",
+              "",
+              "Eine Freundin aus der Stiftung rief mich an. 'Law, ich brauche dich.'",
+              "Sie sagte, das Mädchen heiße Helena. Neun Jahre alt.",
+              "Die Stiftung ist zu langsam. Sie wollte jemanden von außen.",
+              "Ich sagte ja, bevor sie den Preis nennen konnte.",
+              "",
+              "Die Volkspolizei hat keinen Finger gerührt. Kinder aus",
+              "dem Arbeiterbezirk machen keine Schlagzeile. Aber ich",
+              "habe die Stimme meiner Freundin gehört und konnte nicht nein sagen.",
               "",
               "Erste Spur: die Direktorin hat über die Uhrzeit gelogen.",
               "Jemand hat Helena innerhalb der Schule abgeholt.",
@@ -1813,7 +1813,11 @@
               "entrevista com Zeca do Gasthof for bem-sucedida.",
               "Perfil do contato: Qualquer traição encerra a parceria.",
               "",
-              "[Restrição: interview_gate=zeca]"
+              "[Restrição: interview_gate=zeca]",
+              "",
+              "O local 'Lagerhaus 7' está no Volkspolizeistation 8º.",
+              "",
+              "[Tipo de restrição: exact]"
             ]
           }
         }
@@ -2022,7 +2026,11 @@
               "entrevista com Diretora Elvira Campos for bem-sucedida.",
               "Perfil do contato: Este contato nunca encerra a conversa.",
               "",
-              "[Restrição: interview_gate=diretora_elvira]"
+              "[Restrição: interview_gate=diretora_elvira]",
+              "",
+              "O horario '23:30' está no Volksschule.",
+              "",
+              "[Tipo de restrição: exact]"
             ]
           }
         }
@@ -2223,7 +2231,11 @@
               "entrevista com Dra. Cunha for bem-sucedida.",
               "Perfil do contato: Traição 3x encerra a parceria.",
               "",
-              "[Restrição: interview_gate=dra_cunha]"
+              "[Restrição: interview_gate=dra_cunha]",
+              "",
+              "O motivo 'Extorsão' está no Escritório Murphy.",
+              "",
+              "[Tipo de restrição: exact]"
             ]
           }
         }
@@ -2492,7 +2504,11 @@
               "entrevista com Polizist Santos for bem-sucedida.",
               "Perfil do contato: Qualquer traição encerra a parceria.",
               "",
-              "[Restrição: interview_gate=santos]"
+              "[Restrição: interview_gate=santos]",
+              "",
+              "O suspeito 'Kommissar Mendes' está no Volkspolizeistation 8º.",
+              "",
+              "[Tipo de restrição: exact]"
             ]
           }
         }
@@ -2638,7 +2654,11 @@
               "entrevista com Seu Jonas for bem-sucedida.",
               "Perfil do contato: Este contato nunca encerra a conversa.",
               "",
-              "[Restrição: interview_gate=seu_jonas]"
+              "[Restrição: interview_gate=seu_jonas]",
+              "",
+              "O motivo 'Cobertura de Crime' está no Volkspolizeistation 8º.",
+              "",
+              "[Tipo de restrição: exact]"
             ]
           }
         }

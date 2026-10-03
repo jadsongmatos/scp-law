@@ -6,6 +6,7 @@
 //  - puzzle_deduction_terminal : the 5 positions + the 5 category value lists
 //  - puzzle_solution_terminal  : the declared solution (the envelope)
 //  - puzzle_hint_*             : the 18 hint sentences (+ "[Tipo de restrição:]")
+//  - interview_clue_*          : the 5 interview clue constraints
 //
 // The hint sentence templates come from enumerate_all_hints() in
 // scripts/puzzle/noir_generator.py and are deterministic; category values are
@@ -138,8 +139,12 @@ export function loadGameDataPuzzle(gd: GameData): ParsedPuzzle {
   const solution = parseSolution(byId('puzzle_solution_terminal'), rooms);
 
   const hints = its
-    .filter((i) => /^puzzle_hint_\d+$/.test(i.id))
-    .sort((a, b) => Number(a.id.split('_')[2]) - Number(b.id.split('_')[2]))
+    .filter((i) => /^(puzzle_hint_\d+|interview_clue_)/.test(i.id))
+    .sort((a, b) => {
+      const aNum = a.id.startsWith('puzzle') ? parseInt(a.id.split('_')[2]) : 100 + (a.id.split('_')[2]?.charCodeAt(0) || 0);
+      const bNum = b.id.startsWith('puzzle') ? parseInt(b.id.split('_')[2]) : 100 + (b.id.split('_')[2]?.charCodeAt(0) || 0);
+      return aNum - bNum;
+    })
     .map((i) => parseHint(content(i), rooms));
 
   return { categories, rooms, solution, hints, nRooms: rooms.length };

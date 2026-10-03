@@ -23,14 +23,14 @@ from scripts.shared.config import GAME_DATA_PATH
 from scripts.shared.geometry import find_free_position
 
 CATEGORIES = {
-    "suspeito": ["Delegado Mendes", "Diretora Elvira", "Seu Jonas", "Zeca do Bar", "Dra. Cunha"],
-    "local": ["Armazém 7", "Beco da Rua 14", "Escola Vila Nova", "Delegacia 8º", "Bar Vila Nova"],
+    "suspeito": ["Kommissar Mendes", "Diretora Elvira", "Seu Jonas", "Zeca do Gasthof", "Dra. Cunha"],
+    "local": ["Lagerhaus 7", "Beco da Rua Sieben", "Volksschule Vila Nova", "Volkspolizeistation 8º", "Gasthof Vila Nova"],
     "arma": ["Revólver .38", "Faca de Cozinha", "Arame de Piano", "Chave Inglesa", "Veneno Injetável"],
     "motivo": ["Dívida de Jogo", "Vingança Pessoal", "Tráfico de Crianças", "Extorsão", "Cobertura de Crime"],
     "horario": ["22:00", "23:30", "01:00", "02:30", "04:00"],
 }
 
-ROOM_NAMES = ["Escritório Murphy", "Rua Sete", "Bar Vila Nova", "Escola Municipal", "Delegacia 8º"]
+ROOM_NAMES = ["Escritório Murphy", "Rua Sieben", "Gasthof Vila Nova", "Volksschule", "Volkspolizeistation 8º"]
 
 HINT_TYPES = [
     "exact",
@@ -549,21 +549,30 @@ def merge_puzzle_into_game_data(game_data_path: str, puzzle_interactables: list[
 
     rooms = data["GAME_ROOMS"]
 
+    # Upsert/dedup by id: a re-run of the generator replaces an existing
+    # interactable with the same id instead of appending a duplicate.
     for item in puzzle_interactables:
         room_id = item.pop("room")
         if room_id in rooms:
             existing = rooms[room_id].get("interactables", [])
-            x, y = find_free_position(room_id, item.get("width", 10.0), item.get("height", 10.0), existing)
-            item["x"] = x
-            item["y"] = y
-            rooms[room_id]["interactables"].append(item)
+            same_id = [i for i, e in enumerate(existing) if e.get("id") == item.get("id")]
+            if same_id:
+                # keep position of the shipped item, refresh everything else
+                pos = {"x": existing[same_id[0]].get("x", 50.0), "y": existing[same_id[0]].get("y", 50.0)}
+                item["x"] = pos["x"]; item["y"] = pos["y"]
+                existing[same_id[0]] = item
+            else:
+                x, y = find_free_position(room_id, item.get("width", 10.0), item.get("height", 10.0), existing)
+                item["x"] = x
+                item["y"] = y
+                rooms[room_id]["interactables"].append(item)
 
     cat_names = list(values.keys())
     n = len(list(values.values())[0])
 
     solution_content = [
         "═══════════════════════════════════════",
-        " SOLUÇÃO — CASO HELENA SILVA",
+        " SOLUÇÃO — FALL HELENA KRAFT",
         "═══════════════════════════════════════",
         "",
     ]
@@ -576,13 +585,10 @@ def merge_puzzle_into_game_data(game_data_path: str, puzzle_interactables: list[
                     solution_content.append(f" {c.capitalize()}: {v}")
         solution_content.append("")
 
-    existing_armazem = rooms.get("armazem", {}).get("interactables", [])
-    sx, sy = find_free_position("armazem", 10.0, 10.0, existing_armazem)
-
-    rooms["armazem"]["interactables"].append({
+    solution_terminal = {
         "id": "puzzle_solution_terminal",
-        "x": sx,
-        "y": sy,
+        "x": 50.0,
+        "y": 50.0,
         "icon": "Eye",
         "type": "terminal_read",
         "label": "Envelope Lacrado — Resolução do Caso",
@@ -593,7 +599,18 @@ def merge_puzzle_into_game_data(game_data_path: str, puzzle_interactables: list[
             "title": "SOLUÇÃO CONFIDENCIAL",
             "content": solution_content,
         },
-    })
+    }
+    armazem_items = rooms["armazem"].get("interactables", [])
+    same_id = [i for i, e in enumerate(armazem_items) if e.get("id") == "puzzle_solution_terminal"]
+    if same_id:
+        pos = {"x": armazem_items[same_id[0]].get("x", 50.0), "y": armazem_items[same_id[0]].get("y", 50.0)}
+        solution_terminal["x"] = pos["x"]; solution_terminal["y"] = pos["y"]
+        armazem_items[same_id[0]] = solution_terminal
+    else:
+        sx, sy = find_free_position("armazem", 10.0, 10.0, armazem_items)
+        solution_terminal["x"] = sx
+        solution_terminal["y"] = sy
+        rooms["armazem"]["interactables"].append(solution_terminal)
 
     return data
 
