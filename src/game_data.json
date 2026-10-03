@@ -1120,6 +1120,84 @@
           "Não se pode resolver um caso com espaços em branco."
         ]
       }
+    },
+    "fazendeiro": {
+      "name": "Caseiro da Fazenda",
+      "number": "sem número — encontro na fazenda",
+      "discoveredFrom": "auto",
+      "voice": "masculine",
+      "greeting": "Não vejo visita há semanas. Se é da Die Wohltat, já fui avisado. Se não é... então talvez eu fale.",
+      "dialogue": {
+        "initial": {
+          "speaker": "Caseiro",
+          "lines": [
+            "Vinte anos cuidando disso aqui. Já vi coisa demais naquela estrada.",
+            "Caminhão preto passou na semana passada. Não parou aqui — parou na bifurcação.",
+            "Dois homens. Caixas lacradas com plástico verde.",
+            "Você parece o tipo que ainda pergunta. Pergunte logo."
+          ],
+          "choices": [
+            {
+              "text": "O que você viu exatamente? Preciso de detalhes.",
+              "goto": "ca_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "Você viu e não ligou pra polícia? Cúmplice é igual culpado.",
+              "goto": "ca_r1_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "Obrigado pelo seu tempo. Vou verificar o celeiro.",
+              "goto": "ca_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "ca_clue": {
+          "speaker": "Caseiro",
+          "lines": [
+            "Detalhes? Bem. Um dos homens usava uniforme.",
+            "Não era o uniforme comum — era o que chamam de Volkspolizei Distrito 8.",
+            "O outro, de terno. Gordo. Não subiu no caminhão — ficou esperando no frio como se tivesse pressa.",
+            "Foram pro Lagerhaus 7. Voltaram sem as caixas.",
+            "E o botão que você achou na minha cerca é daquele uniforme. Pode ficar com ele se quiser."
+          ],
+          "choices": []
+        },
+        "ca_r1_d": {
+          "speaker": "Caseiro",
+          "lines": [
+            "Cúmplice? Eu planto mandioca, Law. Não planto cadáver.",
+            "Se eu ligasse pra polícia, o telefonema terminava em mim.",
+            "Agora vá olhar o que você veio olhar. A cerca guarda mais segredo que eu."
+          ],
+          "choices": []
+        },
+        "ca_end_e": {
+          "speaker": "Caseiro",
+          "lines": [
+            "Agradeço não. Só encontre a menina.",
+            "Se o caminhão preto voltar, eu escrevo a hora na caderneta. Como sempre fiz."
+          ],
+          "choices": []
+        }
+      },
+      "axelrodStrategy": "WinStayLoseShift",
+      "murphyCommentary": {
+        "ca_clue": [
+          "O caseiro viu o uniforme. Isso encurrala o Distrito 8.",
+          "Caixas lacradas indo pro Lagerhaus 7 e não voltando. Crianças não são carga que volta."
+        ],
+        "ca_r1_d": [
+          "Ele tem razão. Ali, ligar pra polícia é assinatura de morte.",
+          "WinStayLoseShift: ele não guarda rancor, mas não esquece. Pragmático."
+        ],
+        "ca_end_e": [
+          "O caseiro cooperou do jeito que pôde — com caderneta e silêncio.",
+          "A cerca e o celeiro falam mais que ele."
+        ]
+      }
     }
   },
   "GAME_ROOMS": {
@@ -1552,6 +1630,30 @@
               "[Tipo de restrição: not_same_room]"
             ]
           }
+        },
+        {
+          "id": "casa_maria_porta",
+          "icon": "Home",
+          "x": 87,
+          "y": 65,
+          "type": "travel",
+          "label": "Casa de Maria Kraft",
+          "width": 8,
+          "height": 25,
+          "targetRoom": "casa_mae",
+          "description": "Uma porta azul desbotada. O número 314-B está riscado com esparadrapo."
+        },
+        {
+          "id": "igreja_porta",
+          "icon": "Church",
+          "x": 6,
+          "y": 65,
+          "type": "travel",
+          "label": "Igreja da Vila — Kapelle",
+          "width": 8,
+          "height": 25,
+          "targetRoom": "igreja",
+          "description": "Pedra antiga com musgo. A porta de madeira está entreaberta. Luz de vela vaza da fresta."
         }
       ],
       "rain": {
@@ -2033,6 +2135,18 @@
               "[Tipo de restrição: exact]"
             ]
           }
+        },
+        {
+          "id": "porta_hospital",
+          "icon": "Stethoscope",
+          "x": 70,
+          "y": 48,
+          "type": "travel",
+          "label": "Posto de Saúde do Distrito",
+          "width": 8,
+          "height": 30,
+          "targetRoom": "hospital",
+          "description": "Placa esmaltada: 'BEZIRKSGESUNDHEITSPOSTEN'. A porta cheira a éter e medo."
         }
       ],
       "rain": {
@@ -2905,6 +3019,373 @@
       "rain": {
         "volume": 0.05
       }
+    },
+    "casa_mae": {
+      "id": "casa_mae",
+      "name": "Casa de Maria Kraft — Rua Sieben, 314-B",
+      "description": "Uma sala apertada. Cheiro de café frio e flores secas. Fotografias nas paredes. A cadeira de Helena ainda tem o livro dela aberto — como se ela fosse voltar a qualquer momento. Maria Kraft cuida de tudo como se o tempo pudesse ser revertido pela força do arrumado.",
+      "rain": {
+        "volume": 0.6
+      },
+      "interactables": [
+        {
+          "id": "casa_mae_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Voltar para a Rua Sieben",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "carta_maria_kraft",
+          "icon": "FileText",
+          "x": 20,
+          "y": 45,
+          "type": "terminal_read",
+          "label": "Carta de Maria Kraft",
+          "width": 12,
+          "height": 15,
+          "description": "Um envelope amassado. A letra é firme apesar do tremor das mãos.",
+          "documentData": {
+            "title": "BRIEF VON MARIA KRAFT",
+            "content": [
+              "═══════════════════════════════════════",
+              " CARTA DE MARIA KRAFT — MÃE DE HELENA",
+              "═══════════════════════════════════════",
+              "",
+              "Herr Law,",
+              "",
+              "Minha filha sumiu há três semanas.",
+              "A polícia disse que ela 'fugiu de casa'.",
+              "Helena tem nove anos.",
+              "",
+              "A Stern me disse que você é diferente.",
+              "Que você não aceita essa resposta.",
+              "",
+              "Eu soube que ela saiu da escola uma hora",
+              "mais cedo. O professor Borges viu o carro.",
+              "Preto. Com placa de órgão estatal.",
+              "",
+              "Encontre minha filha, Herr Law.",
+              "Não tenho mais ninguém.",
+              "",
+              "Maria Kraft",
+              "Rua Sieben, 314-B",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "foto_familia_kraft",
+          "icon": "Search",
+          "x": 68,
+          "y": 35,
+          "type": "inspect",
+          "label": "Fotografia da Família Kraft",
+          "width": 14,
+          "height": 20,
+          "description": "Uma foto de estúdio. Maria, o marido (falecido — tuberculose, 1989) e Helena, cinco anos. Sorriso largo. O pai segura uma bola de futebol. Atrás da foto, à lápis: 'Feliz demais para durar.'"
+        },
+        {
+          "id": "quarto_helena",
+          "icon": "Bed",
+          "x": 40,
+          "y": 62,
+          "type": "inspect",
+          "label": "Quarto de Helena",
+          "width": 16,
+          "height": 20,
+          "description": "Cama arrumada com militar precisão — Maria faz isso todo dia. Livro aberto: 'Die Unendliche Geschichte'. Marcador de página em forma de borboleta. Gaveta entreaberta — faltam roupas de três dias."
+        },
+        {
+          "id": "agenda_maria",
+          "icon": "Search",
+          "x": 82,
+          "y": 60,
+          "type": "inspect",
+          "label": "Agenda de Maria Kraft",
+          "width": 12,
+          "height": 18,
+          "description": "Agenda de bolso. Anotações: horários de reunião com a escola, consultas médicas, o número da Fundação SCP (riscado com força). Última entrada: 'Lei — Stern — aguardar'. Data: três semanas atrás."
+        }
+      ]
+    },
+    "igreja": {
+      "id": "igreja",
+      "name": "Kapelle Vila Nova — Pedra e Silêncio",
+      "description": "O interior cheira a incenso velho e madeira úmida. Bancos de carvalho escuro. O altar tem uma vela acesa — alguém esteve aqui recentemente. Padre Miguel emerge das sombras do confessionário como se soubesse que você viria.",
+      "rain": {
+        "volume": 0.4
+      },
+      "interactables": [
+        {
+          "id": "igreja_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair da Igreja",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "rua_chuva"
+        },
+        {
+          "id": "estrada_fazenda",
+          "icon": "TreePine",
+          "x": 82,
+          "y": 50,
+          "type": "travel",
+          "label": "Estrada de Chão — Fazenda",
+          "width": 10,
+          "height": 30,
+          "targetRoom": "fazenda",
+          "description": "Uma trilha de terra vermelha que desaparece entre eucaliptos. O caseiro mora no fim. Ninguém vai até lá sem motivo."
+        },
+        {
+          "id": "padre_miguel_encontro",
+          "icon": "PhoneCall",
+          "x": 28,
+          "y": 50,
+          "type": "phone_call",
+          "label": "Padre Miguel — Confessionário",
+          "phoneCallId": "padre_miguel",
+          "width": 14,
+          "height": 30,
+          "description": "O padre baixa os olhos. Sabe mais do que admitirá de primeira."
+        },
+        {
+          "id": "vitral_janela",
+          "icon": "Eye",
+          "x": 55,
+          "y": 30,
+          "type": "inspect",
+          "label": "Vitral — São Cristóvão",
+          "width": 18,
+          "height": 25,
+          "description": "São Cristóvão carrega uma criança nas costas. O rosto da criança foi vandalizando com tinta preta — uma cena que a congregação finge não ver. Embaixo, riscado com faca: 'SIE WISSEN ES'."
+        },
+        {
+          "id": "registro_paroquial",
+          "icon": "FileText",
+          "x": 10,
+          "y": 48,
+          "type": "terminal_read",
+          "label": "Registro Paroquial",
+          "width": 12,
+          "height": 22,
+          "description": "Um livro encadernado. Batismos, casamentos, funerais. Padre Miguel anota tudo.",
+          "documentData": {
+            "title": "KIRCHENBUCH — VILA NOVA",
+            "content": [
+              "═══════════════════════════════════════",
+              " REGISTRO PAROQUIAL — KAPELLE VILA NOVA",
+              "═══════════════════════════════════════",
+              "",
+              "Batismo recente — sem nome registrado:",
+              "'Criança, sexo fem., ~9 anos. Apresentada",
+              "por representante do Partido. Pai: não",
+              "declarado. Mãe: ausente.'",
+              "",
+              "Nota do pároco (P. Miguel):",
+              "'Recusei o registro. O homem insistiu.",
+              "Mencionou Wohltat. Saiu sem a criança.",
+              "A criança não falou nada. Olhos fixos no",
+              "vitral de São Cristóvão.'",
+              "",
+              "Data: mesma semana do desaparecimento.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "banco_vela",
+          "icon": "Eye",
+          "x": 50,
+          "y": 65,
+          "type": "inspect",
+          "label": "Banco com Vela Acesa",
+          "width": 20,
+          "height": 12,
+          "description": "Uma vela na extremidade do banco. Ainda derretendo. Ao lado: um bilhete dobrado. 'Ela ainda está viva. Deus perdoa. Wohltat não perdoa. Tenha cuidado, Herr Law.' Letra reconhecível — Padre Miguel."
+        }
+      ]
+    },
+    "fazenda": {
+      "id": "fazenda",
+      "name": "Fazenda do Caseiro — Fim da Estrada",
+      "description": "Uma propriedade abandonada pelo governo, arrendada ao caseiro há vinte anos. Galinhas no quintal. Um celeiro com telhado meio caído. O caseiro surge da sombra do celeiro — chapéu de palha, olhos pequenos que leram muita coisa.",
+      "rain": {
+        "volume": 0.1
+      },
+      "interactables": [
+        {
+          "id": "fazenda_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Voltar para a Igreja",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "igreja"
+        },
+        {
+          "id": "caseiro_encontro",
+          "icon": "PhoneCall",
+          "x": 60,
+          "y": 50,
+          "type": "phone_call",
+          "label": "Caseiro — Conversa na Cerca",
+          "phoneCallId": "fazendeiro",
+          "width": 14,
+          "height": 28,
+          "description": "O caseiro apoia os cotovelos na cerca de madeira. Não fala muito, mas quando fala, é verdade."
+        },
+        {
+          "id": "anotacoes_caseiro",
+          "icon": "FolderOpen",
+          "x": 15,
+          "y": 55,
+          "type": "terminal_read",
+          "label": "Caderneta do Caseiro",
+          "width": 12,
+          "height": 18,
+          "description": "Uma caderneta de anotações. Datas, cargas e caminhões que passam pela estrada.",
+          "documentData": {
+            "title": "CADERNETA DO CASEIRO",
+            "content": [
+              "═══════════════════════════════════════",
+              " ANOTAÇÕES DO CASEIRO — ESTRADA FAZENDA",
+              "═══════════════════════════════════════",
+              "",
+              "Registro de movimentação suspeita:",
+              "",
+              "Semana passada: caminhão preto sem",
+              "identificação parou na bifurcação.",
+              "Dois homens saíram. Um deles eu",
+              "reconheci: uniforme do Volkspolizei.",
+              "",
+              "O outro estava de terno. Gordo.",
+              "Carregavam caixas do tipo que a",
+              "Die Wohltat usa — lacradas com",
+              "plástico verde.",
+              "",
+              "Foram em direção ao Lagerhaus 7.",
+              "Voltaram sem as caixas.",
+              "",
+              "Não liguei para a polícia.",
+              "A polícia era um deles.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "celeiro_fazenda",
+          "icon": "TreePine",
+          "x": 82,
+          "y": 45,
+          "type": "inspect",
+          "label": "Celeiro Abandonado",
+          "width": 14,
+          "height": 40,
+          "description": "Palha velha e ferramentas enferrujadas. No fundo, escondido atrás de uma tábua: um rádio de ondas curtas. Sintonizado numa frequência estatal. Alguém monitorava as transmissões."
+        },
+        {
+          "id": "cerca_fazenda",
+          "icon": "Fence",
+          "x": 38,
+          "y": 72,
+          "type": "inspect",
+          "label": "Cerca de Madeira",
+          "width": 18,
+          "height": 10,
+          "description": "Postes espaçados irregularmente — uma foi trocada recentemente. A madeira nova contrasta. Perto do poste, enterrado raso: um botão de uniforme. Brasão do Volkspolizei Distrito 8."
+        }
+      ]
+    },
+    "hospital": {
+      "id": "hospital",
+      "name": "Bezirksgesundheitsposten — Posto de Saúde",
+      "description": "Um corredor estreito com paredes verde-hospitalar desbotado. Cheiro de formol e papel. A Dra. Cunha está na sala do fundo, revisando prontuários com a expressão de alguém que sabe demais.",
+      "rain": {
+        "volume": 0.2
+      },
+      "interactables": [
+        {
+          "id": "hospital_saida",
+          "icon": "DoorOpen",
+          "x": 50,
+          "y": 88,
+          "type": "travel",
+          "label": "Sair do Posto de Saúde",
+          "width": 10,
+          "height": 8,
+          "targetRoom": "escola"
+        },
+        {
+          "id": "dra_cunha_encontro",
+          "icon": "Stethoscope",
+          "x": 68,
+          "y": 45,
+          "type": "phone_call",
+          "label": "Dra. Cunha — Prontuários",
+          "phoneCallId": "dra_cunha",
+          "width": 14,
+          "height": 30,
+          "description": "Ela fecha o prontuário quando você entra. Cúmplice relutante. Pune e depois se arrepende."
+        },
+        {
+          "id": "arquivo_pacientes",
+          "icon": "FileSearch",
+          "x": 15,
+          "y": 48,
+          "type": "terminal_read",
+          "label": "Arquivo de Pacientes",
+          "width": 14,
+          "height": 25,
+          "description": "Fichas médicas. Uma está fora de ordem — data do desaparecimento.",
+          "documentData": {
+            "title": "PATIENTENAKTE — BEZIRKSPOSTEN",
+            "content": [
+              "═══════════════════════════════════════",
+              " ARQUIVO MÉDICO — ACESSO RESTRITO",
+              "═══════════════════════════════════════",
+              "",
+              "Ficha: Helena K., 9 anos",
+              "Data da última consulta: semana do",
+              "desaparecimento. Sedativos prescritos.",
+              "",
+              "Nota médica (Dr.ª Cunha):",
+              "'Criança apresentada por tutor não",
+              "identificado. Receituário em nome de",
+              "órgão estatal. Recusei-me a assinar.",
+              "Recebi ligação posterior com 'orientação'.",
+              "Assinei. Não devia ter assinado.'",
+              "",
+              "Referência: Die Wohltat — ID Tutelar 77.",
+              "",
+              "═══════════════════════════════════════"
+            ]
+          }
+        },
+        {
+          "id": "sala_emergencia",
+          "icon": "Syringe",
+          "x": 40,
+          "y": 48,
+          "type": "inspect",
+          "label": "Sala de Emergência",
+          "width": 14,
+          "height": 30,
+          "description": "Mesa de aço com manchas de iodo. Uma seringa vazia no balde — sedativo, dose pediátrica. A Dra. Cunha não olha para o balde quando você aponta. Culpa tem cheiro, e aqui cheira muito."
+        }
+      ]
     }
   },
   "_interviewClueMap": {

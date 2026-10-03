@@ -27,6 +27,16 @@ import {
   PhoneCall,
   Mail,
   Pin,
+  Church,
+  Cross,
+  Stethoscope,
+  FolderOpen,
+  Syringe,
+  TreePine,
+  Fence,
+  FileSearch,
+  Bed,
+  FileKey,
 } from 'lucide-react';
 
 export const IconMap: Record<string, React.ElementType> = {
@@ -57,4 +67,14 @@ export const IconMap: Record<string, React.ElementType> = {
   PhoneCall,
   Mail,
   Pin,
+  Church,
+  Cross,
+  Stethoscope,
+  FolderOpen,
+  Syringe,
+  TreePine,
+  Fence,
+  FileSearch,
+  Bed,
+  FileKey,
 };

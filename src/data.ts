@@ -25,7 +25,7 @@ export interface Interactable {
 export interface PhoneContact {
   name: string;
   number: string;
-  discoveredFrom: string;
+  discoveredFrom?: string;
   voice: string;
   greeting: string;
   axelrodStrategy: string;
@@ -55,6 +55,10 @@ import imgDiretoria from './assets/images/noir/bg_diretoria.png';
 import imgDelegacia from './assets/images/noir/bg_delegacia.png';
 import imgBeco from './assets/images/noir/bg_beco.png';
 import imgArmazem from './assets/images/noir/bg_armazem.png';
+import imgIgreja from './assets/images/noir/bg_igreja.png';
+import imgFazenda from './assets/images/noir/bg_fazenda.png';
+import imgHospital from './assets/images/noir/bg_hospital.png';
+import imgCasaMae from './assets/images/noir/bg_casa_mae.png';
 
 import mapEscritorio from './assets/images/noir/maps/map_escritorio.png';
 import mapRuaChuva from './assets/images/noir/maps/map_rua_chuva.png';
@@ -62,6 +66,10 @@ import mapBar from './assets/images/noir/maps/map_bar.png';
 import mapDiretoria from './assets/images/noir/maps/map_diretoria.png';
 import mapDelegacia from './assets/images/noir/maps/map_delegacia.png';
 import mapArmazem from './assets/images/noir/maps/map_armazem.png';
+import mapIgreja from './assets/images/noir/maps/map_igreja.png';
+import mapFazenda from './assets/images/noir/maps/map_fazenda.png';
+import mapHospital from './assets/images/noir/maps/map_hospital.png';
+import mapCasaMae from './assets/images/noir/maps/map_casa_mae.png';
 
 import gameData from './game_data.json';
 
@@ -71,6 +79,7 @@ import imgIsqueiro from './assets/images/noir/items/item_isqueiro.png';
 import imgFitaMagnetica from './assets/images/noir/items/item_fita_magnetica.png';
 import imgCedula500 from './assets/images/noir/items/item_cedula_500.png';
 import imgGravadorCassete from './assets/images/noir/items/item_gravador_cassete.png';
+import imgChaveArmazem from './assets/images/noir/items/item_chave_armazem.png';
 
 export const ITEM_IMAGES: Record<string, string> = {
   cartao_visita: imgCartaoVisita,
@@ -79,6 +88,7 @@ export const ITEM_IMAGES: Record<string, string> = {
   fita_magnetica: imgFitaMagnetica,
   cedula_500: imgCedula500,
   gravador_cassete: imgGravadorCassete,
+  chave_armazem: imgChaveArmazem,
 };
 
 export const ITEM_NAMES: Record<string, string> = gameData.ITEM_NAMES;
@@ -94,6 +104,10 @@ const BG_MAP: Record<string, string> = {
   delegacia: imgDelegacia,
   beco: imgBeco,
   armazem: imgArmazem,
+  igreja: imgIgreja,
+  fazenda: imgFazenda,
+  hospital: imgHospital,
+  casa_mae: imgCasaMae,
 };
 
 const MAP_IMG: Record<string, string> = {
@@ -103,6 +117,10 @@ const MAP_IMG: Record<string, string> = {
   diretoria: mapDiretoria,
   delegacia: mapDelegacia,
   armazem: mapArmazem,
+  igreja: mapIgreja,
+  fazenda: mapFazenda,
+  hospital: mapHospital,
+  casa_mae: mapCasaMae,
 };
 
 const rawRooms = gameData.GAME_ROOMS as Record<string, Room>;
