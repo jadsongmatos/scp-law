@@ -1,3 +1,5 @@
+import { rng42 } from '@/lib/rng';
+
 export class SoundEngine {
   ctx: AudioContext | null = null;
   ambientGain: GainNode | null = null;
@@ -107,7 +109,7 @@ export class SoundEngine {
 
   startJazzAmbient() {
     this.jazzInterval = setInterval(() => {
-      if (Math.random() < 0.15) {
+      if (rng42() < 0.15) {
         this.playJazzChord();
       }
     }, 8000);
@@ -136,7 +138,7 @@ export class SoundEngine {
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
+      data[i] = rng42() * 2 - 1;
     }
     const noise = this.ctx.createBufferSource();
     noise.buffer = buffer;
@@ -158,7 +160,7 @@ export class SoundEngine {
   playJazzChord() {
     if (!this.ctx) return;
     const notes = [220, 261.63, 329.63, 392, 440];
-    const chord = notes.sort(() => Math.random() - 0.5).slice(0, 3);
+    const chord = notes.sort(() => rng42() - 0.5).slice(0, 3);
     chord.forEach((f, i) => {
       setTimeout(() => this.playTone(f, 'sine', 1.5, 0.015), i * 50);
     });
@@ -187,8 +189,8 @@ export class SoundEngine {
     let time = 0;
     for (let i = 0; i < 5; i++) {
       const offset = time;
-      setTimeout(() => this.playTone(800 + Math.random() * 600, 'square', 0.04, 0.015), offset);
-      time += 35 + Math.random() * 50;
+      setTimeout(() => this.playTone(800 + rng42() * 600, 'square', 0.04, 0.015), offset);
+      time += 35 + rng42() * 50;
     }
   }
 
@@ -199,7 +201,7 @@ export class SoundEngine {
   }
 
   playTypewriter() {
-    this.playTone(800 + Math.random() * 400, 'square', 0.02, 0.01);
+    this.playTone(800 + rng42() * 400, 'square', 0.02, 0.01);
   }
 
   currentSpeech: HTMLAudioElement | null = null;
