@@ -9,8 +9,20 @@ NOIR_MAP_DIR = NOIR_IMAGE_DIR / "maps"
 NOIR_ITEMS_DIR = NOIR_IMAGE_DIR / "items"
 VOICE_DIR = PROJECT_ROOT / "public" / "voice"
 
+# s2.cpp paths
+S2_DIR = PROJECT_ROOT / "s2.cpp"
+S2_BINARY = S2_DIR / "tmp" / "s2"
+S2_LIB_PATH = S2_DIR / "tmp"
+S2_TOKENIZER = S2_DIR / "tokenizer.json"
+S2_MODELS = PROJECT_ROOT / "s2-models"
+S2_MODEL = S2_MODELS / "s2-pro-q4_k_m-transformer-only.gguf"
+S2_CODEC_MODEL = S2_MODELS / "s2-pro-q4_k_m-codec-only.gguf"
+S2_OUTPUT_DIR = PROJECT_ROOT / "s2-output"
+
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 IMAGE_MODEL = "google/gemini-3-pro-image-preview"
 VISION_MODEL = "google/gemini-2.5-flash"
@@ -28,12 +40,6 @@ ITEM_STYLE_PREFIX = """Generate a single item icon for a noir detective video ga
 Film noir aesthetic — high contrast, deep shadows, warm amber highlight.
 Dark background, cinematic lighting, isolated object, no text, no people.
 Square composition, item icon style, dark moody atmosphere."""
-
-S2_DIR = PROJECT_ROOT / "s2.cpp"
-S2_MODELS = PROJECT_ROOT / "s2-models"
-S2_TRANSFORMER = S2_MODELS / "s2-pro-q4_k_m-transformer-only.gguf"
-S2_CODEC = S2_MODELS / "s2-pro-q4_k_m-codec-only.gguf"
-S2_OUTPUT_DIR = PROJECT_ROOT / "s2-output"
 
 DEFAULT_RETRIES = 3
 DEFAULT_BACKOFF = 10

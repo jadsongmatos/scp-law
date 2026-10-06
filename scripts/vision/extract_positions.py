@@ -1,25 +1,31 @@
 #!/usr/bin/env python3
 """
 extract_positions.py
-Pipeline YOLO + Gemma-4-31b-it (via OpenRouter) para extrair posições de itens
+Pipeline DINOv2-large + Gemma-4-31b-it (via OpenRouter) para extrair posições de itens
 nas imagens de cenário do jogo SCP.
 
 Fluxo:
-1. YOLO (ultralytics) detecta objetos na imagem → bounding boxes + labels
-2. Bounding boxes são convertidas para coordenadas normalizadas (0-100%)
-3. Gemma-4-31b-it recebe a imagem + detecções YOLO e classifica/refina
+1. DINOv2-large extrai patch embeddings (denso) por região da imagem
+2. DBSCAN clusteriza patches por similaridade → regiões semânticas
+3. Gemma-4-31b-it recebe a imagem + regiões DINOv2 e classifica/refina
    cada item no contexto do jogo SCP (portas, terminais, keycards, etc.)
-4. Gera interactivables no formato do game_data.json
+4. Gera interactables no formato do game_data.json
+
+Modos:
+  --mode patches   Extração de patch embeddings + clustering (padrão)
+  --mode cls       Apenas CLS token (para auditoria de similaridade entre salas)
+  --mode full      patches + classificação Gemma
 
 Uso:
-python3 -m scripts.vision.extract_positions src/assets/images/scp_entrance_*.png
-python3 -m scripts.vision.extract_positions src/assets/images/scp_entrance_*.png --room entrance
-python3 -m scripts.vision.extract_positions src/assets/images/*.png --all
-python3 -m scripts.vision.extract_positions src/assets/images/scp_entrance_*.png --yolo-model yolov8x.pt
-python3 -m scripts.vision.extract_positions src/assets/images/scp_entrance_*.png --dry-run
+  python3 -m scripts.vision.extract_positions src/assets/images/noir/*.png --mode full
+  python3 -m scripts.vision.extract_positions src/assets/images/noir/*.png --mode cls
+  python3 -m scripts.vision.extract_positions src/assets/images/noir/*.png --mode patches --dry-run
+
+Dependências:
+  pip install torch transformers Pillow scikit-learn requests
 
 Env:
-OPENROUTER_API_KEY - Chave da API OpenRouter (obrigatório)
+  OPENROUTER_API_KEY - Para classificação Gemma (obrigatório se --mode full)
 """
 
 import argparse
@@ -27,86 +33,55 @@ import base64
 import json
 import os
 import sys
-from pathlib import Path
 from io import BytesIO
+from pathlib import Path
 
+import numpy as np
 import requests
 from PIL import Image
 
 try:
-    from ultralytics import YOLO
+    import torch
+    from transformers import AutoImageProcessor, AutoModel
 except ImportError:
-    print("ERRO: ultralytics não instalado. Execute: pip install ultralytics", file=sys.stderr)
+    print("ERRO: torch/transformers não instalados. Execute: pip install torch transformers", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    from sklearn.cluster import DBSCAN
+    from sklearn.metrics.pairwise import cosine_similarity
+except ImportError:
+    print("ERRO: scikit-learn não instalado. Execute: pip install scikit-learn", file=sys.stderr)
     sys.exit(1)
 
 from scripts.shared.config import (
     OPENROUTER_API_URL, OPENROUTER_API_KEY, GEMMA_MODEL, NOIR_IMAGE_DIR, PROJECT_ROOT,
 )
-from scripts.shared.openrouter import HEADERS
 
-DEFAULT_YOLO_MODEL = "yolov8x.pt"
-
-ICON_MAP = {
-    "door": "DoorClosed",
-    "door_open": "DoorOpen",
-    "keyboard": "Search",
-    "key": "Key",
-    "monitor": "Search",
-    "chair": "Search",
-    "book": "FileText",
-    "clock": "Search",
-    "tv": "Monitor",
-    "laptop": "Search",
-    "cell_phone": "Search",
-    "bottle": "Search",
-    "cup": "Search",
-    "backpack": "Search",
-    "umbrella": "Search",
-    "suitcase": "Search",
-    "person": "Ghost",
-    "default": "Search",
-}
-
-ACTION_TYPE_MAP = {
-    "door": "travel",
-    "door_open": "travel",
-    "key": "pickup",
-    "keyboard": "inspect",
-    "monitor": "inspect",
-    "book": "terminal_read",
-    "laptop": "terminal_read",
-    "tv": "terminal_read",
-    "cell_phone": "inspect",
-    "default": "inspect",
-}
+DINOV2_MODEL_ID = "facebook/dinov2-large"
+DBSCAN_EPS = 0.5
+MIN_CLUSTER_SAMPLES = 6
+MIN_CLUSTER_AREA_PCT = 1.5
+MAX_CLUSTERS = 20
 
 KNOWN_ROOMS = {
-    "entrance": "Setor de Triagem [ENTRADA]",
-    "corridor": "Corredor Leste — Nível 2",
-    "scp_173_room": "Câmara de Contenção — SCP-173 [EUCLID]",
-    "scp_049_room": "Câmara de Contenção — SCP-049 [KETER]",
-    "scp_096_room": "Câmara de Contenção — SCP-096 [EUCLID]",
-    "scp_682_room": "Câmara de Contenção — SCP-682 [SAFE]",
-    "server_room": "Sala dos Servidores Táticos",
-    "containment": "Ala de Contenção Euclidiana",
+    "rua_chuva": "Rua sob a Chuva",
+    "escritorio": "Escritório do Investigador",
+    "escola": "Escola Municipal",
+    "diretoria": "Diretoria da Escola",
+    "delegacia": "Delegacia [Volkspolizei]",
+    "beco": "Beco dos Fundos",
+    "bar": "Bar Vila Nova",
+    "armazem": "Armazém [Lagerhaus]",
 }
 
-YOLO_TO_GAME_CONTEXT = {
-    "door": "porta, entrada ou saída de uma sala da fundação SCP",
-    "keyboard": "teclado de computador ou terminal de acesso",
-    "monitor": "monitor de computador ou tela de terminal",
-    "laptop": "laptop de pesquisador da fundação",
-    "book": "documentação ou arquivo SCP",
-    "chair": "cadeira de escritório ou mobília",
-    "cup": "copo ou recipiente deixado por pesquisador",
-    "bottle": "garrafa ou recipiente de substância",
-    "clock": "relógio ou dispositivo de temporização",
-    "tv": "tela de monitoramento de câmeras",
-    "cell_phone": "dispositivo de comunicação",
-    "backpack": "mochila ou equipamento",
-    "person": "corpo ou presença humana",
-    "key": "cartão de acesso ou chave",
-}
+
+def guess_room_id(image_path: str) -> str:
+    name = Path(image_path).stem.lower().removeprefix("bg_")
+    for room_key in KNOWN_ROOMS:
+        if room_key in name:
+            return room_key
+    return "unknown_room"
 
 
 def encode_image_base64(image_path: str, max_size: int = 1536) -> tuple[str, str]:
@@ -120,72 +95,171 @@ def encode_image_base64(image_path: str, max_size: int = 1536) -> tuple[str, str
     return b64, "image/jpeg"
 
 
-def run_yolo(image_path: str, model_path: str = DEFAULT_YOLO_MODEL, conf: float = 0.25) -> list[dict]:
-    model = YOLO(model_path)
-    results = model(image_path, conf=conf, verbose=False)
+# ---------------------------------------------------------------------------
+# DINOv2 feature extraction
+# ---------------------------------------------------------------------------
 
-    detections = []
-    img_w = results[0].orig_shape[1]
-    img_h = results[0].orig_shape[0]
+def load_dinov2(model_id: str = DINOV2_MODEL_ID, device: str | None = None):
+    dev = device or ("cuda" if torch.cuda.is_available() else "cpu")
+    processor = AutoImageProcessor.from_pretrained(model_id)
+    model = AutoModel.from_pretrained(model_id)
+    model = model.to(dev).eval()
+    return processor, model, dev
 
-    for box in results[0].boxes:
-        x1, y1, x2, y2 = box.xyxy[0].tolist()
-        cls_id = int(box.cls[0])
-        cls_name = results[0].names[cls_id]
-        confidence = float(box.conf[0])
 
-        x_center = ((x1 + x2) / 2) / img_w * 100
-        y_center = ((y1 + y2) / 2) / img_h * 100
-        width = (x2 - x1) / img_w * 100
-        height = (y2 - y1) / img_h * 100
+def extract_features(
+    image_path: str,
+    processor,
+    model,
+    device: str,
+) -> dict:
+    image = Image.open(image_path).convert("RGB")
+    inputs = processor(images=image, return_tensors="pt").to(device)
 
-        detections.append({
-            "yolo_class": cls_name,
-            "confidence": round(confidence, 3),
-            "x": round(x_center, 1),
-            "y": round(y_center, 1),
-            "width": round(width, 1),
-            "height": round(height, 1),
-            "bbox_px": {"x1": int(x1), "y1": int(y1), "x2": int(x2), "y2": int(y2)},
+    with torch.no_grad():
+        outputs = model(**inputs)
+
+    patch_size = model.config.patch_size
+    h_feat = inputs["pixel_values"].shape[2]
+    w_feat = inputs["pixel_values"].shape[3]
+    grid_h = h_feat // patch_size
+    grid_w = w_feat // patch_size
+
+    cls_embedding = outputs.last_hidden_state[:, 0, :].squeeze(0).cpu().numpy()
+    patch_embeddings = outputs.last_hidden_state[:, 1:, :].squeeze(0).cpu().numpy()
+    patch_grid = patch_embeddings.reshape(grid_h, grid_w, -1)
+
+    return {
+        "cls": cls_embedding,
+        "patch_grid": patch_grid,
+        "grid_size": (grid_h, grid_w),
+        "patch_size": patch_size,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Patch clustering
+# ---------------------------------------------------------------------------
+
+def cluster_patches(
+    patch_grid: np.ndarray,
+    eps: float = DBSCAN_EPS,
+    min_samples: int = MIN_CLUSTER_SAMPLES,
+) -> np.ndarray:
+    h, w, dim = patch_grid.shape
+    flat = patch_grid.reshape(-1, dim)
+
+    norms = np.linalg.norm(flat, axis=1, keepdims=True)
+    norms = np.where(norms == 0, 1, norms)
+    flat_normed = flat / norms
+
+    clustering = DBSCAN(eps=eps, min_samples=min_samples, metric="cosine").fit(flat_normed)
+    labels = clustering.labels_.reshape(h, w)
+    return labels
+
+
+def clusters_to_regions(
+    labels: np.ndarray,
+    grid_size: tuple[int, int],
+    image_size: tuple[int, int],
+    min_area_pct: float = MIN_CLUSTER_AREA_PCT,
+) -> list[dict]:
+    grid_h, grid_w = grid_size
+    cell_w_pct = 100.0 / grid_w
+    cell_h_pct = 100.0 / grid_h
+
+    unique_labels = set(labels.flat) - {-1}
+    regions = []
+
+    for lbl in unique_labels:
+        mask = labels == lbl
+        ys, xs = np.where(mask)
+        if len(xs) == 0:
+            continue
+
+        x_pct = xs.min() * cell_w_pct
+        y_pct = ys.min() * cell_h_pct
+        w_pct = (xs.max() - xs.min() + 1) * cell_w_pct
+        h_pct = (ys.max() - ys.min() + 1) * cell_h_pct
+
+        area_pct = w_pct * h_pct
+        if area_pct < min_area_pct:
+            continue
+
+        regions.append({
+            "cluster_id": int(lbl),
+            "x": round(x_pct + w_pct / 2, 1),
+            "y": round(y_pct + h_pct / 2, 1),
+            "width": round(w_pct, 1),
+            "height": round(h_pct, 1),
+            "area_pct": round(area_pct, 1),
+            "patch_count": int(mask.sum()),
         })
 
-    return detections
+    regions.sort(key=lambda r: r["area_pct"], reverse=True)
+    return regions[:MAX_CLUSTERS]
 
+
+# ---------------------------------------------------------------------------
+# CLS similarity (scene audit mode)
+# ---------------------------------------------------------------------------
+
+def compute_cls_similarity(embeddings: dict[str, np.ndarray]) -> list[dict]:
+    names = list(embeddings.keys())
+    vectors = np.stack([embeddings[n] for n in names])
+    sim_matrix = cosine_similarity(vectors)
+    pairs = []
+    for i in range(len(names)):
+        for j in range(i + 1, len(names)):
+            pairs.append({
+                "scene_a": names[i],
+                "scene_b": names[j],
+                "similarity": round(float(sim_matrix[i, j]), 4),
+            })
+    pairs.sort(key=lambda p: p["similarity"])
+    return pairs
+
+
+# ---------------------------------------------------------------------------
+# Gemma classification
+# ---------------------------------------------------------------------------
 
 def classify_with_gemma(
     image_path: str,
-    detections: list[dict],
+    regions: list[dict],
     room_id: str,
     api_key: str,
 ) -> list[dict]:
     b64_img, mime = encode_image_base64(image_path)
-    detections_text = json.dumps(detections, indent=2, ensure_ascii=False)
+    regions_text = json.dumps(regions, indent=2, ensure_ascii=False)
 
-    prompt = f"""Você é um analisador de cenários para um jogo de investigação SCP (Fundação SCP).
-Analise a imagem de cenário fornecida junto com as detecções de objetos do YOLO abaixo.
+    prompt = f"""Você é um analisador de cenários para um jogo de investigação noir (Murphy Law — Investigações Privadas).
+Analise a imagem de cenário fornecida junto com as regiões detectadas pelo DINOv2 abaixo.
 
 Sala atual: {room_id} — {KNOWN_ROOMS.get(room_id, 'Desconhecida')}
 
-Detecções YOLO (coordenadas em porcentagem 0-100%):
-{detections_text}
+Regiões DINOv2 (clusters semânticos, coordenadas em porcentagem 0-100%):
+{regions_text}
 
-Para CADA detecção YOLO, refine e classifique no contexto do jogo SCP. Você deve:
-1. Identificar o que o objeto realmente representa no cenário SCP (ex: "door" pode ser uma porta de contenção, "keyboard" pode ser um terminal de acesso)
-2. Atribuir um tipo de ação: "travel" (portas/passagens), "pickup" (itens coletáveis como keycards), "inspect" (objetos examináveis), "terminal_read" (terminais/documentos)
-3. Atribuir um ícone lucide-react apropriado: DoorClosed, DoorOpen, Key, Search, FileText, Ghost, Skull, ShieldCheck, Archive, Lock, Terminal, Database, Eye, Flame, Monitor, Bug
+Para CADA região DINOv2, refine e classifique no contexto do jogo. Você deve:
+1. Identificar o que a região representa no cenário noir (ex: cluster pode ser uma porta, um telefone, um arquivo, uma janela)
+2. Atribuir um tipo de ação: "travel" (portas/passagens), "pickup" (itens coletáveis), "inspect" (objetos examináveis), "terminal_read" (terminais/documentos), "phone_call" (telefone/comunicação)
+3. Atribuir um ícone lucide-react apropriado: DoorClosed, DoorOpen, Key, Search, FileText, Ghost, Skull, ShieldCheck, Archive, Lock, Terminal, Database, Eye, Flame, Monitor, Bug, Phone
 4. Criar um label descritivo em português brasileiro
-5. Criar uma description imersiva em português (tom de terror/suspense)
-6. Ajustar coordenadas se perceber que o YOLO errou na posição relativa
+5. Criar uma description imersiva em português (tom noir/suspense, estética filme noir alemão)
+6. Ajustar coordenadas se perceber que a região está mal posicionada
 
 Regras:
 - Portas que levam a outras salas devem ter type "travel" e targetRoom preenchido
-- Itens coletáveis (keycards, chaves) devem ter type "pickup", pickupItem e hideAfterInteract: true
+- Itens coletáveis devem ter type "pickup", pickupItem e hideAfterInteract: true
 - Terminais/documentos devem ter type "terminal_read" com documentData
+- Telefones devem ter type "phone_call"
 - Objetos decorativos devem ter type "inspect"
-- Se a detecção YOLO for um falso positivo (não é relevante para o jogo), exclua-a
-- Se houver itens importantes no cenário que o YOLO NÃO detectou, adicione-os com coordenadas estimadas
+- Se a região DINOv2 for ruído de fundo (parede vazia, chão), exclua-a
+- Se houver itens importantes no cenário que o DINOv2 NÃO detectou, adicione-os com coordenadas estimadas
+- TODO texto deve ser em português brasileiro; termos alemães apenas para lore (GESCHLOSSEN, Lagerhaus, etc.)
 
-Retorne APENAMENTE um JSON no formato:
+Retorne APENAS um JSON no formato:
 {{
   "interactables": [
     {{
@@ -196,12 +270,12 @@ Retorne APENAMENTE um JSON no formato:
       "height": 15.0,
       "icon": "DoorClosed",
       "type": "travel",
-      "label": "Porta de Contenção",
-      "description": "Uma porta de aço reforçado com trinca pneumática.",
-      "targetRoom": "corridor",
-      "requiredItem": "keycard_1",
-      "failedMessage": "[ACESSO NEGADO] Requer Cartão Nível 1.",
-      "successMessage": "Trancas liberadas.",
+      "label": "Porta do Escritório",
+      "description": "Uma porta de madeira escura com fechadura antiga.",
+      "targetRoom": "delegacia",
+      "requiredItem": null,
+      "failedMessage": null,
+      "successMessage": null,
       "pickupItem": null,
       "hideAfterInteract": false,
       "documentData": null
@@ -228,7 +302,7 @@ Retorne APENAMENTE um JSON no formato:
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://github.com/scp_game",
-        "X-Title": "SCP Game Position Extractor",
+        "X-Title": "SCP Game Position Extractor (DINOv2)",
     }
 
     resp = requests.post(OPENROUTER_API_URL, json=payload, headers=headers, timeout=120)
@@ -249,149 +323,233 @@ Retorne APENAMENTE um JSON no formato:
     return parsed.get("interactables", [])
 
 
-def quick_map_yolo(detections: list[dict]) -> list[dict]:
+# ---------------------------------------------------------------------------
+# Fallback: quick auto-mapping (no Gemma)
+# ---------------------------------------------------------------------------
+
+DEFAULT_ICON = "Search"
+DEFAULT_TYPE = "inspect"
+
+REGION_ICON_HEURISTICS = {
+    "tall_narrow": {"icon": "DoorClosed", "type": "travel"},
+    "small_center": {"icon": "Search", "type": "inspect"},
+    "wide_top": {"icon": "Monitor", "type": "inspect"},
+    "large_center": {"icon": "Search", "type": "inspect"},
+}
+
+
+def guess_region_style(region: dict) -> dict:
+    w = region["width"]
+    h = region["height"]
+    aspect = h / w if w > 0 else 1
+    area = region["area_pct"]
+
+    if aspect > 2.0 and w < 15:
+        return REGION_ICON_HEURISTICS["tall_narrow"]
+    if area < 5 and 30 < region["x"] < 70 and 20 < region["y"] < 80:
+        return REGION_ICON_HEURISTICS["small_center"]
+    if aspect < 0.6 and region["y"] < 30:
+        return REGION_ICON_HEURISTICS["wide_top"]
+    return REGION_ICON_HEURISTICS["large_center"]
+
+
+def quick_map_dinov2(regions: list[dict]) -> list[dict]:
     interactables = []
-    for i, det in enumerate(detections):
-        yolo_cls = det["yolo_class"]
-        icon = ICON_MAP.get(yolo_cls, ICON_MAP["default"])
-        action_type = ACTION_TYPE_MAP.get(yolo_cls, ACTION_TYPE_MAP["default"])
-
+    for i, r in enumerate(regions):
+        style = guess_region_style(r)
         interactables.append({
-            "id": f"yolo_{yolo_cls}_{i}",
-            "x": det["x"],
-            "y": det["y"],
-            "width": det["width"],
-            "height": det["height"],
-            "icon": icon,
-            "type": action_type,
-            "label": yolo_cls.replace("_", " ").title(),
-            "description": f"[YOLO auto] Objeto detectado: {yolo_cls} (conf: {det['confidence']})",
-            "yolo_class": yolo_cls,
-            "yolo_confidence": det["confidence"],
+            "id": f"dinov2_region_{r['cluster_id']}_{i}",
+            "x": r["x"],
+            "y": r["y"],
+            "width": r["width"],
+            "height": r["height"],
+            "icon": style["icon"],
+            "type": style["type"],
+            "label": f"Região {r['cluster_id']}",
+            "description": f"[DINOv2 auto] Cluster {r['cluster_id']} — {r['patch_count']} patches, área {r['area_pct']}%",
+            "dinov2_cluster": r["cluster_id"],
+            "dinov2_area_pct": r["area_pct"],
         })
-
     return interactables
 
 
-def process_image(
+# ---------------------------------------------------------------------------
+# Pipeline orchestration
+# ---------------------------------------------------------------------------
+
+def run_dinov2(
+    image_path: str,
+    processor,
+    model,
+    device: str,
+    eps: float,
+    min_samples: int,
+) -> tuple[list[dict], dict]:
+    feats = extract_features(image_path, processor, model, device)
+    labels = cluster_patches(feats["patch_grid"], eps=eps, min_samples=min_samples)
+
+    img = Image.open(image_path)
+    regions = clusters_to_regions(labels, feats["grid_size"], img.size)
+
+    meta = {
+        "num_clusters": len(set(labels.flat) - {-1}),
+        "grid_size": list(feats["grid_size"]),
+        "cls_embedding_dim": feats["cls"].shape[0],
+    }
+
+    return regions, meta
+
+
+def process_image_patches(
+    image_path: str,
+    processor,
+    model,
+    device: str,
+    eps: float,
+    min_samples: int,
+) -> dict:
+    regions, meta = run_dinov2(image_path, processor, model, device, eps, min_samples)
+    return {
+        "regions": regions,
+        "interactables": quick_map_dinov2(regions),
+        **meta,
+    }
+
+
+def process_image_full(
     image_path: str,
     room_id: str,
+    processor,
+    model,
+    device: str,
     api_key: str | None,
-    yolo_model: str,
-    conf: float,
+    eps: float,
+    min_samples: int,
     dry_run: bool,
 ) -> dict:
-    print(f"\n{'='*60}")
-    print(f"Processando: {image_path}")
-    print(f"Sala: {room_id} — {KNOWN_ROOMS.get(room_id, 'Desconhecida')}")
-    print(f"{'='*60}")
+    regions, meta = run_dinov2(image_path, processor, model, device, eps, min_samples)
 
-    print("\n[1/2] Executando YOLO...")
-    detections = run_yolo(image_path, yolo_model, conf)
-    print(f" {len(detections)} objetos detectados")
-    for d in detections:
-        print(f" - {d['yolo_class']}: ({d['x']:.1f}%, {d['y']:.1f}%) conf={d['confidence']}")
-
-    if dry_run:
-        print("\n[DRY-RUN] Pulando chamada ao Gemma. Usando mapeamento rápido YOLO→game.")
-        interactables = quick_map_yolo(detections)
-    elif not api_key:
-        print("\n[!] OPENROUTER_API_KEY não definida. Usando mapeamento rápido YOLO→game.")
-        interactables = quick_map_yolo(detections)
+    if dry_run or not api_key:
+        if not api_key and not dry_run:
+            print("\n[!] OPENROUTER_API_KEY não definida. Usando mapeamento rápido DINOv2→game.")
+        interactables = quick_map_dinov2(regions)
     else:
         print("\n[2/2] Classificando com Gemma-4-31b-it via OpenRouter...")
-        interactables = classify_with_gemma(image_path, detections, room_id, api_key)
-        print(f" {len(interactables)} interactivables gerados pelo Gemma")
+        interactables = classify_with_gemma(image_path, regions, room_id, api_key)
+        print(f" {len(interactables)} interactables gerados pelo Gemma")
 
     for item in interactables:
         item.setdefault("width", 8)
         item.setdefault("height", 10)
 
-    room_data = {
-        "id": room_id,
-        "name": KNOWN_ROOMS.get(room_id, room_id.replace("_", " ").title()),
+    return {
+        "regions": regions,
+        **meta,
         "interactables": interactables,
-        "yolo_detections": detections,
     }
 
-    return room_data
+
+def process_image_cls(
+    image_path: str,
+    processor,
+    model,
+    device: str,
+) -> tuple[str, np.ndarray]:
+    feats = extract_features(image_path, processor, model, device)
+    name = Path(image_path).stem
+    return name, feats["cls"]
 
 
-def guess_room_id(image_path: str) -> str:
-    name = Path(image_path).stem.lower()
-    for room_key in KNOWN_ROOMS:
-        if room_key in name:
-            return room_key
-    if "entrance" in name or "entrada" in name:
-        return "entrance"
-    if "corridor" in name or "corredor" in name:
-        return "corridor"
-    if "server" in name or "servidor" in name:
-        return "server_room"
-    if "containment" in name or "contencao" in name:
-        return "containment"
-    if "office" in name or "escritorio" in name:
-        return "scp_173_room"
-    return "unknown_room"
-
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Extrai posições de itens em imagens de cenário SCP via YOLO + Gemma-4-31b-it (OpenRouter)."
+        description="Extrai posições de itens em imagens de cenário via DINOv2-large + Gemma-4-31b-it (OpenRouter)."
     )
     parser.add_argument("images", nargs="+", metavar="IMAGE",
                         help="Caminho(s) para imagem(ns) de cenário")
     parser.add_argument("--room", "-r", metavar="ROOM_ID",
-                        help="ID da sala (ex: entrance, corridor, scp_173_room). Auto-detectado se omitido.")
-    parser.add_argument("--yolo-model", default=DEFAULT_YOLO_MODEL, metavar="MODEL",
-                        help=f"Modelo YOLO (padrão: {DEFAULT_YOLO_MODEL})")
-    parser.add_argument("--conf", type=float, default=0.25, metavar="FLOAT",
-                        help="Confiança mínima YOLO (padrão: 0.25)")
+                        help="ID da sala. Auto-detectado se omitido.")
+    parser.add_argument("--mode", choices=["patches", "cls", "full"], default="full",
+                        help="Modo: patches (clustering), cls (similaridade entre salas), full (patches+gemma)")
+    parser.add_argument("--model-id", default=DINOV2_MODEL_ID, metavar="HF_MODEL",
+                        help=f"Modelo DINOv2 (padrão: {DINOV2_MODEL_ID})")
+    parser.add_argument("--eps", type=float, default=DBSCAN_EPS, metavar="FLOAT",
+                        help=f"DBSCAN eps (padrão: {DBSCAN_EPS})")
+    parser.add_argument("--min-samples", type=int, default=MIN_CLUSTER_SAMPLES, metavar="INT",
+                        help=f"DBSCAN min_samples (padrão: {MIN_CLUSTER_SAMPLES})")
     parser.add_argument("--output", "-o", default=str(PROJECT_ROOT / "extracted_positions.json"),
                         metavar="FILE", help="Arquivo JSON de saída")
     parser.add_argument("--dry-run", action="store_true",
-                        help="Apenas YOLO, sem chamar a API do Gemma (modo offline)")
+                        help="Apenas DINOv2 clustering, sem chamar a API do Gemma")
     args = parser.parse_args()
 
     api_key = os.environ.get("OPENROUTER_API_KEY")
-    if not api_key and not args.dry_run:
-        print("[!] OPENROUTER_API_KEY não definida. Use --dry-run ou export a variável.", file=sys.stderr)
-        print(" Modo dry-run será usado.", file=sys.stderr)
 
-    all_rooms = {}
+    print(f"[DINOv2] Carregando modelo {args.model_id}...")
+    processor, model, device = load_dinov2(args.model_id)
+    print(f"[DINOv2] Modelo carregado no dispositivo: {device}")
 
-    for image_path in args.images:
-        if not Path(image_path).exists():
-            print(f"[!] Imagem não encontrada: {image_path}", file=sys.stderr)
-            continue
+    if args.mode == "cls":
+        embeddings = {}
+        for image_path in args.images:
+            if not Path(image_path).exists():
+                print(f"[!] Imagem não encontrada: {image_path}", file=sys.stderr)
+                continue
+            print(f"  Extraindo CLS embedding: {Path(image_path).stem}...")
+            name, cls_vec = process_image_cls(image_path, processor, model, device)
+            embeddings[name] = cls_vec
 
-        room_id = args.room or guess_room_id(image_path)
+        pairs = compute_cls_similarity(embeddings)
+        output = {
+            "pipeline": f"DINOv2 CLS similarity ({args.model_id})",
+            "mode": "cls",
+            "embeddings": {k: v.tolist() for k, v in embeddings.items()},
+            "similarity_pairs": pairs,
+            "least_similar": pairs[:3],
+            "most_similar": pairs[-3:],
+        }
+    else:
+        all_rooms = {}
+        for image_path in args.images:
+            if not Path(image_path).exists():
+                print(f"[!] Imagem não encontrada: {image_path}", file=sys.stderr)
+                continue
 
-        room_data = process_image(
-            image_path=image_path,
-            room_id=room_id,
-            api_key=api_key,
-            yolo_model=args.yolo_model,
-            conf=args.conf,
-            dry_run=args.dry_run,
-        )
-        all_rooms[room_id] = room_data
+            room_id = args.room or guess_room_id(image_path)
+            print(f"\n{'='*60}")
+            print(f"Processando: {image_path}")
+            print(f"Sala: {room_id} — {KNOWN_ROOMS.get(room_id, 'Desconhecida')}")
+            print(f"{'='*60}")
 
-    output = {
-        "pipeline": "YOLO + Gemma-4-31b-it (OpenRouter)",
-        "model": GEMMA_MODEL,
-        "yolo_model": args.yolo_model,
-        "rooms": all_rooms,
-    }
+            print("\n[1/2] Executando DINOv2 + DBSCAN clustering...")
+            result = process_image_full(
+                image_path, room_id, processor, model, device,
+                api_key=api_key, eps=args.eps, min_samples=args.min_samples,
+                dry_run=args.dry_run,
+            )
+
+            all_rooms[room_id] = result
+            print(f"  {result.get('num_clusters', 0)} clusters, {len(result.get('regions', []))} regiões, {len(result.get('interactables', []))} interactables")
+
+        output = {
+            "pipeline": f"DINOv2 + {'Gemma' if args.mode == 'full' and not args.dry_run else 'clustering'} ({args.model_id})",
+            "mode": args.mode,
+            "model": args.model_id,
+            "rooms": all_rooms,
+        }
 
     with open(args.output, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+        json.dump(output, f, ensure_ascii=False, indent=2, default=lambda o: o.tolist() if isinstance(o, np.ndarray) else o)
 
     print(f"\n{'='*60}")
     print(f"Resultado salvo em: {args.output}")
-    print(f"Salas processadas: {list(all_rooms.keys())}")
-    total_items = sum(len(r["interactables"]) for r in all_rooms.values())
-    print(f"Total de interactivables: {total_items}")
+    if args.mode != "cls":
+        print(f"Salas processadas: {list(output.get('rooms', {}).keys())}")
+        total = sum(len(r.get("interactables", [])) for r in output.get("rooms", {}).values())
+        print(f"Total de interactables: {total}")
     print(f"{'='*60}")
 
 

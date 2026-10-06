@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 merge_extracted.py
-Mescla o resultado do pipeline YOLO+Gemma (extracted_positions.json)
+Mescla o resultado do pipeline DINOv2+Gemma (extracted_positions.json)
 no game_data.json do jogo, normalizando campos para o formato esperado.
 
 Uso:
@@ -15,59 +15,24 @@ from scripts.shared.config import GAME_DATA_PATH
 
 EXTRACTED_PATH = GAME_DATA_PATH.parent.parent / "extracted_positions.json"
 
-TARGET_ROOM_MAP = {
-    "sector_4_interior": "corridor",
-    "corridor": "corridor",
-    "entrance": "entrance",
-    "scp_173_room": "scp_173_room",
-    "scp_049_room": "scp_049_room",
-    "scp_096_room": "scp_096_room",
-    "scp_682_room": "scp_682_room",
-    "server_room": "server_room",
-    "containment": "containment",
-    "containment_cell_d1": "scp_173_room",
-    "security_checkpoint_e2": "server_room",
-    "dark_sector_e2": "containment",
-    "lab_7b": "scp_049_room",
-    "maintenance_shaft": "corridor",
-    "containment_chamber_interior": "containment",
+NOIR_ROOMS = {
+    "rua_chuva": "rua_chuva",
+    "escritorio": "escritorio",
+    "escola": "escola",
+    "diretoria": "diretoria",
+    "delegacia": "delegacia",
+    "beco": "beco",
+    "bar": "bar",
+    "armazem": "armazem",
+    "igreja": "igreja",
+    "fazenda": "fazenda",
+    "hospital": "hospital",
+    "casa_mae": "casa_mae",
 }
-
-KEYCARD_MAP = {
-    "keycard_level_1": "keycard_1",
-    "keycard_level_2": "keycard_2",
-    "keycard_level_3": "keycard_3",
-    "keycard_level_4": "keycard_3",
-    "id_chip_personnel": "keycard_1",
-}
-
-ROOM_TRAVEL_REQUIREMENTS = {
-    ("entrance", "corridor"): {"requiredItem": "keycard_1", "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 1.", "successMessage": "O leitor apitou verde. Porta destrancada."},
-    ("corridor", "scp_173_room"): {"requiredItem": "keycard_2", "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 2.", "successMessage": "Trancas liberadas. Entrando no setor..."},
-    ("corridor", "scp_049_room"): {"requiredItem": "keycard_3", "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 3.", "successMessage": "Trancas liberadas. Entrando no setor..."},
-    ("corridor", "scp_096_room"): {"requiredItem": "keycard_2", "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 2.", "successMessage": "Trancas liberadas. Entrando no setor..."},
-    ("corridor", "scp_682_room"): {},
-    ("corridor", "server_room"): {"requiredItem": "keycard_2", "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 2."},
-    ("corridor", "containment"): {"requiredItem": "keycard_3", "failedMessage": "[ISOLAMENTO] Requer Cartão de Acesso Nível 3.", "successMessage": "Trancas pneumáticas liberadas. Entrando no setor de risco..."},
-}
-
-BACK_DOORS = {
-    "corridor": "entrance",
-    "scp_173_room": "corridor",
-    "scp_049_room": "corridor",
-    "scp_096_room": "corridor",
-    "scp_682_room": "corridor",
-    "server_room": "corridor",
-    "containment": "corridor",
-}
-
-
-def normalize_keycard(item_id: str) -> str | None:
-    return KEYCARD_MAP.get(item_id, item_id if item_id and item_id.startswith("keycard_") else None)
 
 
 def normalize_target_room(room_id: str) -> str | None:
-    return TARGET_ROOM_MAP.get(room_id, room_id if room_id in TARGET_ROOM_MAP.values() else None)
+    return NOIR_ROOMS.get(room_id, room_id if room_id in NOIR_ROOMS.values() else None)
 
 
 def normalize_document_data(doc) -> dict | None:
@@ -87,56 +52,6 @@ def normalize_document_data(doc) -> dict | None:
             content = [doc]
         return {"title": "ARQUIVO RECUPERADO", "content": content}
     return None
-
-
-def build_travel_doors(room_id: str, game_rooms_orig: dict) -> list[dict]:
-    doors = []
-
-    back_target = BACK_DOORS.get(room_id)
-    if back_target:
-        doors.append({
-            "id": f"door_back_{room_id}",
-            "x": 50, "y": 90,
-            "icon": "DoorOpen",
-            "type": "travel",
-            "label": f"Voltar para {BACK_DOORS.get(room_id, 'Corredor')}",
-            "targetRoom": back_target,
-        })
-
-    if room_id == "entrance":
-        doors.append({
-            "id": "door_corridor",
-            "x": 50, "y": 30,
-            "icon": "DoorClosed",
-            "type": "travel",
-            "label": "Porta para o Corredor Leste",
-            "targetRoom": "corridor",
-            "requiredItem": "keycard_1",
-            "failedMessage": "[ACESSO NEGADO] Requer Cartão de Acesso Nível 1.",
-            "successMessage": "O leitor apitou verde. Porta destrancada.",
-        })
-    elif room_id == "corridor":
-        for target, x_pos, icon in [
-            ("scp_173_room", 20, "DoorClosed"),
-            ("scp_049_room", 35, "DoorClosed"),
-            ("scp_096_room", 55, "DoorClosed"),
-            ("scp_682_room", 70, "DoorOpen"),
-            ("server_room", 80, "Archive"),
-            ("containment", 15, "Lock"),
-        ]:
-            req = ROOM_TRAVEL_REQUIREMENTS.get(("corridor", target), {})
-            door = {
-                "id": f"door_{target}",
-                "x": x_pos, "y": 40,
-                "icon": icon,
-                "type": "travel",
-                "label": game_rooms_orig.get(target, {}).get("name", target.replace("_", " ").title()),
-                "targetRoom": target,
-            }
-            door.update(req)
-            doors.append(door)
-
-    return doors
 
 
 def normalize_interactable(item: dict, room_id: str) -> dict | None:
@@ -162,14 +77,11 @@ def normalize_interactable(item: dict, room_id: str) -> dict | None:
         target = normalize_target_room(item.get("targetRoom"))
         if target:
             result["targetRoom"] = target
-            req = ROOM_TRAVEL_REQUIREMENTS.get((room_id, target), {})
-            if req:
-                result.update(req)
         else:
             return None
 
     if item["type"] == "pickup":
-        pickup = normalize_keycard(item.get("pickupItem"))
+        pickup = item.get("pickupItem")
         if pickup:
             result["pickupItem"] = pickup
             result["hideAfterInteract"] = True
@@ -178,12 +90,9 @@ def normalize_interactable(item: dict, room_id: str) -> dict | None:
 
     required = item.get("requiredItem")
     if required:
-        norm = normalize_keycard(required)
-        if norm:
-            result["requiredItem"] = norm
-            if not result.get("failedMessage"):
-                level = norm.split("_")[-1]
-                result["failedMessage"] = f"[ACESSO NEGADO] Requer Cartão de Acesso Nível {level}."
+        result["requiredItem"] = required
+        if not result.get("failedMessage"):
+            result["failedMessage"] = "Não funciona."
 
     if item.get("successMessage"):
         result["successMessage"] = item["successMessage"]
@@ -198,34 +107,17 @@ def normalize_interactable(item: dict, room_id: str) -> dict | None:
     return result
 
 
-def merge_room(room_id: str, extracted: dict, original: dict, game_rooms_orig: dict) -> dict:
+def merge_room(room_id: str, extracted: dict, original: dict) -> dict:
     merged = deepcopy(original)
     merged.setdefault("interactables", [])
-
-    travel_items = []
-    other_items = []
 
     for item in extracted.get("interactables", []):
         norm = normalize_interactable(item, room_id)
         if norm is None:
             continue
-        if norm["type"] == "travel" and norm.get("targetRoom") in TARGET_ROOM_MAP.values():
-            travel_items.append(norm)
-        elif norm["type"] != "travel":
-            other_items.append(norm)
-
-    existing_ids = {obj["id"] for obj in merged["interactables"]}
-
-    structural_doors = build_travel_doors(room_id, game_rooms_orig)
-    for door in structural_doors:
-        if door["id"] not in existing_ids:
-            merged["interactables"].append(door)
-            existing_ids.add(door["id"])
-
-    for item in other_items:
-        if item["id"] not in existing_ids:
-            merged["interactables"].append(item)
-            existing_ids.add(item["id"])
+        existing_ids = {obj["id"] for obj in merged["interactables"]}
+        if norm["id"] not in existing_ids:
+            merged["interactables"].append(norm)
 
     return merged
 
@@ -233,8 +125,6 @@ def merge_room(room_id: str, extracted: dict, original: dict, game_rooms_orig: d
 def main():
     with open(GAME_DATA_PATH, "r", encoding="utf-8") as f:
         game_data = json.load(f)
-
-    game_rooms_orig = deepcopy(game_data["GAME_ROOMS"])
 
     if not EXTRACTED_PATH.exists():
         print(f"ERRO: {EXTRACTED_PATH} não encontrado.", file=__import__("sys").stderr)
@@ -244,23 +134,22 @@ def main():
         extracted = json.load(f)
 
     for room_id, ext_room in extracted["rooms"].items():
+        # Skip rooms the vision pipeline could not identify (guess_room_id
+        # fallback produces 'unknown_room'): they must not create rooms in
+        # game_data.json, only merge into rooms that already exist.
+        if normalize_target_room(room_id) is None and room_id not in game_data["GAME_ROOMS"]:
+            print(f"  [skip] sala não mapeada em NOIR_ROOMS: {room_id}")
+            continue
         if room_id in game_data["GAME_ROOMS"]:
             game_data["GAME_ROOMS"][room_id] = merge_room(
-                room_id, ext_room, game_data["GAME_ROOMS"][room_id], game_rooms_orig
+                room_id, ext_room, game_data["GAME_ROOMS"][room_id]
             )
         else:
             merged = merge_room(
                 room_id, ext_room,
                 {"id": room_id, "name": ext_room.get("name", room_id), "description": "", "interactables": []},
-                game_rooms_orig,
             )
             game_data["GAME_ROOMS"][room_id] = merged
-
-    for room_id, room in game_data["GAME_ROOMS"].items():
-        if room_id.startswith("scp_") and room_id not in extracted["rooms"]:
-            source = extracted["rooms"].get("scp_173_room")
-            if source:
-                game_data["GAME_ROOMS"][room_id] = merge_room(room_id, source, room, game_rooms_orig)
 
     with open(GAME_DATA_PATH, "w", encoding="utf-8") as f:
         json.dump(game_data, f, ensure_ascii=False, indent=2)

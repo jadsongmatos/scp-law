@@ -1,30 +1,26 @@
 #!/usr/bin/env python3
-"""Build-time voice generation using s2.cpp HTTP server (Fish Audio S2-Pro).
+"""Build-time voice generation using s2.cpp (Fish Audio S2-Pro GGUF).
 Reads game_data.json, extracts all terminal_read and phone_call documentData,
-generates WAV via s2.cpp server POST /generate, converts to MP3 via ffmpeg
-into public/voice/{id}.mp3
-Skips files that already exist (use --force to regenerate all).
+generates WAV via s2.cpp, converts to MP3 into public/voice/{id}.mp3
 """
 
+import argparse
 import json
 import os
 import re
 import shutil
-import signal
 import subprocess
 import sys
-import time
+import tempfile
 from pathlib import Path
 
 try:
-    import requests
+    from tqdm import tqdm
 except ImportError:
-    print("ERROR: 'requests' package required. pip install requests")
-    sys.exit(1)
-
-project_root = Path(__file__).resolve().parents[2]
+    tqdm = None
 
 if __package__ in (None, ""):
+    project_root = Path(__file__).resolve().parents[2]
     project_root_str = str(project_root)
     if project_root_str not in sys.path:
         sys.path.insert(0, project_root_str)
@@ -32,18 +28,14 @@ if __package__ in (None, ""):
 from scripts.shared.config import (
     GAME_DATA_PATH,
     VOICE_DIR,
+    S2_BINARY,
+    S2_MODEL,
+    S2_CODEC_MODEL,
+    S2_TOKENIZER,
+    S2_LIB_PATH,
 )
 
-S2_DIR = project_root / "s2.cpp"
-S2_BIN = S2_DIR / "tmp" / "s2"
-S2_LIB = S2_DIR / "tmp"
-S2_MODELS = project_root / "s2-models"
-S2_TRANSFORMER = S2_MODELS / "s2-pro-q4_k_m-transformer-only.gguf"
-S2_CODEC = S2_MODELS / "s2-pro-q4_k_m-codec-only.gguf"
-S2_TOKENIZER = S2_DIR / "tokenizer.json"
-S2_OUTPUT_DIR = project_root / "s2-output"
-S2_SERVER_PORT = 9877
-S2_SERVER_URL = f"http://127.0.0.1:{S2_SERVER_PORT}"
+DONE_PATH = VOICE_DIR / "_done.json"
 
 DECORATION_RE = re.compile(r'[═─━┃┆┊│┤├┬┴┼╗╝╚╔║╗╝╠╣╦╩╬\*]+')
 BIP_RE = re.compile(r'\*BIP\*')
@@ -74,136 +66,93 @@ def clean_content_for_speech(content_lines: list[str]) -> str:
         if line.startswith('>'):
             line = line[1:].strip()
         cleaned.append(line)
-    text = '\n'.join(cleaned)
-    if len(text) > 60:
-        text = text[:57] + "..."
-    return text
+    return '\n'.join(cleaned)
 
 
-def start_s2_server() -> subprocess.Popen:
+def generate_with_s2(text: str, output_wav: str) -> bool:
     env = os.environ.copy()
-    env["LD_LIBRARY_PATH"] = str(S2_LIB)
+    env["LD_LIBRARY_PATH"] = f"{S2_LIB_PATH}:{env.get('LD_LIBRARY_PATH', '')}"
 
     cmd = [
-        str(S2_BIN),
-        "--model", str(S2_TRANSFORMER),
-        "--codec-model", str(S2_CODEC),
+        str(S2_BINARY),
+        "--model", str(S2_MODEL),
         "--tokenizer", str(S2_TOKENIZER),
+        "--codec-model", str(S2_CODEC_MODEL),
         "-v", "0",
         "--codec-cpu",
-        "--server",
-        "--host", "127.0.0.1",
-        "--port", str(S2_SERVER_PORT),
+        "--text", text,
+        "--output", output_wav,
+        "--log-level", "info",
     ]
 
-    log_path = S2_OUTPUT_DIR / "s2_server.log"
-    log_f = open(log_path, "w")
-    proc = subprocess.Popen(cmd, env=env, stdout=log_f, stderr=log_f)
+    result = subprocess.run(
+        cmd,
+        env=env,
+        capture_output=True,
+        text=True,
+        timeout=600,
+    )
 
-    print(f"  Starting s2 server (PID {proc.pid}) on port {S2_SERVER_PORT}...")
+    if result.returncode != 0:
+        print(f"  s2 error: {result.stderr.strip()}")
+        return False
 
-    import socket
-    for i in range(90):
-        time.sleep(1)
-        if proc.poll() is not None:
-            raise RuntimeError(f"s2 server exited with code {proc.returncode}")
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(1)
-        try:
-            sock.connect(("127.0.0.1", S2_SERVER_PORT))
-            sock.close()
-            print(f"  Server listening after {i+1}s")
-            break
-        except (ConnectionRefusedError, socket.timeout, OSError):
-            sock.close()
-    else:
-        raise RuntimeError("s2 server port not open within 90s")
+    if not os.path.exists(output_wav) or os.path.getsize(output_wav) == 0:
+        print(f"  s2 produced empty output")
+        return False
 
-    print("  Waiting for server to finish init (10s)...")
-    time.sleep(10)
-    print("  Server ready")
-    return proc
+    return True
 
 
-def stop_s2_server(proc: subprocess.Popen):
-    if proc.poll() is not None:
-        return
+def convert_wav_to_mp3(wav_path: str, mp3_path: str) -> bool:
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-i", wav_path,
+         "-codec:a", "libmp3lame", "-qscale:a", "2",
+         mp3_path],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(f"  ffmpeg error: {result.stderr.strip()}")
+        return False
+    return os.path.exists(mp3_path) and os.path.getsize(mp3_path) > 0
+
+
+def generate_voice(text: str, output_mp3: str) -> bool:
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+        wav_path = f.name
     try:
-        proc.terminate()
-        proc.wait(timeout=10)
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        proc.wait(timeout=5)
-
-
-def generate_voice_server(text: str, wav_path: str, mp3_path: str):
-    while True:
-        try:
-            r = requests.post(
-                f"{S2_SERVER_URL}/generate",
-                files={"text": ("", text)},
-                timeout=3600,
-            )
-        except requests.exceptions.ConnectionError:
-            time.sleep(30)
-            continue
-
-        if r.status_code == 503:
-            time.sleep(30)
-            continue
-        if r.status_code != 200:
-            raise RuntimeError(f"Server returned {r.status_code}: {r.text[:200]}")
-
-        try:
-            wav_tmp = wav_path + ".tmp.wav"
-            with open(wav_tmp, "wb") as f:
-                f.write(r.content)
-
-            if os.path.getsize(wav_tmp) == 0:
-                os.remove(wav_tmp)
-                raise RuntimeError("Server returned empty WAV")
-
-            shutil.move(wav_tmp, wav_path)
-
-            ffmpeg_cmd = [
-                "ffmpeg", "-y", "-i", wav_path,
-                "-codec:a", "libmp3lame", "-b:a", "128k",
-                "-ar", "44100", "-ac", "1",
-                mp3_path,
-            ]
-            ff = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=60)
-            if ff.returncode != 0:
-                raise RuntimeError(f"ffmpeg failed: {ff.stderr[-300:]}")
-
-            return
-
-        except RuntimeError:
-            for p in (wav_path + ".tmp.wav", wav_path):
-                if os.path.exists(p):
-                    os.remove(p)
-            raise
+        if not generate_with_s2(text, wav_path):
+            return False
+        if not convert_wav_to_mp3(wav_path, output_mp3):
+            return False
+        return True
+    finally:
+        if os.path.exists(wav_path):
+            os.unlink(wav_path)
 
 
 def main():
-    force = "--force" in sys.argv
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--force', action='store_true', help='Ignore checkpoint and regenerate all')
+    args = parser.parse_args()
 
     os.makedirs(VOICE_DIR, exist_ok=True)
-    os.makedirs(S2_OUTPUT_DIR, exist_ok=True)
 
-    if not S2_BIN.exists():
-        print(f"ERROR: s2 binary not found at {S2_BIN}")
-        sys.exit(1)
-    if not S2_TRANSFORMER.exists():
-        print(f"ERROR: transformer model not found at {S2_TRANSFORMER}")
-        sys.exit(1)
-    if not S2_CODEC.exists():
-        print(f"ERROR: codec model not found at {S2_CODEC}")
-        sys.exit(1)
+    # Load checkpoint
+    done_ids = set()
+    if not args.force and DONE_PATH.exists():
+        try:
+            with open(DONE_PATH, 'r', encoding='utf-8') as f:
+                done_ids = set(json.load(f))
+        except Exception:
+            pass
 
     with open(GAME_DATA_PATH, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     tasks = []
+    metadata = {}
 
     for room_id, room in data["GAME_ROOMS"].items():
         for obj in room.get("interactables", []):
@@ -220,52 +169,62 @@ def main():
                 print(f" SKIP {obj_id}: no speakable content")
                 continue
 
-            wav_path = str(S2_OUTPUT_DIR / f"{obj_id}.wav")
-            mp3_path = str(VOICE_DIR / f"{obj_id}.mp3")
-
-            if not force and os.path.exists(mp3_path) and os.path.getsize(mp3_path) > 0:
-                print(f" SKIP {obj_id}: already exists")
+            if obj_id in done_ids:
+                print(f" SKIP {obj_id}: already done (checkpoint)")
+                # Still add to metadata for completeness
+                metadata[obj_id] = {
+                    "voice": "s2-pro",
+                    "text_length": len(speech_text),
+                    "label": obj.get("label", ""),
+                    "room": room_id,
+                }
                 continue
 
-            tasks.append((obj_id, speech_text, wav_path, mp3_path, obj.get("label", "")))
+            output_path = str(VOICE_DIR / f"{obj_id}.mp3")
+
+            metadata[obj_id] = {
+                "voice": "s2-pro",
+                "text_length": len(speech_text),
+                "label": obj.get("label", ""),
+                "room": room_id,
+            }
+
+            tasks.append((obj_id, speech_text, output_path))
 
     if not tasks:
-        print("All voice files already exist. Use --force to regenerate.")
+        print("No voice tasks found.")
         return
 
-    print(f"Generating {len(tasks)} voice files via s2.cpp server...")
-    print(f"  Transformer: {S2_TRANSFORMER.name}")
-    print(f"  Codec:       {S2_CODEC.name} (CPU)")
+    print(f"Generating {len(tasks)} voice files with s2.cpp...")
     print()
 
-    server_proc = None
-    ok_count = 0
-    err_count = 0
+    iterator = tasks
+    if tqdm:
+        iterator = tqdm(tasks, desc="Voices", unit="file", ncols=80)
 
-    try:
-        server_proc = start_s2_server()
+    for i, (obj_id, speech_text, output_path) in enumerate(iterator, 1):
+        if not tqdm:
+            print(f"[{i}/{len(tasks)}] {obj_id} -> {os.path.basename(output_path)}")
+        try:
+            ok = generate_voice(speech_text, output_path)
+            if ok:
+                print(f"  OK ({os.path.getsize(output_path)} bytes)")
+                done_ids.add(obj_id)
+                # Update checkpoint after each success
+                with open(DONE_PATH, 'w', encoding='utf-8') as f:
+                    json.dump(sorted(done_ids), f)
+            else:
+                print(f"  FAILED")
+        except subprocess.TimeoutExpired:
+            print(f"  TIMEOUT (600s)")
+        except Exception as e:
+            print(f"  ERROR: {e}")
 
-        for i, (obj_id, speech_text, wav_path, mp3_path, label) in enumerate(tasks, 1):
-            print(f"  [{i}/{len(tasks)}] {obj_id} — {label[:50]}", flush=True)
-            t0 = time.time()
-            try:
-                generate_voice_server(speech_text, wav_path, mp3_path)
-                elapsed = time.time() - t0
-                mp3_size = os.path.getsize(mp3_path) // 1024
-                print(f"    OK  {elapsed:.0f}s  mp3={mp3_size}KB", flush=True)
-                ok_count += 1
-            except Exception as e:
-                elapsed = time.time() - t0
-                print(f"    ERROR ({elapsed:.0f}s): {e}", flush=True)
-                err_count += 1
+    meta_path = str(VOICE_DIR / "_metadata.json")
+    with open(meta_path, 'w', encoding='utf-8') as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-    finally:
-        if server_proc:
-            print("\n  Stopping s2 server...")
-            stop_s2_server(server_proc)
-
-    print(f"\nDone. {ok_count} generated, {err_count} errors, {len(tasks)} total")
-    print(f"Output: {VOICE_DIR}/")
+    print(f"\nDone. Metadata: {meta_path}")
 
 
 if __name__ == "__main__":

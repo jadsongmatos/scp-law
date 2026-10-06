@@ -1,239 +1,318 @@
 #!/usr/bin/env python3
 """
-Gerador de imagens noir para o jogo Murphy Law.
-1. Gera imagem raiz (escritorio) via text-to-image
-2. Usa a imagem raiz como referência para editar/gerar as demais salas
-3. Gera miniaturas de mapa a partir das imagens de sala
-
-Modelo: google/gemini-3-pro-image-preview (via OpenRouter)
+Gerador de imagens noir para o jogo Murphy Law via 9Router (localhost:20128).
+Le GAME_ROOMS e ITEM_NAMES do game_data.json.
+Gera fundos (bg_*.png), miniaturas de mapa (map_*.png) e icones (item_*.png).
 """
-
+import argparse
 import base64
+import hashlib
+import json
 import sys
 import time
+from pathlib import Path
 
-from scripts.shared.config import (
-    NOIR_IMAGE_DIR,
-    NOIR_MAP_DIR,
-    NOIR_STYLE_PREFIX,
+from scripts.shared.ninerouter import generate_image, save_image
+
+DATA_PATH = Path("src/game_data.json")
+NOIR_DIR = Path("src/assets/images/noir")
+MAP_DIR = NOIR_DIR / "maps"
+ITEMS_DIR = NOIR_DIR / "items"
+NOIR_DIR.mkdir(parents=True, exist_ok=True)
+MAP_DIR.mkdir(parents=True, exist_ok=True)
+ITEMS_DIR.mkdir(parents=True, exist_ok=True)
+
+NOIR_STYLE = (
+    "Film noir aesthetic, dark, moody, high contrast shadows, "
+    "warm amber/yellow tones against deep blacks, "
+    "rain-slicked surfaces, painterly semi-realistic, "
+    "first-person perspective, no people visible, "
+    "cinematic 16:9 composition. "
+    "Setting: fictional country mixing Germany, USA, and failed Soviet state. "
+    "Text/signs in German or Portuguese, NEVER English."
 )
-from scripts.shared.openrouter import generate_image, save_image
-from scripts.shared.ipv4_fix import force_ipv4
 
-ROOMS = {
-    "escritorio": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
+ITEM_STYLE = (
+    "Single item icon for a noir detective game. "
+    "Film noir aesthetic, high contrast, deep shadows, warm amber highlight. "
+    "Dark background, cinematic lighting, isolated object, no text, no people. "
+    "Square composition, dark moody atmosphere."
+)
 
-Generate a first-person view of a rundown private detective's office at night. Rain streaks down the single window on the left wall.
-A battered wooden desk dominates the center with piles of case files, a half-empty whiskey bottle, and a tarnished brass lamp casting a warm amber pool of light.
-The desk chair is pushed back. On the right wall, a filing cabinet with a drawer slightly open.
-The ceiling has a water stain and a bare bulb. Cigarette butts in an ashtray.
-The door is visible at the far end with a frosted glass panel reading "MURPHY LAW" (the A is missing).
-Deep shadows in corners. Film noir atmosphere. Warm amber from the lamp, cold blue from the window rain.""",
-        "first": True,
-    },
-    "rua_chuva": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into a rain-soaked street at night, as if stepping out of the detective's office doorway.
-The office door is behind the viewer. Wet asphalt reflecting red and blue neon signs — a pharmacy, a bar called "Vila Nova", a pawn shop.
-Rain is falling heavily. A flickering streetlamp casts a cone of yellow light. Puddles everywhere.
-Fire escape zigzagging up a brick wall on the left. A newspaper blowing in the wind. Distant silhouette of buildings.
-No people visible. Deep noir atmosphere — chiaroscuro lighting, wet surfaces, urban decay.""",
-    },
-    "bar": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into the interior of a smoky dive bar called "Bar Vila Nova" at night.
-A long wooden bar counter on the left with bottles on shelves, a neon sign behind the bar glowing amber.
-A few bar stools. A booth in the far right corner with a dim overhead lamp.
-Cigarette smoke haze visible in the light beams. A vintage jukebox against the wall.
-Wood paneling, worn leather seats. The bar counter has an ashtray and a half-drunk glass.
-Warm amber and red lighting. Deep shadows in the corners. No people. Noir atmosphere.""",
-    },
-    "escola": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into an empty school hallway at night.
-Fluorescent lights flicker overhead, casting a sickly green-white glow on scuffed linoleum floors.
-Lockers line both walls — some dented, one slightly open. Bulletin board with faded notices.
-A water fountain on the right wall. Classroom doors along the corridor, one has a broken window.
-At the far end, the principal's office door with a brass nameplate. Shadows are deep and unsettling.
-The atmosphere is institutional, cold, and eerie. A single red "EXIT" sign glows at the end.
-No people. Noir horror-detective atmosphere.""",
-    },
-    "diretoria": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into a school principal's office at night.
-A heavy wooden desk with a leather chair behind it. Bookshelves with law manuals and education codes.
-Framed certificates on the wall — one is crooked. A filing cabinet with a lock.
-A window with blinds partially open, letting in moonlight. A small plant on the windowsill, wilting.
-On the desk: a phone, scattered papers, a nameplate reading "Diretora Elvira Costa".
-A side table with a coffee mug and an ashtray. The room smells of old paper and secrets.
-Warm amber desk lamp, cold moonlight from window. Deep shadows. No people. Noir atmosphere.""",
-    },
-    "delegacia": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into a run-down police precinct interior at night.
-A front desk/bulletproof glass window on the left. Rows of wooden benches in the waiting area.
-Filing cabinets against the wall — one drawer hanging open. A water cooler.
-On the wall: a bulletin board with suspect photos and case numbers, some circled in red.
-Fluorescent lighting, one bulb flickering. A hallway leading to interrogation rooms in the back.
-A "MISSING PERSONS" poster board with several faces — one photo is highlighted.
-Institutional green walls, scuffed floor. No people. Oppressive, corrupt atmosphere. Noir.""",
-    },
-    "beco": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into a dark alleyway at night, rain pouring.
-Brick walls on both sides, fire escape ladders zigzagging up. A dumpster overflowing.
-A single flickering bulb above a back door. Rain creates rivers along the cracked pavement.
-Graffiti on the wall — a faded message. Puddles reflecting the dim light.
-At the far end, a figure-sized shadow (not a person, just a shadow cast on the wall).
-A stray cat sitting on a fire escape. Steam rising from a grate.
-Oppressive darkness, claustrophobic. Chiaroscuro. Noir atmosphere. No people visible.""",
-    },
-    "armazem": {
-        "prompt": f"""{NOIR_STYLE_PREFIX}
-
-Edit this image: Transform the scene into the interior of an abandoned warehouse at night.
-Vast space with high ceilings, exposed metal beams and rusted supports.
-Wooden crates stacked along the walls. A forklift parked in the corner, covered in dust.
-A single bare bulb hanging from a chain, swinging slightly. Large industrial doors at the far end, one slightly ajar with moonlight bleeding through.
-On the floor: scattered papers, a broken chair, drag marks in the dust.
-A metal stairway leading to a catwalk overhead. Cobwebs in the corners.
-Ominous, cavernous atmosphere. Industrial noir. Deep shadows. No people.""",
-    },
+ROOM_PROMPTS = {
+    "escritorio": (
+        "Rundown private detective's office at night. Rain on window. "
+        "Battered wooden desk with case files, whiskey bottle, brass lamp. "
+        "Filing cabinet. Water stain on ceiling. "
+        "Door with 'MURPHY LAW' frosted glass (missing A). Deep shadows."
+    ),
+    "rua_chuva": (
+        "Rain-soaked street at night. Wet asphalt reflecting neon signs. "
+        "Flickering streetlamp. Fire escape on brick wall. "
+        "Pharmacy sign, bar 'Vila Nova', pawn shop. Puddles everywhere."
+    ),
+    "bar": (
+        "Smoky dive bar 'Vila Nova' interior. Long wooden counter, "
+        "neon sign, booth with dim lamp, cigarette smoke, jukebox. "
+        "Warm amber/red lighting. Deep shadows."
+    ),
+    "escola": (
+        "Empty school hallway at night. Flickering fluorescent lights. "
+        "Lockers, bulletin board, water fountain. "
+        "Classroom doors, one broken window. Red EXIT sign. Eerie atmosphere."
+    ),
+    "diretoria": (
+        "School principal's office. Heavy desk, leather chair, bookshelves. "
+        "Framed certificates, one crooked. Filing cabinet with lock. "
+        "Window with blinds. Wilting plant. "
+        "Nameplate 'Diretora Elvira Costa'. Warm lamp, cold moonlight."
+    ),
+    "delegacia": (
+        "Run-down police precinct. Bulletproof glass window, wooden benches, "
+        "filing cabinets, one drawer open. Water cooler. "
+        "Bulletin board with suspect photos. "
+        "'MISSING PERSONS' poster board. Flickering fluorescent light."
+    ),
+    "beco": (
+        "Dark alley at night, heavy rain. Brick walls, fire escapes, "
+        "overflowing dumpster. Flickering bulb. Graffiti. "
+        "Figure-sized shadow cast on wall. Stray cat on fire escape. "
+        "Steam rising from grate. Claustrophobic."
+    ),
+    "armazem": (
+        "Abandoned warehouse interior. High ceiling, metal beams, "
+        "wooden crates, dusty forklift. Single bare bulb swinging. "
+        "Industrial door ajar with moonlight. Scattered papers. "
+        "Metal stairway to catwalk. Cobwebs. Ominous."
+    ),
+    "igreja": (
+        "Old stone church interior at night. Flickering candlelight, "
+        "wooden pews, stained glass window with faint moonlight. "
+        "Altar with worn cloth. Confessional booth. "
+        "High vaulted ceiling with shadows. Incense smoke. Silent and solemn."
+    ),
+    "fazenda": (
+        "Rural farmhouse at dusk. Long dirt road leading to wooden barn. "
+        "Old tractor. Fenced pasture. Weathered wooden fence. "
+        "Gray cloudy sky. Single light on in farmhouse window. "
+        "Dry grass. Isolated and quiet."
+    ),
+    "hospital": (
+        "Small district hospital waiting room at night. Empty plastic chairs, "
+        "reception window with blinds, fluorescent light flickering. "
+        "Linoleum floor. Bulletin board with faded health posters. "
+        "Quiet and sterile."
+    ),
+    "casa_mae": (
+        "Modest house living room at night. Family photographs on shelf, "
+        "wooden table with handwritten letter, old radio. "
+        "Worn armchair. Kitchen doorway visible. "
+        "Warm lamp light. Melancholic atmosphere."
+    ),
 }
 
-ROOM_ORDER = [
-    "escritorio",
-    "rua_chuva",
-    "bar",
-    "escola",
-    "diretoria",
-    "delegacia",
-    "beco",
-    "armazem",
-]
+ITEM_PROMPTS = {
+    "cartao_visita": (
+        "Soaked business card on wet asphalt. "
+        "'Diretora Elvira Campos' in faded gold lettering."
+    ),
+    "fotografia": (
+        "Crumpled whiskey-stained photograph of smiling 9-year-old girl "
+        "in front of school. Amber stains."
+    ),
+    "isqueiro": (
+        "Silver antique lighter with 'M.L.' engraved. "
+        "Ornate silver with patina. Flame reflection."
+    ),
+    "fita_magnetica": (
+        "Vintage reel-to-reel magnetic tape, partially unwound. "
+        "Cyrillic markings. Label 'WOHLTAT-PROGRAMM'. Green phosphor glow."
+    ),
+    "cedula_500": (
+        "Crumpled 500 Marks banknote, worn and frayed. "
+        "Faded ink, stern classical architecture. Green/brown tones."
+    ),
+    "gravador_cassete": (
+        "Vintage cassette recorder, black plastic and silver, worn buttons, "
+        "small microphone grille, audio cassette partially inside. "
+        "Noir lighting, dark background."
+    ),
+    "chave_armazem": (
+        "Rusty industrial key on dark ground, heavy iron, "
+        "large bow with number '7' engraving. Old and worn."
+    ),
+}
 
 
-def generate_map_thumbnail(room_b64: str, room_name: str, aspect_ratio: str = "4:3") -> str | None:
-    prompt = f"""{NOIR_STYLE_PREFIX}
+def load_game_data():
+    with open(DATA_PATH) as f:
+        return json.load(f)
 
-Using this room image as reference, generate a small top-down mini-map view of this location ({room_name}).
-It should look like a stylized floor plan or bird's-eye schematic view. Simple, clean lines.
-Dark background with subtle green/amber outlines showing the room layout.
-Like a security camera or thermal imaging view. Minimalist. No people.
-Keep the noir aesthetic but make it look like a map/diagram."""
 
-    return generate_image(prompt, reference_image_b64=room_b64, aspect_ratio=aspect_ratio)
+def gen_room_image(prompt: str) -> bytes | None:
+    img_b64 = generate_image(prompt, size="1536x1024")
+    if img_b64:
+        return base64.b64decode(img_b64)
+    return None
+
+
+def gen_item_image(prompt: str) -> bytes | None:
+    img_b64 = generate_image(prompt, size="1024x1024")
+    if img_b64:
+        return base64.b64decode(img_b64)
+    return None
+
+
+def gen_map_image(prompt: str) -> bytes | None:
+    img_b64 = generate_image(prompt, size="1024x768")
+    if img_b64:
+        return base64.b64decode(img_b64)
+    return None
+
+
+def get_room_prompt(room_id: str, room_name: str) -> str:
+    if room_id in ROOM_PROMPTS:
+        return f"{NOIR_STYLE} {ROOM_PROMPTS[room_id]}"
+    return f"{NOIR_STYLE} Scene of {room_name}. Dark, moody, film noir atmosphere."
+
+
+def get_item_prompt(item_id: str, item_name: str) -> str:
+    if item_id in ITEM_PROMPTS:
+        return f"{ITEM_STYLE} {ITEM_PROMPTS[item_id]}"
+    return f"{ITEM_STYLE} {item_name}. Dark background, isolated, noir lighting."
+
+
+BG_PLACEHOLDER_MAX_KB = 300  # bg images smaller than this are placeholders
+BG_SKIP = {"beco"}  # rooms to skip even if placeholder (manually replaced)
+
+
+def file_md5(path: Path) -> str:
+    return hashlib.md5(path.read_bytes()).hexdigest()
+
+
+def is_placeholder_bg(path: Path) -> bool:
+    if not path.exists():
+        return True
+    return path.stat().st_size < BG_PLACEHOLDER_MAX_KB * 1024
+
+
+def is_duplicate_map(path: Path, ref_md5: str) -> bool:
+    if not path.exists():
+        return True
+    return file_md5(path) == ref_md5
+
+
+def is_duplicate_item(path: Path, ref_md5: str) -> bool:
+    if not path.exists():
+        return True
+    return file_md5(path) == ref_md5
+
+
+def generate_rooms(data, missing_only=False):
+    rooms = data.get("GAME_ROOMS", {})
+    room_ids = list(rooms.keys())
+    if not room_ids:
+        print("ERRO: Nenhuma sala encontrada em game_data.json")
+        sys.exit(1)
+
+    print("=" * 60)
+    print(f"ROOMS: {len(room_ids)} salas encontradas")
+    print("=" * 60)
+
+    # Baseline MD5 of a known duplicate map (map_bar.png)
+    map_ref_md5 = file_md5(MAP_DIR / "map_bar.png") if (MAP_DIR / "map_bar.png").exists() else ""
+
+    rooms_to_gen = []
+    for room_id in room_ids:
+        bg_path = NOIR_DIR / f"bg_{room_id}.png"
+        if missing_only and bg_path.exists() and not is_placeholder_bg(bg_path):
+            continue
+        if room_id in BG_SKIP:
+            continue
+        rooms_to_gen.append(room_id)
+
+    for room_id in rooms_to_gen:
+        rname = rooms[room_id].get("name", room_id)
+        prompt = get_room_prompt(room_id, rname)
+
+        print(f"[{room_id}] {rname} (text-to-image)...")
+        img = gen_room_image(prompt)
+        if img:
+            (NOIR_DIR / f"bg_{room_id}.png").write_bytes(img)
+            print(f" OK")
+        else:
+            print(f" FALHA")
+        time.sleep(3)
+
+    print("\n" + "=" * 60)
+    print("ROOMS: Gerando miniaturas de mapa")
+    print("=" * 60)
+
+    maps_to_gen = []
+    for room_id in room_ids:
+        bg_path = NOIR_DIR / f"bg_{room_id}.png"
+        map_path = MAP_DIR / f"map_{room_id}.png"
+        if not bg_path.exists():
+            continue
+        if missing_only and map_path.exists() and not is_duplicate_map(map_path, map_ref_md5):
+            continue
+        if missing_only and room_id == "bar" and map_path.exists():
+            continue  # map_bar is the reference; not a real duplicate of itself
+        maps_to_gen.append(room_id)
+
+    for room_id in maps_to_gen:
+        print(f"[{room_id}] Mapa...")
+        map_prompt = (
+            f"{NOIR_STYLE} "
+            f"Top-down mini-map view of {room_id}. "
+            "Stylized floor plan, dark background, green/amber outlines. "
+            "Security camera view. Minimalist."
+        )
+        img = gen_map_image(map_prompt)
+        if img:
+            (MAP_DIR / f"map_{room_id}.png").write_bytes(img)
+            print(f" OK")
+        else:
+            print(f" FALHA")
+        time.sleep(3)
+
+
+def generate_items(data, missing_only=False):
+    items = data.get("ITEM_NAMES", {})
+    print("\n" + "=" * 60)
+    print(f"ITEMS: {len(items)} itens encontrados")
+    print("=" * 60)
+
+    # Baseline MD5 of a known duplicate item (item_cartao_visita.png)
+    item_ref_md5 = file_md5(ITEMS_DIR / "item_cartao_visita.png") if (ITEMS_DIR / "item_cartao_visita.png").exists() else ""
+
+    for item_id, item_name in items.items():
+        item_path = ITEMS_DIR / f"item_{item_id}.png"
+        if missing_only and item_path.exists() and not is_duplicate_item(item_path, item_ref_md5):
+            continue
+        if missing_only and item_id == "cartao_visita" and item_path.exists():
+            continue
+
+        prompt = get_item_prompt(item_id, item_name)
+        print(f"[{item_id}] {item_name}...")
+        img = gen_item_image(prompt)
+        if img:
+            (ITEMS_DIR / f"item_{item_id}.png").write_bytes(img)
+            print(f" OK")
+        else:
+            print(f" FALHA")
 
 
 def main():
-    force_ipv4()
+    parser = argparse.ArgumentParser(description="Gerador de imagens noir via 9Router")
+    parser.add_argument("--missing-only", action="store_true",
+                        help="Gerar apenas placeholders/duplicatas (bg <300KB, mapas/itens duplicados)")
+    args = parser.parse_args()
 
-    NOIR_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
-    NOIR_MAP_DIR.mkdir(parents=True, exist_ok=True)
-
-    root_b64 = None
-    generated = {}
-
-    print("=" * 60)
-    print("PHASE 1: Generating root image (escritorio)")
-    print("=" * 60)
-
-    room = ROOM_ORDER[0]
-    config = ROOMS[room]
-    print(f"\n[{room}] Generating from text prompt...")
-    img_b64 = generate_image(config["prompt"])
-
-    if img_b64:
-        filepath = NOIR_IMAGE_DIR / f"bg_{room}.png"
-        if save_image(img_b64, filepath):
-            root_b64 = img_b64
-            generated[room] = filepath
-            print(f" ROOT IMAGE READY ✓")
-        else:
-            print(" FATAL: Could not save root image. Aborting.")
-            sys.exit(1)
-    else:
-        print(" FATAL: Could not generate root image. Aborting.")
-        sys.exit(1)
-
-    print("\n" + "=" * 60)
-    print("PHASE 2: Generating other rooms (editing from root)")
-    print("=" * 60)
-
-    for room in ROOM_ORDER[1:]:
-        config = ROOMS[room]
-        print(f"\n[{room}] Generating with root reference...")
-        img_b64 = generate_image(config["prompt"], reference_image_b64=root_b64)
-
-        if img_b64:
-            filepath = NOIR_IMAGE_DIR / f"bg_{room}.png"
-            if save_image(img_b64, filepath):
-                generated[room] = filepath
-            else:
-                print(f" WARNING: Failed to save {room}, will try without reference...")
-                img_b64_fallback = generate_image(config["prompt"])
-                if img_b64_fallback:
-                    filepath = NOIR_IMAGE_DIR / f"bg_{room}.png"
-                    if save_image(img_b64_fallback, filepath):
-                        generated[room] = filepath
-        else:
-            print(f" WARNING: Failed with reference, trying without...")
-            img_b64_fallback = generate_image(config["prompt"])
-            if img_b64_fallback:
-                filepath = NOIR_IMAGE_DIR / f"bg_{room}.png"
-                if save_image(img_b64_fallback, filepath):
-                    generated[room] = filepath
-
-        time.sleep(2)
-
-    print("\n" + "=" * 60)
-    print("PHASE 3: Generating map thumbnails")
-    print("=" * 60)
-
-    for room, room_config in ROOMS.items():
-        if room not in generated:
-            print(f"\n[{room}] SKIPPED — no bg image available")
-            continue
-
-        print(f"\n[{room}] Generating map thumbnail...")
-        room_name = room_config["prompt"].split("Transform the scene into")[-1].split(".")[0].strip() if "Transform" in room_config["prompt"] else "Escritório de Murphy Law"
-
-        bg_path = generated[room]
-        room_b64 = base64.b64encode(bg_path.read_bytes()).decode("utf-8")
-
-        map_b64 = generate_map_thumbnail(room_b64, room_name, aspect_ratio="4:3")
-
-        if map_b64:
-            map_path = NOIR_MAP_DIR / f"map_{room}.png"
-            if save_image(map_b64, map_path):
-                print(f" Map thumbnail saved ✓")
-        else:
-            print(f" WARNING: Could not generate map for {room}")
-
-        time.sleep(2)
-
-    print("\n" + "=" * 60)
-    print("SUMMARY")
-    print("=" * 60)
-    print(f"\nRoom backgrounds generated: {len(generated)}/8")
-    for room, path in generated.items():
-        print(f" ✓ {room}: {path}")
-
-    map_count = len(list(NOIR_MAP_DIR.glob("map_*.png")))
-    print(f"\nMap thumbnails generated: {map_count}/8")
-
-    if len(generated) < 8:
-        print(f"\n⚠ Missing rooms: {set(ROOM_ORDER) - set(generated.keys())}")
-        print(" Re-run the script to retry failed rooms.")
-    else:
-        print("\n✓ All room images generated successfully!")
+    data = load_game_data()
+    generate_rooms(data, missing_only=args.missing_only)
+    generate_items(data, missing_only=args.missing_only)
+    print("\nConcluido!")
 
 
 if __name__ == "__main__":
