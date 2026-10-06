@@ -5,7 +5,7 @@
 - **Source of Truth:** `src/game_data.json` defines rooms, interactables, terminal documents, phone contacts.
 - **State Management:** In `src/App.tsx`. `localRooms` mirrors `game_data.json` for in-memory updates.
 - **Audio Engine:** `src/audio.ts`. Async init. Uses Web Audio API `GainNodes` for category volume (Master, Ambient, SFX, Voice). `rainGainNode` for per-room rain volume; `setRainVolume()` method. Room config: `rain?: { volume: number }` in `src/data.ts` Room interface.
-- **Terminal:** `react-xtermjs` fork (local `file:./react-xtermjs`) displays logs, investigative documents. Exports `useXTerm` hook + `XTerm` component. Fork has ESM+CJS dual build (`dist/index.mjs` + `dist/index.js`).
+- **Terminal:** Local hook `src/useXTerm.ts` over npm `@xterm/xterm@^6.0.0` (not the react-xtermjs fork — no longer a dependency). Exports `useXTerm`; App.tsx attaches its ref to a plain `<div>` and drives the `Terminal` instance directly. FitAddon via `@xterm/addon-fit`.
 - **SCP UI Components:** `src/components/ui/` — Button, Card, Badge, Toast, Accordion, Tooltip adapted from `scpcn-ui/` (local fork, NOT npm linked). Styles in `src/styles/scp.css`.
 - **Dev Inspector:** `src/components/DevInspector.tsx`. Filesystem-style tree of all rooms/interactables. Left-click context menu (create/remove items). Monaco JSON editor (`@monaco-editor/react`) for live-editing selected item. Replaces inventory panel when `devMode=true`.
 
@@ -51,7 +51,7 @@
 - `python3 -m pytest scripts/shared/geometry_test.py -v`: Run geometry bounding-box unit tests (28 tests).
 - `python3 -m scripts.data.merge_extracted`: Merge `extracted_positions.json` into `src/game_data.json` (adds DINOv2-detected interactables to existing room data).
 - `python3 -m scripts.data.fix_overlaps`: Fix cross-room duplicate IDs, assign hitboxes, clamp bounds, verify no overlaps in `game_data.json`.
-- `cd react-xtermjs && npm test`: Run fork Jest tests (22 tests, 4 suites).
+- `cd react-xtermjs && npm test` (optional): Run legacy fork Jest tests (22 tests, 4 suites). Fork is NOT a game dependency anymore — kept locally as its own git repo.
 
 ## Conventions & Style
 - **Tone:** Noir meta-narrative (Film Noir aesthetic, high contrast, amber/black). Labels/descriptions in PT-BR with intentional German lore terms (Lagerhaus, Volkspolizei, Privatermittler, GESCHLOSSEN). All player-facing text must be in Portuguese; German terms are lore-specific only. Fictional country: Germany+US+failed Soviet.
@@ -59,7 +59,7 @@
 - **Data Bridge:** `src/data.ts` merges `game_data.json` with static image imports.
 - **Secrets:** `GEMINI_API_KEY` required in `.env.local` for build-time injection.
 - **Persistence:** Game state in-memory with `localStorage` save/load. `SAVE_KEY='scp_law_save'`. Auto-saved via `useEffect` dependendo de 24 campos de estado.
-- **react-xtermjs fork:** Local fork at `react-xtermjs/` with own git history. PeerDep `@xterm/xterm@^6.0.0`. Dual ESM+CJS build. 22 Jest tests. After modifying fork source, run `cd react-xtermjs && npm run build` to rebuild dist before building main game.
+- **react-xtermjs fork (legacy, unused):** `react-xtermjs/` is a standalone clone of `github.com/jadsongmatos/react-xtermjs` (own git, synced with origin/main), untracked by this repo. NOT a dependency: package.json has no `file:` ref and no source imports it — the game vendors `src/useXTerm.ts` over npm `@xterm/xterm`. Never `git add react-xtermjs` without `.gitmodules` (gitlink breaks).
 - **tsconfig exclude:** Main game `tsconfig.json` excludes `react-xtermjs/tests`, `react-xtermjs/example`, `scpcn-ui/`, `s2.cpp/`, and `s2-models/` to prevent typecheck pollution.
 - **SCP CSS prefix:** `scp-` classes. Font class: `.institutional` uses game fonts (JetBrains Mono/Playfair Display). Loaded globally via `main.tsx` → `import './styles/scp.css'`.
 - **SCP Classification mapping:** default→safe, human→euclid, orc→keter, elf→thaumiel, undead→apollyon.
