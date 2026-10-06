@@ -64,6 +64,8 @@ import mapEscritorio from './assets/images/noir/maps/map_escritorio.png';
 import mapRuaChuva from './assets/images/noir/maps/map_rua_chuva.png';
 import mapBar from './assets/images/noir/maps/map_bar.png';
 import mapDiretoria from './assets/images/noir/maps/map_diretoria.png';
+import mapEscola from './assets/images/noir/maps/map_escola.png';
+import mapBeco from './assets/images/noir/maps/map_beco.png';
 import mapDelegacia from './assets/images/noir/maps/map_delegacia.png';
 import mapArmazem from './assets/images/noir/maps/map_armazem.png';
 import mapIgreja from './assets/images/noir/maps/map_igreja.png';
@@ -114,8 +116,10 @@ const MAP_IMG: Record<string, string> = {
   escritorio: mapEscritorio,
   rua_chuva: mapRuaChuva,
   bar: mapBar,
+  escola: mapEscola,
   diretoria: mapDiretoria,
   delegacia: mapDelegacia,
+  beco: mapBeco,
   armazem: mapArmazem,
   igreja: mapIgreja,
   fazenda: mapFazenda,
