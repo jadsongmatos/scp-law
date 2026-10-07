@@ -11,3 +11,38 @@ __pycache__/
 public/rainstorm.mp3
 test-results/
 yolov8x.pt
+
+# ===== infra de voz local (5GB+, já excluídos do tsconfig) =====
+s2.cpp/
+s2-models/
+scratch/
+
+# ===== intermediários de imagem sem referência no código =====
+src/assets/images/new/
+src/assets/images/noir-new/
+src/assets/images/noir_backup/
+qwen_test_output/
+public/voice.backup/
+
+# ===== logs e artefatos de experimentos =====
+build_out.txt
+build_err.txt
+tournament_log*.txt
+axelrod_ranking.csv
+axelrod-python.txt
+axelrod_workers/
+gen_*.csv
+maps_*.csv
+aaa.png
+bg_escritorio_qwen.png
+game_data-21-07-2026.json
+sbom.cdx.json
+skills-lock.json
+openai-image-generation.openapi.yaml
+qwen-image-edit.openapi.yaml
+phaserjs-template-vite.txt
+doc_dialogos.dot
+
+# ===== configs locais de agentes =====
+.claude/
+.opencode/
