@@ -1,98 +1,139 @@
-# Murphy Law SCP Game — Agent Guide
+# Repository Guidelines
 
-## Core Architecture
-- **Tech:** React + Vite 8 + Tailwind CSS + Lucide Icons + @base-ui/react@1.4.1.
-- **Source of Truth:** `src/game_data.json` defines rooms, interactables, terminal documents, phone contacts.
-- **State Management:** In `src/App.tsx`. `localRooms` mirrors `game_data.json` for in-memory updates.
-- **Audio Engine:** `src/audio.ts`. Async init. Uses Web Audio API `GainNodes` for category volume (Master, Ambient, SFX, Voice). `rainGainNode` for per-room rain volume; `setRainVolume()` method. Room config: `rain?: { volume: number }` in `src/data.ts` Room interface.
-- **Terminal:** Local hook `src/useXTerm.ts` over npm `@xterm/xterm@^6.0.0` (not the react-xtermjs fork — no longer a dependency). Exports `useXTerm`; App.tsx attaches its ref to a plain `<div>` and drives the `Terminal` instance directly. FitAddon via `@xterm/addon-fit`.
-- **SCP UI Components:** `src/components/ui/` — Button, Card, Badge, Toast, Accordion, Tooltip adapted from `scpcn-ui/` (local fork, NOT npm linked). Styles in `src/styles/scp.css`.
-- **Dev Inspector:** `src/components/DevInspector.tsx`. Filesystem-style tree of all rooms/interactables. Left-click context menu (create/remove items). Monaco JSON editor (`@monaco-editor/react`) for live-editing selected item. Replaces inventory panel when `devMode=true`.
+Guidelines for AI coding assistants working on **Murphy Law — Investigações Privadas** — a film-noir detective game with SCP Foundation meta-lore, deployed at `scp-law.pages.dev`. All facts below were verified against the current code; older AGENTS.md copies under `scratch/` are outdated — do not consult them.
 
-## High-Signal Facts
-- **No Resources:** Murphy Law "preparado". NO money counters, energy bars, hunger mechanics.
-- **Deduction Puzzle:** Core "logic puzzle". 5x5 Einstein grid (5 suspects, 5 locations, 5 weapons, 5 motives, 5 times × 5 positions). 23 puzzle constraints total (18 puzzle_hint_N + 5 interview_clue_*) scattered in physical rooms. NOTE: App's `DEDUCTION_SOLUTION`/labels (German: Gasthof/Volkspolizei/Kommissar) are hand-relabeled and diverge from the generator's labels (Bar Vila Nova/Delegacia/Delegado Mendes) — they describe the same logical solution.
-- **Win conditions:** 50% completion = deduction grid resolved correctly (`setGameCompleted(true)`). 100% completion = deduction + player acts following ZD-GTFT-2 (Zero Determinant Generous Tit-for-Tat): cooperates first, never defects when NPC cooperated (CC/DC states → C), retaliates when necessary but forgives. Implemented via `src/lib/axelrod.ts` ZDGTFT2. Compliance check in `calculateGameCompletion()` in `App.tsx`.
-- **Puzzle two-JSON pipeline:**
-  - **Input:** `puzzle_input.json` (repo root) — generator config: `seed`, `difficulty`, `n_rooms`, `categories`, `room_names`, `puzzle_rooms`. CLI flags override it; missing file → hardcoded defaults in `noir_generator.py`.
-  - **Generator:** `scripts/puzzle/noir_generator.py` (OR-Tools CP-SAT; requires `ortools`). `python3 -m scripts.puzzle.noir_generator` reads `puzzle_input.json`. `--output puzzle_output.json` → structured artifact (`categories`/`solution`/structured `hints`/`unique_solution`). `--merge src/game_data.json` → embeds hints/terminals as PT text.
-  - **Output (generated):** `puzzle_output.json` (repo root) — the structured generated puzzle.
-  - **Solvability test:** `src/lib/puzzleSolver.ts` (independent TS CSP backtracker, semantics mirror `_make_constraint_for_hint`) + `puzzleSolver.test.ts` proves the generated hints entail a UNIQUE solution equal to the declared one (i.e. the case is 100% solvable by deduction).
-- **Asset Generation:**
-  - **Voices:** Generated via `python3 -m scripts.generate.voices` (uses Fish Audio S2-Pro via local `s2.cpp` HTTP server; migrated from `edge-tts`). Config in `scripts/shared/config.py`. Triggered in `npm run build` if `VITE_VOICE_GEN=1`.
-  - **Images:** Generated via `python3 -m scripts.generate.images` (rooms backgrounds, map thumbnails, item icons). Uses Gemini 3.1 Flash Image via `google-genai` SDK (requires `GEMINI_API_KEY` in env).
-  - **Vision Pipeline (DINOv2):** `scripts/vision/extract_positions.py` — DINOv2-large (ViT-L/14) replaces YOLO. Extracts patch embeddings → DBSCAN clusters semantic regions (cosine metric) → Gemma-4-31b-it classifies in noir game context (PT-BR labels). `KNOWN_ROOMS` maps the 12 actual scene files: `rua_chuva`, `escritorio`, `escola`, `diretoria`, `delegacia`, `beco`, `bar`, `armazem`, `igreja`, `fazenda`, `hospital`, `casa_mae`. `guess_room_id()` strips `bg_` prefix and matches against `KNOWN_ROOMS`. Dependencies: `torch`, `transformers`, `scikit-learn`. Modes: `--mode patches` (clustering only), `--mode cls` (scene similarity via CLS token), `--mode full` (patches + Gemma). `--dry-run` skips Gemma API. `--eps`, `--min-samples` tune DBSCAN. `fix_overlaps.py` uses `scripts/shared/geometry.py` for bounding box math (generic — no per-room hardcoded positions). `merge_extracted.py` merges `extracted_positions.json` into `game_data.json` using `NOIR_ROOMS` dict (no SCP room/keycard/door references).
-- **Interaction Types:** Play mode — objects are **invisible** on the scene (no icons, no tooltips, no hover effects). Player must click the scene to discover interactables; left-click OR right-click opens a custom cursor-anchored context menu (a `fixed`-positioned div + `window` click/Escape close, same proven pattern as `DevInspector`'s context menu — NOT `@base-ui/react` Menu, which proved too fragile over the scene overlays/portals). State `objMenu` in `App.tsx`; menu rendered once after the interactables map. `▸ Interagir` performs the action below; each inventory item is an entry that tries to use that item on the object. **Dev mode** shows all icons, labels, drag handles; play mode hides them entirely (discovery mechanic).
-  - `inspect`: Pure description.
-  - `pickup`: Adds item to inventory.
-  - `travel`: Moves to `targetRoom`.
-  - `terminal_read`: Opens document in xterm.
-  - `phone_call`: Starts phone/carta dialogue or opens agenda.
-- **Item-Use / Locks:** Objects with `requiredItem` are gated. Pure decision fn `resolveItemUse` in `src/lib/itemUse.ts` (vitest-tested): correct item → `successMessage` + action + **permanent unlock**; wrong item or `▸ Interagir` on a still-locked object → `failedMessage`; free or already-unlocked object + item → "não serve aqui". Unlock persists per session only (in-memory `unlockedObjects` Set in `App.tsx`; no save). `chave_escritorio` removed from the game — `porta_escritorio` is now a free door.
-- **Phone System:** 8 contacts (5 originais + Padre Miguel + Wohltat + Caseiro) with Dilema do Prisioneiro (PD) dialogue trees. Each contact has `axelrodStrategy` defining personality. Choices: Cooperar (C), Trair (D), Encerrar (E). PD cutoff permanently blocks contact.
-- **PD Algorithm Support:** App.tsx handles: `EugineNier` (cooperates first, mirrors, cuts after 5 traições), `HardProber` (D,D,C,C probe then permanent D if player cooperated in rounds 2&3, else TFT), `SneakyTitForTat` (cooperates 2 rounds, sneaks D, repents if punished, never truly cuts off), `Detective` (C,D,C,C probe → TFT if opponent defected, else D forever), `Grudger` (cooperates until first defection, then defects forever), `RandomStrategy` (C with probability p, D with 1-p, memoryless). Implemented in `src/lib/eugineNier.ts`, `src/lib/hardProber.ts`, `src/lib/axelrod.ts`.
-- **Seeded RNG:** All randomness in the game (NPC decisions, audio SFX, ZDGTFT2 simulation) uses `mulberry32(42)` PRNG via `src/lib/rng.ts`. Exports `rng42 = mulberry32(42)`. Injected into `RandomStrategy`, `randomChoice`, `LRPlayer`, `ZDGTFT2` as default RNG. Every session with the same action sequence produces identical outcomes.
-- **Dialogue Visual Styles:** Two distinct CSS class families in `src/styles/scp.css` (lines ~914-1164):
-  - **Carta (WhatsApp-terminal):** `.dlg-carta-*` — amber phosphor CRT scanline overlay (`::before`/`::after` pseudo-elements), left-aligned received bubbles, right-aligned player-choice bubbles, CRT flicker animation. Cassette playback reuses this style.
-  - **Telefone (Radio transmitter):** `.dlg-radio-*` — frequency bar, signal bars, static noise backdrop, wave animation, flicker effect, german status labels (`SICHERHEITSKANAL`, `VERBUNDEN`, `GETRENNT`), `TRANSMITIR:` action buttons.
-  - All dialogue CSS includes `prefers-reduced-motion` fallbacks (animations disabled, flicker removed).
-- **Cassette System:** Gravador cassete records all phone/letter conversations. Murphy commentary per dialogue node. Accessible via FITA CASSETE button in sidebar (dedicated modal, not inside agenda). Gravador is a permanent tool — always in inventory, no map object. Status bar labels: `KASSETTE` / `ABGESPIELT`.
-- **Protagonist Items:** `isqueiro` and `gravador_cassete` start in inventory. `isqueiro` map object is `type:"inspect"` only (not collectible). `gravador_cassete` has NO map object — it's a permanent tool with its own sidebar button + modal.
+## Project Overview
 
-## Developer Commands
-- `npm run dev`: Local dev server (port 3000).
-- `npm run lint`: Typecheck using `tsc --noEmit`.
-- `npm test`: Run vitest unit tests (pure logic only, e.g. `src/lib/itemUse.test.ts`, 5 suites / 35 tests). `npm run test:watch` for watch mode. Config: `vitest.config.ts` (node env, isolated — no game Vite plugins).
-- `npm run build`: Build production. Gera `doc_dialogos.dot` automaticamente via `prebuild`. Voice generation if `VITE_VOICE_GEN=1`.
-- `npm run build:novoice`: Build production without voice generation.
-- `python3 scripts/audit/dialogue_audit.py`: CP-SAT auditor para árvores de diálogo. Detecta nós inalcançáveis, arestas quebradas, ciclos, nós sem pdAction, etc. (requer `ortools`).
-- `python3 -m scripts.generate.voices`: Update voices after changing `game_data.json` (requires Fish Audio S2-Pro via local `s2.cpp` server).
-- `python3 -m scripts.vision.extract_positions src/assets/images/noir/*.png --mode full`: Extract interactable positions via DINOv2 + Gemma (requires `torch`, `transformers`, `scikit-learn`, `OPENROUTER_API_KEY`).
-- `python3 -m pytest scripts/shared/geometry_test.py -v`: Run geometry bounding-box unit tests (28 tests).
-- `python3 -m scripts.data.merge_extracted`: Merge `extracted_positions.json` into `src/game_data.json` (adds DINOv2-detected interactables to existing room data).
-- `python3 -m scripts.data.fix_overlaps`: Fix cross-room duplicate IDs, assign hitboxes, clamp bounds, verify no overlaps in `game_data.json`.
-- `cd react-xtermjs && npm test` (optional): Run legacy fork Jest tests (22 tests, 4 suites). Fork is NOT a game dependency anymore — kept locally as its own git repo.
+- **Stack:** React 19 + Vite 8 + TypeScript + Tailwind v4 SPA. No router, no SSR — the entire game renders from `src/App.tsx` (~1650 lines).
+- **Core loop:** explore 12 rooms, click-to-discover **invisible** interactables (106 total: 39 `terminal_read`, 31 `inspect`, 23 `travel`, 9 `phone_call`, 4 `pickup`), collect hints, solve a 5×5 Einstein deduction grid (`src/components/DetectiveBoard.tsx`), and negotiate Iterated Prisoner's Dilemma (PD) dialogues with 9 contacts.
+- **Win conditions** (`calculateGameCompletion()`, `src/App.tsx:144`): 50% = deduction grid correct. 100% = additionally play as ZD-GTFT-2 (Zero-Determinant Generous Tit-for-Tat, `src/lib/axelrod.ts`): cooperate first, never defect against cooperation, retaliate-but-forgive. Compliance is computed by replaying each contact's `pdChoiceHistory` against its `axelrodStrategy`.
+- **No survival mechanics** — Murphy is "preparado": no money, energy, or hunger.
+- **Language:** ALL user-facing text in PT-BR; German terms (Gasthof, Lagerhaus, Volkspolizei, GESCHLOSSEN) are intentional lore only. Never English in user-facing strings or image prompts. Setting: fictional country mixing Germany, USA, and a failed Soviet state.
 
-## Conventions & Style
-- **Tone:** Noir meta-narrative (Film Noir aesthetic, high contrast, amber/black). Labels/descriptions in PT-BR with intentional German lore terms (Lagerhaus, Volkspolizei, Privatermittler, GESCHLOSSEN). All player-facing text must be in Portuguese; German terms are lore-specific only. Fictional country: Germany+US+failed Soviet.
-- **Icons:** Use `lucide-react`. Mapping in `src/Icons.tsx`.
-- **Data Bridge:** `src/data.ts` merges `game_data.json` with static image imports.
-- **Secrets:** `GEMINI_API_KEY` required in `.env.local` for build-time injection.
-- **Persistence:** Game state in-memory with `localStorage` save/load. `SAVE_KEY='scp_law_save'`. Auto-saved via `useEffect` dependendo de 24 campos de estado.
-- **react-xtermjs fork (legacy, unused):** `react-xtermjs/` is a standalone clone of `github.com/jadsongmatos/react-xtermjs` (own git, synced with origin/main), untracked by this repo. NOT a dependency: package.json has no `file:` ref and no source imports it — the game vendors `src/useXTerm.ts` over npm `@xterm/xterm`. Never `git add react-xtermjs` without `.gitmodules` (gitlink breaks).
-- **tsconfig exclude:** Main game `tsconfig.json` excludes `react-xtermjs/tests`, `react-xtermjs/example`, `scpcn-ui/`, `s2.cpp/`, and `s2-models/` to prevent typecheck pollution.
-- **SCP CSS prefix:** `scp-` classes. Font class: `.institutional` uses game fonts (JetBrains Mono/Playfair Display). Loaded globally via `main.tsx` → `import './styles/scp.css'`.
-- **SCP Classification mapping:** default→safe, human→euclid, orc→keter, elf→thaumiel, undead→apollyon.
-- **SCP Foundation meta-lore:** Maria Kraft procurou a Fundação SCP, mas a burocracia atrasou. Uma amiga de Murphy (Agente Stern) pediu a ele pessoalmente. Ele não aceitou dinheiro — fez por amizade e pela criança. A Fundação depois designou Stern como contato/avaliadora oficial.
-- **Tooltip variant by interactable type:** pickup→safe, travel→euclid, terminal_read→keter, phone_call→thaumiel.
-- **Badge classification for events:** pickup=safe, denied=keter, contact=euclid, deduction-correct=safe, deduction-incomplete=euclid, deduction-wrong=keter.
-- **Toast classification by event:** same as badge above.
-- **Phone choice design:** Exactly 3 options per node — Cooperar (C), Trair (D), Encerrar (E). NO `hint` field on choices. NO PISTA badge inline.
-- **NPC axelrod strategy mapping (by tournament score, no repeats):** Dra. Cunha=SoftGrudger (rank 0, score 2.73), Santos=Detective (rank 1, score 2.67), Zeca=Grudger (rank 2, score 2.63), Elvira=HardProber (rank 3, score 2.62), Seu Jonas=RandomStrategy (rank 4, score 2.36). Padre Miguel=EugineNier (colaborador). Wohltat=HardProber (vilão). Caseiro=WinStayLoseShift (pragmático).
-- **PD cutoff rules:** Only `pdAction === 'D'` at terminal node triggers cutoff. Grudger/TitForTat/HardProber = always cut. SneakyTitForTat = never cuts. EugineNier = cut after 5 player defections. SoftGrudger = cut after 3 player defections. WinStayLoseShift = shifts stance (no permanent cutoff). Forgiver = almost never cuts (10% forgive rate). RandomStrategy = 50% chance of cut.
-- **Encerrar (E) never causes PD cutoff.**
-- **Dra. Cunha** - contato presencial no hospital (SoftGrudger: coopera até 3 traições, depois corta)**
-- **Phone restrictions:** Telefone only works from escritório. Carta Seu Jonas works from any room. Contatos presenciais (igreja, hospital, bar, fazenda, diretoria) não precisam de telefone.
-- **Diretora Elvira** — contato presencial na diretoria (HardProber). O jogador deve ir até a sala da Diretoria (dentro da Volksschule) para encontrá-la pessoalmente. Se a conversa for bem-sucedida (caminho de cooperação até `de_confirma`), ela dá o número do telefone (`diretoraPhoneUnlocked=true`) e o jogador pode ligar do escritório. Se não, precisa voltar à diretoria toda vez.
-- **Escola (Volksschule):** Acesso exige `cartao_visita` (`requiredItem` em `escola_fachada` no game_data; item obtido via pickup `cartao_chao` na Rua Sieben). Além disso, `handleInteract` (App.tsx) bloqueia `escola_fachada` enquanto o jogador não visitou `casa_mae` — precisa falar com Maria Kraft primeiro para ter o motivo narrativo.
-- **Farmacia:** `type:"inspect"` (porta fechada GESCHLOSSEN) — not a relevant room.
-- **Igreja:** 9ª sala (`GAME_ROOMS.igreja`). Acessível via `igreja_porta` na Rua Sieben. Único local onde se fala com Padre Miguel (interactable `padre_miguel_encontro`, tipo `phone_call`, ativado apenas na igreja). Contém 6 interactables: padre (phone_call), volta à rua e estrada da fazenda (travel), vitral e banco (inspect), registro paroquial (terminal_read). Padre Miguel não é mais auto-descoberto.
-- **Fazenda:** 10ª sala (`GAME_ROOMS.fazenda`). Acessível via `estrada_fazenda` dentro da igreja (estrada de chão longa). Único local onde se fala com o Caseiro (`caseiro_encontro`, tipo `phone_call`). Contém 5 interactables: caseiro (phone_call), anotações do caseiro (terminal_read), celeiro e cerca (inspect), saída (travel).
-- **Hospital:** 11ª sala (`GAME_ROOMS.hospital`). Posto de Saúde do Distrito, próxima à Volksschule (acesso via `porta_hospital` na escola). Dra. Cunha é presencial aqui (encontro direto, como Padre Miguel na igreja). Contém arquivo de pacientes (terminal_read), sala de emergência (inspect).
-- **Casa da Mãe:** 12ª sala (`GAME_ROOMS.casa_mae`). Casa de Maria Kraft na Rua Sieben (acesso via `casa_maria_porta`). Contém carta de Maria (terminal_read), foto de família, quarto de Helena (inspect), agenda de Maria (inspect).
-- **Deploy:** Cloudflare Pages via `npx wrangler pages deploy dist/ --project-name=scp-law`. Project: `scp-law.pages.dev`. No `wrangler.toml` needed for static deploys.
-- **Component imports:** Use `@base-ui/react@^1.4.1` (NOT Radix UI). scp.css loaded globally — NO inline CSS imports in adapted components.
+## Architecture & Data Flow
+
+**Entry:** `index.html` → `src/main.tsx` (imports `index.css` + `styles/scp.css`) → `App.tsx`.
+
+**State = XState v5 (not useState):** `src/state/gameMachine.ts` exports `gameMachine` (id `detetive`, initial `exploring`) with 19 context fields (`currentRoomId`, `inventory`, `pdChoiceHistory`, `pdCutoffContacts`, `deductionGrid`, `unlockedObjects`, `localRooms`, `gameCompleted`, `diretoraPhoneUnlocked`, …) and 20 events (`MOVE_ROOM`, `PICKUP_ITEM`, `START_PHONE_CALL`, `RECORD_PD_ACTION`, `SET_DEDUCTION_RESULT`, `UNLOCK_DIRETORA_PHONE`, `RESTORE_STATE`, …). `App.tsx:28`: `const [snapshot, send] = useMachine(gameMachine)` — game state is `snapshot.context`; UI-only state (modals, xterm, `objMenu`) stays local in App.tsx. Persistence: `localStorage` under `SAVE_KEY = 'scp_law_save'`; auto-save effect keyed on ~20 context fields; load dispatches `RESTORE_STATE`.
+
+**Data flow:** `src/game_data.json` (source of truth: `GAME_ROOMS` ×12, `ITEM_NAMES`, `PHONE_CONTACTS` ×9, `_interviewClueMap`) → `src/data.ts` (typed exports + static image imports) → machine context `localRooms` (in-memory mirror mutated during play).
+
+**Puzzle pipeline:**
+
+1. `puzzle_input.json` (seed, difficulty, n_rooms, categories, room_names, puzzle_rooms — CLI flags override) →
+2. `scripts/puzzle/noir_generator.py` (OR-Tools CP-SAT): `--output puzzle_output.json` (structured artifact), `--merge src/game_data.json` embeds PT-BR hints/terminals →
+3. Solvability proof at test time: `src/lib/gameDataPuzzle.ts` parses the puzzle embedded in the shipped `game_data.json` (18 `puzzle_hint_*` + 5 `interview_clue_*` constraints) → `src/lib/puzzleSolver.ts` (independent CSP backtracker) proves a UNIQUE solution equal to the envelope (`puzzle_solution_terminal`) and to App.tsx's `DEDUCTION_SOLUTION`.
+- `App.tsx`'s `DEDUCTION_SOLUTION`/`DEDUCTION_LOCATIONS` use hand-relabeled German values (Kommissar Mendes, Gasthof Vila Nova, Volksschule, Volkspolizeistation 8º; categories `suspeito`/`local_crime`/`arma`/`motivo`/`horario`) — the same logical solution as the generator's labels.
+
+**PD engine:** strategies in `src/lib/` — `axelrod.ts` (ZDGTFT2, TitForTat, Grudger, SoftGrudger, Forgiver, WinStayLoseShift, SneakyTitForTat, RandomStrategy), `eugineNier.ts`, `hardProber.ts`. All randomness is seeded: `mulberry32(42)` = `rng42` (`src/lib/rng.ts`) — identical action sequences give identical outcomes. Exactly 3 choices per PD node: Cooperar (C), Trair (D), Encerrar (E). Only a `D` at a terminal node can trigger `CUT_OFF_CONTACT` (permanent; thresholds are strategy-specific — see the `isCutoff` computation in App.tsx ~:1150-1198); **E never cuts**.
+
+Current contact→strategy mapping (authoritative: `PHONE_CONTACTS[*].axelrodStrategy` in `game_data.json`):
+
+| id | name | strategy | access |
+|---|---|---|---|
+| `diretora_elvira` | Diretora Elvira Campos | Forgiver | presencial na diretoria; telefone só após `diretoraPhoneUnlocked` |
+| `santos` | Polizist Santos | SneakyTitForTat | telefone |
+| `zeca` | Zeca do Gasthof | TitForTat | telefone |
+| `seu_jonas` | Seu Jonas | WinStayLoseShift | carta (beco) |
+| `dra_cunha` | Dra. Cunha | SoftGrudger | hospital (presencial) |
+| `padre_miguel` | Padre Miguel | EugineNier | igreja (presencial) |
+| `wohltat` | Wohltat | HardProber | telefone (vilão) |
+| `agente_scp` | Agente Stern | Forgiver | telefone (Fundação SCP) |
+| `fazendeiro` | Caseiro da Fazenda | WinStayLoseShift | fazenda (presencial) |
+
+**Services:** `src/audio.ts` `SoundEngine` — Web Audio with category `GainNode`s (master/ambient/sfx/voice), per-room rain via `HTMLAudioElement` + `rainGainNode`/`setRainVolume()` (`rain?: {volume:number}` in `data.ts` `Room`). `src/useXTerm.ts` wraps npm `@xterm/xterm@^6` + `@xterm/addon-fit` (NOT the react-xtermjs fork).
+
+**Item-use/locks:** pure fn `resolveItemUse` (`src/lib/itemUse.ts`, vitest-tested): correct `requiredItem` → `successMessage` + action + permanent `UNLOCK_OBJECT`; wrong item or still-locked interact → `failedMessage`; free/unlocked object + item → "não serve aqui". Locked objects today: `escola_fachada` (cartao_visita), `porta_armazem` (fotografia), `gaveta_diretora` + `porta_aco` (isqueiro), `terminal_fosforo` + `porta_armazem_beco` + `terminal_final` (fita_magnetica), `arquivo_mendes` + `puzzle_solution_terminal` (cedula_500). `PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete']`; the cassette recorder (records all dialogues; own sidebar button + modal) has no map object.
+
+**Discovery mechanic:** in play mode interactables are invisible (no icons/tooltips/hover). Clicking the scene opens a cursor-anchored context menu (`fixed` div + `window` click/Escape close; `src/lib/useMenuPosition.ts`; `objMenu` state). Do NOT use `@base-ui/react` Menu for this. Dev mode (`devMode`) shows all icons/labels/drag handles and replaces inventory with `src/components/DevInspector.tsx` (Monaco JSON live editor, room/interactable tree, context-menu create/remove).
+
+**Gating rules (verified examples):** telefone/agenda only from `escritorio` (App.tsx:963, 1007); `escola_fachada` also requires visiting `casa_mae` first (App.tsx:474); Diretora Elvira's number unlocks only via the cooperative path to node `de_confirma` (App.tsx:1201).
+
+## Key Directories
+
+| Path | Purpose |
+|---|---|
+| `src/` | Game SPA — `App.tsx` (all flows + rendering), `state/`, `lib/`, `components/`, `styles/`, `assets/images/noir/` (`bg_*.png`, `maps/`, `items/`) |
+| `src/components/ui/` | 20 primitive files adapted from `scpcn-ui` (button, card, badge, toast, dialog, tooltip, accordion, …); `toast.tsx` uses `sonner` + `motion/react` |
+| `src/lib/` | Pure logic with colocated vitest: `axelrod`, `eugineNier`, `hardProber`, `rng`, `itemUse`, `puzzleSolver`, `gameDataPuzzle`, `useMenuPosition`, `utils` |
+| `scripts/generate/` | `voices.py` (s2.cpp TTS), `images.py` (9Router), `dialogue_graph.py` (prebuild → `doc_dialogos.dot`), `images_csv.py`, `images_edit_csv.py`, `maps_*.py` (NVIDIA Flux) |
+| `scripts/puzzle/` | `noir_generator.py` (CP-SAT), `interview.py` (axelrod-python PD engine: `simulate`/`tournament`/`validate`/`generate-clue-map`/`merge-interview-clues`) |
+| `scripts/vision/` | `extract_positions.py` (DINOv2 + Gemma) |
+| `scripts/audit/` | `dialogue_audit.py` (CP-SAT dialogue auditor), `backgrounds.py`, `signage.py` (vision audits) |
+| `scripts/data/` | `fix_overlaps.py`, `merge_extracted.py` (generic bbox math in `shared/geometry.py`) |
+| `scripts/shared/` | `config.py` (paths/models/env), `geometry.py` + `geometry_test.py`, `openrouter.py`, `ninerouter.py`, `nvidia*.py`, `ipv4_fix.py` |
+| `public/voice/` | Generated MP3s (checkpoint `_done.json`; `voice.backup/`) |
+| `scpcn-ui/` | **git submodule** — upstream UI primitives; tsconfig-excluded |
+| `react-xtermjs/` | Legacy standalone fork (own git repo; NOT a dependency, NOT a submodule). Never `git add` without `.gitmodules` (gitlink breaks) |
+| `s2.cpp/`, `s2-models/` | Fish Audio S2-Pro TTS engine + GGUF models (gitignored, ~3.5 GB) |
+| `docs/`, `scratch/` | Dated plans/logs; scratch is gitignored |
+
+## Development Commands
+
+| Command | Effect |
+|---|---|
+| `npm run dev` | Vite dev server, port 3000, host 0.0.0.0 (set `DISABLE_HMR=true` to disable HMR) |
+| `npm run lint` | `tsc --noEmit` — typecheck ONLY (no ESLint/Prettier/Biome exists) |
+| `npm test` / `npm run test:watch` | vitest run / watch (node env, `src/**/*.test.ts`) |
+| `npm run build` | prebuild regenerates `doc_dialogos.dot`, then `VITE_VOICE_GEN=1 vite build` — voice gen is **always attempted**; failures are warn-and-continue (plugin timeout 300 s) |
+| `npm run build:novoice` | prebuild + `vite build`, no voice gen |
+| `npm run preview` / `npm run clean` | `vite preview` / `rm -rf dist` |
+| `npm run generate:voices` | `python3 -m scripts.generate.voices` — s2.cpp wav → ffmpeg mp3 into `public/voice/`; `--force` ignores checkpoint |
+| `npm run generate:images` | `python3 -m scripts.generate.images` — 9Router; `--missing-only` |
+| `npm run audit:backgrounds` / `audit:signage` | Vision audits of room art / sign text (OpenRouter gemini-2.5-flash) |
+| `npm run fix:overlaps` / `merge:extracted` | game_data hitbox assignment/clamp/dedupe; merge `extracted_positions.json` |
+| `npm run extract:positions` | `python3 -m scripts.vision.extract_positions <images> --mode full` |
+| `.venv/bin/python -m scripts.puzzle.noir_generator --merge src/game_data.json` | Generate + embed puzzle (`--seed`, `--difficulty easy\|medium\|hard`, `--output`, `--dry-run`) |
+| `.venv/bin/python scripts/audit/dialogue_audit.py` | CP-SAT audit of dialogue trees (all 9 contacts must be ✓) |
+| `.venv/bin/python -m scripts.puzzle.interview validate` | Validate game_data.json against PD schema (also `simulate`, `tournament`, `merge-interview-clues`) |
+| `.venv/bin/python -m pytest scripts/shared/geometry_test.py -v` | 28 geometry tests |
+| `npx playwright test` | E2E critical path (`playwright.config.ts` auto-starts dev server on :3000; once: `npx playwright install chromium`) |
+| `npx wrangler pages deploy dist/ --project-name=scp-law` | Manual deploy (static; no wrangler.toml) |
+
+Notes: `build` uses POSIX inline-env syntax (breaks on Windows cmd). npm pre-hooks auto-run `dialogue_graph.py` before both build variants. No CI exists (`.github/` absent at root). Python tooling runs in the project venv (system python3 has no pip): `python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt`.
+
+## Code Conventions & Common Patterns
+
+- **TypeScript:** non-strict tsconfig, ES2022, `moduleResolution: bundler`, `@/*` → `src/*` alias (duplicated in vite.config, vitest.config, tsconfig). Typecheck excludes: `scpcn-ui`, `s2.cpp`, `s2-models`, `react-xtermjs/tests`, `react-xtermjs/example`, `scratch`, `interactive-detective-board-development` (protótipo standalone com tsconfig próprio).
+- **Styling:** Tailwind v4 CSS-first — `src/index.css` = `@import "tailwindcss"` + `@theme` noir palette (no tailwind.config, no PostCSS config). Fonts: JetBrains Mono + Playfair Display. Component/scene CSS in `src/styles/scp.css`: `scp-` prefix, `.institutional` font class, two dialogue families — `.dlg-carta-*` (carta/cassette: amber phosphor CRT) and `.dlg-radio-*` (telefone: radio transmitter) — both with `prefers-reduced-motion` fallbacks.
+- **UI stack:** `@base-ui/react` (NOT Radix), `class-variance-authority` + `cn()` helper (`clsx` + `tailwind-merge`, `src/lib/utils.ts`), `sonner` `<Toaster>`, `motion/react`, `lucide-react` via `IconMap` in `src/Icons.tsx`.
+- **SCP severity classes** color badges/tooltips/toasts: pickup=safe, denied=keter, contact=euclid (cutoff=keter, called=safe), deduction-correct=safe, deduction-incomplete=euclid, deduction-wrong=keter; tooltip variant by interactable type: pickup=safe, travel=euclid, terminal_read=keter, phone_call=thaumiel.
+- **Logic rule:** game decisions are pure functions/classes in `src/lib/*.ts` with colocated `*.test.ts`; `App.tsx` only wires them to UI. All randomness via seeded `rng42` — never `Math.random()`.
+- **Data-edit workflow:** edit `src/game_data.json` (or regenerate via scripts) → `npm run fix:overlaps` → `python3 scripts/audit/dialogue_audit.py` → `npm test` (`gameDataPuzzle.test.ts` fails if hints stop entailing the unique solution). `doc_dialogos.dot` regenerates on next build.
+- **PD dialogue data:** exactly 3 choices per node (C/D/E), no `hint` field on choices, no PISTA badges inline.
+
+## Important Files
+
+- **Entry/config:** `index.html` (`lang="pt-BR"`), `src/main.tsx`, `package.json`, `vite.config.ts` (plugin order: `voiceGenPlugin()` → `react()` → `tailwindcss()`; `@` alias; manualChunks), `vitest.config.ts`, `playwright.config.ts`, `tsconfig.json`, `.env.example`, `.gitmodules`, `.gitignore`
+- **Core:** `src/App.tsx`, `src/state/gameMachine.ts`, `src/data.ts`, `src/game_data.json` (137 KB source of truth)
+- **UI:** `src/components/DetectiveBoard.tsx`, `src/components/DevInspector.tsx`, `src/components/ui/*`, `src/styles/scp.css`, `src/Icons.tsx`
+- **Services:** `src/audio.ts`, `src/useXTerm.ts`
+- **Puzzle artifacts:** `puzzle_input.json`, `puzzle_output.json`, `doc_dialogos.dot` (generated, gitignored), `extracted_positions.json`
+- **E2E:** `playwright.config.ts` (root; `webServer` auto-starts `npm run dev` on :3000; chromium project) + `e2e_critical_path.spec.ts` (BASE hardcoded inside the spec)
+
+## Runtime/Tooling Preferences
+
+- **Node + npm only.** Root `package-lock.json` (lockfileVersion 3); no `engines`/`packageManager` declared — effective floor is Vite 8's `^20.19.0 || >=22.12.0`. Do not introduce bun/pnpm/yarn.
+- **Python 3** for `scripts/`, via project venv (gitignored `.venv/`; system python has NO pip): `python3 -m venv .venv && .venv/bin/pip install -r scripts/requirements.txt`. Deps: `requests`, `Pillow`, `ortools` (puzzle + audit), `pytest` (geometry); optional: `axelrod` (interview.py), `torch` + `transformers` + `scikit-learn` (vision — `requirements-vision.txt`). Voices also need system binaries: ffmpeg + built `s2.cpp/tmp/s2`.
+- **Voice TTS:** local `s2.cpp/tmp/s2` binary + `s2-models/*.gguf` (Fish Audio S2-Pro), invoked as a subprocess (`LD_LIBRARY_PATH=s2.cpp/tmp`), wav → mp3 via ffmpeg.
+- **Image generation:** local 9Router HTTP gateway (default `http://localhost:20128`), model `ag/gemini-3.1-flash-image` — not google-genai.
+- **Vision:** `facebook/dinov2-large` patch embeddings → DBSCAN → `google/gemma-4-31b-it` via OpenRouter. `KNOWN_ROOMS` in `extract_positions.py` covers only the original 8 scenes; `merge_extracted.py`'s `NOIR_ROOMS` covers all 12 rooms.
+- **Env vars (where read):** `VITE_VOICE_GEN` (vite.config.ts), `DISABLE_HMR` (vite.config.ts), `OPENROUTER_API_KEY` (shared/config.py; required for `--mode full`), `NINEROUTER_API_URL`/`NINEROUTER_API_KEY`/`NINEROUTER_IMAGE_MODEL` (shared/ninerouter.py), `NVIDIA_API_KEY` (scripts/generate/maps_*.py), `CLOUDFLARE_API_TOKEN` (wrangler; lives in root `.env`). Dead: `GEMINI_API_KEY` (read in config.py, consumed by nothing), `APP_URL` (.env.example boilerplate).
+- **Secrets:** root `.env` (gitignored) holds live tokens — never quote values, never commit. `.env.local` does not exist; `README.md` documents the real setup (prerequisites, commands, env, deploy).
+
+## Testing & QA
+
+- **Vitest** (`npm test`): 11 files / 101 tests, node env, `src/**/*.test.ts` only, deliberately loads NO Vite plugins (isolated from the game build). Pure logic only — no jsdom/@testing-library, no component tests. Compile gate is `npm run lint` (tsc).
+- **Must-stay-green:** `src/lib/gameDataPuzzle.test.ts` — shipped `game_data.json` hints must entail a unique solution matching both the `puzzle_solution_terminal` envelope and App.tsx `DEDUCTION_SOLUTION`. Run after ANY puzzle/dialogue data change.
+- Other suites: `axelrod`/`zdgtft`/`eugineNier`/`hardProber` (strategy behavior), `puzzleSolver` (CSP semantics), `roomReachability`, `itemUse`, `useMenuPosition`, `utils`, `components/board/data` (data layer do mural de pistas).
+- **Python QA:** `.venv/bin/python -m pytest scripts/shared/geometry_test.py` (28 bbox/overlap/clamp tests, 28/28 pass); `.venv/bin/python scripts/audit/dialogue_audit.py` (unreachable nodes, broken edges, cycles, missing `pdAction`; all 9 contacts clean; degrades gracefully without ortools).
+- **Playwright:** `npx playwright test` — `playwright.config.ts` (root) auto-starts the dev server, ignores `scratch/` spec copies; browsers once via `npx playwright install chromium`. ⚠️ The spec itself is STALE — it predates the context-menu interaction UX (click opens `objMenu` → `▸ Interagir`), permanent starting items, current interactable positions, and the current HUD/inventory DOM (selectors `header p.text-sm.font-bold` and `.w-56.bg-black.p-4` no longer exist) — all 8 tests fail; rewrite before using as QA.
+- **No CI**, no coverage tooling. Legacy Jest tests live in `react-xtermjs/` (own repo, optional, not a game dependency).
+- Empirical baseline: `npm test` → 90/90 pass; `npm run lint` → clean; `npm run build:novoice` → prebuild + full build OK (<1 s); `.venv` geometry tests → 28/28 pass; `.venv/bin/python scripts/audit/dialogue_audit.py` → 9/9 contacts ✓; `npx playwright test` → runner OK, 8/8 spec failures (stale spec — see Playwright bullet).
 
 ## Agent Behavior Rules
-- **Never remove/exclude files from deploy without asking user first.** File exceeds platform limits (e.g., Cloudflare Pages 25 MiB limit)? Stop, ask user. NO silent skip/delete.
-- **Never use `/tmp` for file operations.** Use project directory for temp work.
-- **Always ask user before audio/video processing parameters** (e.g., bitrate, channels, codec, duration cuts). NO assumed settings. Propose options, let user choose.
-- **Disciplina Lógica Operacional** (`disciplina-logica-operacional`): Código segue método:
-  - **Silogismo da tarefa:** Alteração requer convenção base + pedido explícito. Faltou um? Não faça. Evite: consequência cruel, escopo fantasma, dependência clandestina, estilo imperial.
-  - **Código local como verdade primária:** Ler implementação real, testes, comportamento rodando antes de editar.
-  - **Verificação empírica (TDD):** Red → Green → Refactor. NO conclusão sem teste.
-  - **Incrementos atômicos:** 1 lógica por commit. NO estado quebrado. NO código de exploração.
-  - **Refatoração disciplinada:** Apenas escopo da tarefa. Problemas fora = dívida técnica.
-  - **Dependências sob autorização:** NO adicionar sem autorização explícita. Justificar stdlib falha, impacto técnico, licença.
-  - **Segurança por padrão:** Validar entrada externa, queries parametrizadas. NO secrets em código/logs. Timeout/retry/backoff rede.
-  - **Comunicação proativa com o Navegador:** Informar complexidade > estimativa, trade-off arquitetural, bug bloqueante, risco segurança, quebra convenção. Formato: IMPACTO → OPÇÕES → RECOMENDAÇÃO.
+
+- **Never remove/exclude files from the deploy without asking the user first.** If a file exceeds Cloudflare Pages' 25 MiB limit: stop and ask. No silent skips/deletes.
+- **Never use `/tmp` for file operations** — use the project directory for temp work.
+- **Always ask the user before choosing audio/video processing parameters** (bitrate, channels, codec, duration cuts). Propose options; never assume.
+- **Disciplina Lógica Operacional:** every change requires base convention + explicit request (missing one? don't do it — avoid escopo fantasma, dependência clandestina, estilo imperial); read the real implementation/tests/behavior before editing; empirical TDD verification (Red → Green → Refactor) — no conclusion without test; atomic increments (1 logic per commit, no broken state, no exploration code); refactor only within task scope (out-of-scope problems = technical debt, report them); dependencies only with explicit authorization; security by default (validate external input, no secrets in code/logs, network timeout/retry/backoff); proactively report (format: IMPACTO → OPÇÕES → RECOMENDAÇÃO) when complexity exceeds estimate, an architectural trade-off arises, a blocker is found, or a convention is broken.

@@ -1,20 +1,50 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Murphy Law — Investigações Privadas
 
-# Run and deploy your AI Studio app
+Jogo de detetive em estilo film noir (React 19 + Vite 8 + TypeScript + Tailwind v4) com meta-lore da Fundação SCP. Explore 12 salas, descubra interactables ocultos clicando na cena, resolva um quebra-cabeça de dedução 5×5 (grid de Einstein) e negocie diálogos de Dilema do Prisioneiro Iterado com 9 contatos — cada um com sua própria estratégia de axelrod.
 
-This contains everything you need to run your app locally.
+Produção: `scp-law.pages.dev` (Cloudflare Pages).
 
-View your app in AI Studio: https://ai.studio/apps/7ba489b2-3add-4d41-bfe5-f67a60a0578b
+## Requisitos
 
-## Run Locally
+- **Node.js** `^20.19 || >=22.12` + **npm**
+- **Python 3** (opcional — ferramentas de `scripts/`: gerador de puzzle, auditorias, vozes/imagens):
+  ```bash
+  python3 -m venv .venv
+  .venv/bin/pip install -r scripts/requirements.txt
+  ```
+  Pipeline de visão (DINOv2, opcional): `.venv/bin/pip install -r requirements-vision.txt`
 
-**Prerequisites:**  Node.js
+## Desenvolvimento
 
+```bash
+npm install
+npm run dev          # http://localhost:3000
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+| Comando | Efeito |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento (porta 3000) |
+| `npm run lint` | Typecheck (`tsc --noEmit`) |
+| `npm test` | Testes unitários (vitest — lógica pura, 10 suítes) |
+| `npm run build` / `npm run build:novoice` | Build de produção (com/sem geração de vozes s2.cpp) |
+| `npx playwright test` | E2E do caminho crítico (sobe o dev server sozinho) |
+| `.venv/bin/python -m pytest scripts/shared/geometry_test.py` | Testes de geometria de hitboxes |
+| `.venv/bin/python scripts/audit/dialogue_audit.py` | Auditoria CP-SAT das árvores de diálogo |
+| `.venv/bin/python -m scripts.puzzle.noir_generator --merge src/game_data.json` | Regenera o quebra-cabeça |
+
+## Variáveis de ambiente
+
+Copie `.env.example` para `.env` na raiz (`.env*` é gitignored — nunca comite):
+
+- `OPENROUTER_API_KEY` — pipeline de visão (DINOv2 + Gemma) e audits de arte
+- `NINEROUTER_API_URL` / `NINEROUTER_API_KEY` — geração de imagens (gateway local 9Router, padrão `http://localhost:20128`)
+- `CLOUDFLARE_API_TOKEN` — deploy via wrangler
+
+## Deploy
+
+```bash
+npm run build:novoice
+npx wrangler pages deploy dist/ --project-name=scp-law
+```
+
+Documentação completa para assistentes de IA: [`AGENTS.md`](AGENTS.md).
