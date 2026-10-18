@@ -1,6 +1,8 @@
 node_modules/
 build/
 dist/
+.venv/
+playwright-report/
 coverage/
 .DS_Store
 *.log
@@ -46,3 +48,7 @@ doc_dialogos.dot
 # ===== configs locais de agentes =====
 .claude/
 .opencode/
+.agents/
+
+# ===== fork legado (repo próprio — nunca adicionar sem .gitmodules) =====
+react-xtermjs/

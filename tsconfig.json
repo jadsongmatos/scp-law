@@ -23,5 +23,5 @@
     "allowImportingTsExtensions": true,
     "noEmit": true
   },
-  "exclude": ["scpcn-ui", "s2.cpp", "s2-models", "react-xtermjs/tests", "react-xtermjs/example"]
+  "exclude": ["scpcn-ui", "s2.cpp", "s2-models", "react-xtermjs/tests", "react-xtermjs/example", "scratch", "interactive-detective-board-development"]
 }
