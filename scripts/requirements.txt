@@ -1,14 +1,23 @@
-edge-tts>=6.1.0
+# Core (gerador de puzzle, auditorias, geração de imagens/vozes)
 requests>=2.31.0
 Pillow>=10.0.0
 ortools>=9.8.0
 
-# Interview/PD engine (optional — only needed for interview.py)
-# Requires PyTorch (CPU-only recommended): pip install torch --index-url https://download.pytorch.org/whl/cpu
+# QA (scripts/shared/geometry_test.py)
+pytest>=8.0.0
+
+# voices.py (opcional — barra de progresso; funciona sem)
+tqdm>=4.66.0
+
+# Binários de sistema (NÃO instaláveis via pip):
+#   ffmpeg              — voices.py (wav → mp3)
+#   s2.cpp compilado    — voices.py (s2.cpp/tmp/s2 + s2-models/*.gguf, Fish Audio S2-Pro)
+
+# Motor de entrevistas PD (opcional — só scripts/puzzle/interview.py)
 axelrod>=4.14.0
 
-# Vision pipeline (optional — only needed for extract_positions.py)
-ultralytics>=8.0.0
+# Pipeline de visão (opcional — só scripts/vision/extract_positions.py)
+# DINOv2, não YOLO — ver requirements-vision.txt
 
-# Archive scripts (optional — only needed for scp_game_gen.py)
+# Scripts de archive (opcional — só scripts/archive/scp_game_gen.py)
 beautifulsoup4>=4.12.0
