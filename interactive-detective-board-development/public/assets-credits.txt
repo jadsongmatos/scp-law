@@ -1,0 +1,15 @@
+NEXO — CRÉDITOS DOS RECURSOS VISUAIS
+
+Fotografias ilustrativas utilizadas sob a licença Pexels:
+Elisa: Pegah Sharifi — https://www.pexels.com/photo/16974331/
+Marcos: Klaudia Rak — https://www.pexels.com/photo/9100224/
+Galeria: ClickerHappy — https://www.pexels.com/photo/735/
+Licença: https://www.pexels.com/license/
+
+Os casos, personagens e eventos apresentados no aplicativo são fictícios.
+As pessoas e o edifício fotografados não têm relação com esses casos.
+
+Texturas de cortiça e madeira de nogueira: imagens geradas para este projeto.
+Ícones: Lucide, licença ISC — https://lucide.dev/license
+Fontes: DM Sans, Lora, Caveat e IBM Plex Mono, SIL Open Font License 1.1.
+As licenças das fontes estão disponíveis no diretório /fonts/.
