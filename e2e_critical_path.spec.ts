@@ -184,29 +184,28 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await expect(page.getByRole('heading', { name: 'MAPA DA CIDADE' })).toBeHidden();
   });
 
-  test('mural: criar pista persiste no contexto ao fechar e reabrir', async ({ page }) => {
+  test('mural: pista descoberta vira cartão sozinha (sem criação manual)', async ({ page }) => {
     await startGame(page);
-    await interact(page, 'Quadro de Investigações');
 
+    // Descobre a primeira pista dedutiva (terminal invisível do escritório).
+    await interact(page, 'Pista Confidencial #1');
+    await readDocument(page, 'PISTA #1');
+
+    // Abre o quadro: a pista já está presa — não há botão de adicionar.
+    await interact(page, 'Quadro de Investigações');
     const overlay = page.locator('.mural-overlay');
     await expect(overlay).toBeVisible();
     await expect(overlay.locator('.board-plaque')).toContainText('MURAL PRINCIPAL');
-
-    // Criar uma nota.
-    await page.keyboard.press('n');
-    const input = overlay.getByRole('textbox', { name: 'Título da pista' });
-    await expect(input).toBeVisible();
-    await input.fill('Pista do promotor.sum');
-    await overlay.locator('.modal-footer .primary-button').click();
-    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista do promotor.sum');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista Confidencial #1');
     await expect(overlay.locator('.board-plaque')).toContainText('1 PISTAS');
+    await expect(overlay.getByText('1 PISTA', { exact: true })).toBeVisible(); // status do grafo
+    await expect(overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' })).toBeVisible();
 
-    // Fechar e reabrir: pista continua (contexto da máquina).
-    // (Um único Escape só deseleciona a pista criada — UX de canvas.)
+    // Fechar e reabrir: cartão persiste no contexto da máquina.
     await page.getByRole('button', { name: 'Fechar o mural' }).click();
     await expect(overlay).toBeHidden();
     await interact(page, 'Quadro de Investigações');
-    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista do promotor.sum');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista Confidencial #1');
     await page.getByRole('button', { name: 'Fechar o mural' }).click();
   });
 
@@ -254,7 +253,7 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await page.keyboard.press('Escape');
   });
 
-  test('delegacia: arquivo negado sem cédula; quadro de dedução abre', async ({ page }) => {
+  test('delegacia: arquivo negado sem cédula; pistas continuam legíveis', async ({ page }) => {
     await startGame(page);
     await interact(page, 'Sair para a Rua');
     await interact(page, 'Volkspolizeistation 8º');
@@ -264,25 +263,18 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await expect(page.locator('.bg-black\\/90')).toBeHidden();
     await expectRoom(page, ROOM.delegacia);
 
-    await interact(page, 'Quadro de Dedução — Caso Helena');
-    const board = page.locator('div.fixed.z-\\[200\\]');
-    await expect(board).toBeVisible();
-    await expect(board.getByRole('heading', { name: 'DETECTIVE BOARD — FALL HELENA KRAFT' })).toBeVisible();
-    await board.getByRole('button', { name: 'Fechar dedução' }).click();
-    await expect(board).toBeHidden();
+    // O quadro de dedução 5×5 saiu do jogo: as pistas da delegacia abrem
+    // como documentos comuns (e viram cartões do mural ao serem lidas).
+    await interact(page, 'Pista Confidencial #5');
+    await readDocument(page, 'PISTA #5');
   });
 
-  test('persistência: CONTINUAR restaura sala e pista do mural', async ({ page }) => {
+  test('persistência: CONTINUAR restaura sala e pista descoberta no mural', async ({ page }) => {
     await startGame(page);
 
-    // Pista no mural.
-    await interact(page, 'Quadro de Investigações');
-    const overlay = page.locator('.mural-overlay');
-    await page.keyboard.press('n');
-    await overlay.getByRole('textbox', { name: 'Título da pista' }).fill('Sobrevive ao reload');
-    await overlay.locator('.modal-footer .primary-button').click();
-    await page.getByRole('button', { name: 'Fechar o mural' }).click();
-    await expect(overlay).toBeHidden();
+    // Descobre a pista e fecha o documento.
+    await interact(page, 'Pista Confidencial #1');
+    await readDocument(page, 'PISTA #1');
 
     // Viaja para a rua e recarrega: CONTINUAR deve restaurar sala + mural.
     await interact(page, 'Sair para a Rua');
@@ -295,7 +287,30 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
     await expectRoom(page, ROOM.escritorio);
     await interact(page, 'Quadro de Investigações');
-    await expect(overlay.locator('.evidence-card h3')).toHaveText('Sobrevive ao reload');
+    const overlay = page.locator('.mural-overlay');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista Confidencial #1');
     await page.getByRole('button', { name: 'Fechar o mural' }).click();
+  });
+
+  test('denúncia: botão encerra o caso e mostra os pontos do mural', async ({ page }) => {
+    await startGame(page);
+
+    // Uma pista descoberta = 10 pontos (1 × 10; bônus exige pistas conectadas).
+    await interact(page, 'Pista Confidencial #1');
+    await readDocument(page, 'PISTA #1');
+
+    await interact(page, 'Quadro de Investigações');
+    const overlay = page.locator('.mural-overlay');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista Confidencial #1');
+    await overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' }).click();
+
+    // Tela final: arquivo fechado com percentual de investigação + pontos.
+    await expect(overlay).toBeHidden();
+    await expect(page.getByText('ARQUIVO FECHADO')).toBeVisible();
+    await expect(page.getByText('CONCLUSÃO DO CASO')).toBeVisible();
+    await expect(page.getByText('3%')).toBeVisible();
+    await expect(page.getByText('PONTOS DO MURAL')).toBeVisible();
+    await expect(page.getByText('1 × 10 = 10')).toBeVisible();
+    await expect(page.getByText('Grafo conexo')).toBeVisible();
   });
 });
