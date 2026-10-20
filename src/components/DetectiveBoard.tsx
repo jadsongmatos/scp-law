@@ -97,7 +97,7 @@ export default function DetectiveBoard({
 
   const columnsComplete = useMemo(() => {
     return DEDUCTION_LOCATIONS.filter(loc => {
-      const row = grid[loc];
+      const row = grid[loc] || {};
       return (Object.keys(DEDUCTION_CATEGORIES) as DeductionCategory[]).every(cat => !!row[cat]);
     });
   }, [grid]);
@@ -113,7 +113,7 @@ export default function DetectiveBoard({
   const getUsedInRow = (cat: DeductionCategory): string[] => {
     const used: string[] = [];
     DEDUCTION_LOCATIONS.forEach(loc => {
-      if (grid[loc][cat]) used.push(grid[loc][cat]);
+      if (grid[loc]?.[cat]) used.push(grid[loc][cat]);
     });
     return used;
   };
@@ -146,7 +146,7 @@ export default function DetectiveBoard({
             <div className="flex items-center gap-3">
               <Badge classification="euclid" size="sm">PISTAS: {readHints.length}/18</Badge>
               <Badge classification="safe" size="sm">DESCOBERTAS: {discoveredValues.size}/25</Badge>
-              <button onClick={onClose} className="text-zinc-500 hover:text-noir-amber transition-colors p-1">
+              <button onClick={onClose} aria-label="Fechar dedução" className="text-zinc-500 hover:text-noir-amber transition-colors p-1">
                 <XIcon size={18} />
               </button>
             </div>
@@ -178,7 +178,7 @@ export default function DetectiveBoard({
                     </div>
 
                     {(Object.keys(DEDUCTION_CATEGORIES) as DeductionCategory[]).map((cat, rowIdx) => {
-                      const current = grid[loc][cat];
+                      const current = grid[loc]?.[cat];
                       const usedInRow = getUsedInRow(cat);
                       const options = [...DEDUCTION_CATEGORIES[cat]].filter(o => !usedInRow.includes(o) || o === current);
                       const isDuplicate = current && usedInRow.filter(v => v === current).length > 1;
