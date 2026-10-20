@@ -45,6 +45,11 @@ qwen-image-edit.openapi.yaml
 phaserjs-template-vite.txt
 doc_dialogos.dot
 
+# ===== grafos de análise (game_graph.dot vaza a solução; não vão para o deploy) =====
+public/game_graph.dot
+public/machine_graph.dot
+public/state_machine.json
+
 # ===== configs locais de agentes =====
 .claude/
 .opencode/
