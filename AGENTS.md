@@ -4,17 +4,17 @@ Guidelines for AI coding assistants working on **Murphy Law — Investigações 
 
 ## Project Overview
 
-- **Stack:** React 19 + Vite 8 + TypeScript + Tailwind v4 SPA. No router, no SSR — the entire game renders from `src/App.tsx` (~1650 lines).
-- **Core loop:** explore 12 rooms, click-to-discover **invisible** interactables (106 total: 39 `terminal_read`, 31 `inspect`, 23 `travel`, 9 `phone_call`, 4 `pickup`), collect hints, solve a 5×5 Einstein deduction grid (`src/components/DetectiveBoard.tsx`), and negotiate Iterated Prisoner's Dilemma (PD) dialogues with 9 contacts.
-- **Win conditions** (`calculateGameCompletion()`, `src/App.tsx:144`): 50% = deduction grid correct. 100% = additionally play as ZD-GTFT-2 (Zero-Determinant Generous Tit-for-Tat, `src/lib/axelrod.ts`): cooperate first, never defect against cooperation, retaliate-but-forgive. Compliance is computed by replaying each contact's `pdChoiceHistory` against its `axelrodStrategy`.
+- **Stack:** React 19 + Vite 8 + TypeScript + Tailwind v4 SPA. No router, no SSR — the entire game renders from `src/App.tsx` (~1680 lines).
+- **Core loop:** explore 12 rooms, click-to-discover **invisible** interactables (106 total: 39 `terminal_read`, 31 `inspect`, 23 `travel`, 9 `phone_call`, 4 `pickup`), collect hints, pin clues on the investigation mural (cork board with red threads, `src/components/board/MuralOverlay.tsx`), solve a 5×5 Einstein deduction grid (`src/components/DetectiveBoard.tsx`), and negotiate Iterated Prisoner's Dilemma (PD) dialogues with 9 contacts.
+- **Win conditions** (`calculateGameCompletion()`, `src/App.tsx:148`): 50% = deduction grid correct. 100% = additionally play as ZD-GTFT-2 (Zero-Determinant Generous Tit-for-Tat, `src/lib/axelrod.ts`): cooperate first, never defect against cooperation, retaliate-but-forgive. Compliance is computed by replaying each contact's `pdChoiceHistory` against its `axelrodStrategy`.
 - **No survival mechanics** — Murphy is "preparado": no money, energy, or hunger.
 - **Language:** ALL user-facing text in PT-BR; German terms (Gasthof, Lagerhaus, Volkspolizei, GESCHLOSSEN) are intentional lore only. Never English in user-facing strings or image prompts. Setting: fictional country mixing Germany, USA, and a failed Soviet state.
 
 ## Architecture & Data Flow
 
-**Entry:** `index.html` → `src/main.tsx` (imports `index.css` + `styles/scp.css`) → `App.tsx`.
+**Entry:** `index.html` → `src/main.tsx` (imports `index.css` + `styles/scp.css` + `styles/board.css`) → `App.tsx`.
 
-**State = XState v5 (not useState):** `src/state/gameMachine.ts` exports `gameMachine` (id `detetive`, initial `exploring`) with 19 context fields (`currentRoomId`, `inventory`, `pdChoiceHistory`, `pdCutoffContacts`, `deductionGrid`, `unlockedObjects`, `localRooms`, `gameCompleted`, `diretoraPhoneUnlocked`, …) and 20 events (`MOVE_ROOM`, `PICKUP_ITEM`, `START_PHONE_CALL`, `RECORD_PD_ACTION`, `SET_DEDUCTION_RESULT`, `UNLOCK_DIRETORA_PHONE`, `RESTORE_STATE`, …). `App.tsx:28`: `const [snapshot, send] = useMachine(gameMachine)` — game state is `snapshot.context`; UI-only state (modals, xterm, `objMenu`) stays local in App.tsx. Persistence: `localStorage` under `SAVE_KEY = 'scp_law_save'`; auto-save effect keyed on ~20 context fields; load dispatches `RESTORE_STATE`.
+**State = XState v5 (not useState):** `src/state/gameMachine.ts` exports `gameMachine` (id `detetive`, initial `exploring`) with 20 context fields (`currentRoomId`, `inventory`, `pdChoiceHistory`, `pdCutoffContacts`, `deductionGrid`, `mural`, `unlockedObjects`, `localRooms`, `gameCompleted`, `diretoraPhoneUnlocked`, …) and 21 events (`MOVE_ROOM`, `PICKUP_ITEM`, `START_PHONE_CALL`, `RECORD_PD_ACTION`, `SET_DEDUCTION_RESULT`, `UPDATE_MURAL`, `UNLOCK_DIRETORA_PHONE`, `RESTORE_STATE`, …). `App.tsx:29`: `const [snapshot, send] = useMachine(gameMachine)` — game state is `snapshot.context`; UI-only state (modals, xterm, `objMenu`) stays local in App.tsx. Persistence: `localStorage` under `SAVE_KEY = 'scp_law_save'`; auto-save effect keyed on ~20 context fields — the first write is skipped when restoring a save (the first commit's snapshot predates `RESTORE_STATE`; writing it would clobber the save — see `firstSaveSkipRef`); load dispatches `RESTORE_STATE`.
 
 **Data flow:** `src/game_data.json` (source of truth: `GAME_ROOMS` ×12, `ITEM_NAMES`, `PHONE_CONTACTS` ×9, `_interviewClueMap`) → `src/data.ts` (typed exports + static image imports) → machine context `localRooms` (in-memory mirror mutated during play).
 
@@ -25,7 +25,7 @@ Guidelines for AI coding assistants working on **Murphy Law — Investigações 
 3. Solvability proof at test time: `src/lib/gameDataPuzzle.ts` parses the puzzle embedded in the shipped `game_data.json` (18 `puzzle_hint_*` + 5 `interview_clue_*` constraints) → `src/lib/puzzleSolver.ts` (independent CSP backtracker) proves a UNIQUE solution equal to the envelope (`puzzle_solution_terminal`) and to App.tsx's `DEDUCTION_SOLUTION`.
 - `App.tsx`'s `DEDUCTION_SOLUTION`/`DEDUCTION_LOCATIONS` use hand-relabeled German values (Kommissar Mendes, Gasthof Vila Nova, Volksschule, Volkspolizeistation 8º; categories `suspeito`/`local_crime`/`arma`/`motivo`/`horario`) — the same logical solution as the generator's labels.
 
-**PD engine:** strategies in `src/lib/` — `axelrod.ts` (ZDGTFT2, TitForTat, Grudger, SoftGrudger, Forgiver, WinStayLoseShift, SneakyTitForTat, RandomStrategy), `eugineNier.ts`, `hardProber.ts`. All randomness is seeded: `mulberry32(42)` = `rng42` (`src/lib/rng.ts`) — identical action sequences give identical outcomes. Exactly 3 choices per PD node: Cooperar (C), Trair (D), Encerrar (E). Only a `D` at a terminal node can trigger `CUT_OFF_CONTACT` (permanent; thresholds are strategy-specific — see the `isCutoff` computation in App.tsx ~:1150-1198); **E never cuts**.
+**PD engine:** strategies in `src/lib/` — `axelrod.ts` (ZDGTFT2, TitForTat, Grudger, SoftGrudger, Forgiver, WinStayLoseShift, SneakyTitForTat, RandomStrategy), `eugineNier.ts`, `hardProber.ts`. All randomness is seeded: `mulberry32(42)` = `rng42` (`src/lib/rng.ts`) — identical action sequences give identical outcomes. Exactly 3 choices per PD node: Cooperar (C), Trair (D), Encerrar (E). Only a `D` at a terminal node can trigger `CUT_OFF_CONTACT` (permanent; thresholds are strategy-specific — see the `isCutoff` computation in App.tsx ~:1110-1140); **E never cuts**.
 
 Current contact→strategy mapping (authoritative: `PHONE_CONTACTS[*].axelrodStrategy` in `game_data.json`):
 
@@ -47,7 +47,7 @@ Current contact→strategy mapping (authoritative: `PHONE_CONTACTS[*].axelrodStr
 
 **Discovery mechanic:** in play mode interactables are invisible (no icons/tooltips/hover). Clicking the scene opens a cursor-anchored context menu (`fixed` div + `window` click/Escape close; `src/lib/useMenuPosition.ts`; `objMenu` state). Do NOT use `@base-ui/react` Menu for this. Dev mode (`devMode`) shows all icons/labels/drag handles and replaces inventory with `src/components/DevInspector.tsx` (Monaco JSON live editor, room/interactable tree, context-menu create/remove).
 
-**Gating rules (verified examples):** telefone/agenda only from `escritorio` (App.tsx:963, 1007); `escola_fachada` also requires visiting `casa_mae` first (App.tsx:474); Diretora Elvira's number unlocks only via the cooperative path to node `de_confirma` (App.tsx:1201).
+**Gating rules (verified examples):** telefone/agenda only from `escritorio` (App.tsx:640, 1023); `escola_fachada` also requires visiting `casa_mae` first (App.tsx:484); Diretora Elvira's number unlocks only via the cooperative path to node `de_confirma` (App.tsx:1217). The `detective_board` interactable (escritório, `inspect`) opens the MuralOverlay; `puzzle_deduction_terminal` keeps the 5×5 grid.
 
 ## Key Directories
 
@@ -106,7 +106,7 @@ Notes: `build` uses POSIX inline-env syntax (breaks on Windows cmd). npm pre-hoo
 
 - **Entry/config:** `index.html` (`lang="pt-BR"`), `src/main.tsx`, `package.json`, `vite.config.ts` (plugin order: `voiceGenPlugin()` → `react()` → `tailwindcss()`; `@` alias; manualChunks), `vitest.config.ts`, `playwright.config.ts`, `tsconfig.json`, `.env.example`, `.gitmodules`, `.gitignore`
 - **Core:** `src/App.tsx`, `src/state/gameMachine.ts`, `src/data.ts`, `src/game_data.json` (137 KB source of truth)
-- **UI:** `src/components/DetectiveBoard.tsx`, `src/components/DevInspector.tsx`, `src/components/ui/*`, `src/styles/scp.css`, `src/Icons.tsx`
+- **UI:** `src/components/DetectiveBoard.tsx`, `src/components/board/` (mural: `MuralOverlay`, `Board`, `Inspector`, `ClueEditor`, `Modal`, pure data layer in `data.ts`), `src/components/DevInspector.tsx`, `src/components/ui/*`, `src/styles/scp.css`, `src/styles/board.css`, `src/Icons.tsx`
 - **Services:** `src/audio.ts`, `src/useXTerm.ts`
 - **Puzzle artifacts:** `puzzle_input.json`, `puzzle_output.json`, `doc_dialogos.dot` (generated, gitignored), `extracted_positions.json`
 - **E2E:** `playwright.config.ts` (root; `webServer` auto-starts `npm run dev` on :3000; chromium project) + `e2e_critical_path.spec.ts` (BASE hardcoded inside the spec)
@@ -123,13 +123,13 @@ Notes: `build` uses POSIX inline-env syntax (breaks on Windows cmd). npm pre-hoo
 
 ## Testing & QA
 
-- **Vitest** (`npm test`): 11 files / 101 tests, node env, `src/**/*.test.ts` only, deliberately loads NO Vite plugins (isolated from the game build). Pure logic only — no jsdom/@testing-library, no component tests. Compile gate is `npm run lint` (tsc).
+- **Vitest** (`npm test`): 12 files / 104 tests, node env, `src/**/*.test.ts` only, deliberately loads NO Vite plugins (isolated from the game build). Pure logic only — no jsdom/@testing-library, no component tests. Compile gate is `npm run lint` (tsc).
 - **Must-stay-green:** `src/lib/gameDataPuzzle.test.ts` — shipped `game_data.json` hints must entail a unique solution matching both the `puzzle_solution_terminal` envelope and App.tsx `DEDUCTION_SOLUTION`. Run after ANY puzzle/dialogue data change.
 - Other suites: `axelrod`/`zdgtft`/`eugineNier`/`hardProber` (strategy behavior), `puzzleSolver` (CSP semantics), `roomReachability`, `itemUse`, `useMenuPosition`, `utils`, `components/board/data` (data layer do mural de pistas).
 - **Python QA:** `.venv/bin/python -m pytest scripts/shared/geometry_test.py` (28 bbox/overlap/clamp tests, 28/28 pass); `.venv/bin/python scripts/audit/dialogue_audit.py` (unreachable nodes, broken edges, cycles, missing `pdAction`; all 9 contacts clean; degrades gracefully without ortools).
 - **Playwright:** `npx playwright test` — `playwright.config.ts` (root) auto-starts the dev server, ignores `scratch/` spec copies; browsers once via `npx playwright install chromium`. ⚠️ The spec itself is STALE — it predates the context-menu interaction UX (click opens `objMenu` → `▸ Interagir`), permanent starting items, current interactable positions, and the current HUD/inventory DOM (selectors `header p.text-sm.font-bold` and `.w-56.bg-black.p-4` no longer exist) — all 8 tests fail; rewrite before using as QA.
 - **No CI**, no coverage tooling. Legacy Jest tests live in `react-xtermjs/` (own repo, optional, not a game dependency).
-- Empirical baseline: `npm test` → 90/90 pass; `npm run lint` → clean; `npm run build:novoice` → prebuild + full build OK (<1 s); `.venv` geometry tests → 28/28 pass; `.venv/bin/python scripts/audit/dialogue_audit.py` → 9/9 contacts ✓; `npx playwright test` → runner OK, 8/8 spec failures (stale spec — see Playwright bullet).
+- Empirical baseline: `npm test` → 104/104 pass; `npm run lint` → clean; `npm run build:novoice` → prebuild + full build OK (<1 s); `.venv` geometry tests → 28/28 pass; `.venv/bin/python scripts/audit/dialogue_audit.py` → 9/9 contacts ✓; `npx playwright test` → runner OK, 8/8 spec failures (stale spec — see Playwright bullet).
 
 ## Agent Behavior Rules
 

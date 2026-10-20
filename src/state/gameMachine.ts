@@ -1,6 +1,8 @@
 import { createMachine, assign } from 'xstate';
 import type { Room } from '../data';
 import { GAME_ROOMS } from '../data';
+import type { MuralData } from '../components/board/data';
+import { EMPTY_MURAL } from '../components/board/data';
 
 export interface GameContext {
   currentRoomId: string;
@@ -14,6 +16,7 @@ export interface GameContext {
   readHints: string[];
   deductionGrid: Record<string, Record<string, string>>;
   deductionResult: 'correct' | 'wrong' | null;
+  mural: MuralData;
   unlockedObjects: string[];
   interactedItems: string[];
   readInterviewClues: string[];
@@ -37,6 +40,7 @@ export type GameEvent =
   | { type: 'READ_INTERVIEW_CLUE'; clueId: string }
   | { type: 'SET_DEDUCTION_RESULT'; result: 'correct' | 'wrong' | null }
   | { type: 'UPDATE_DEDUCTION_GRID'; location: string; category: string; value: string }
+  | { type: 'UPDATE_MURAL'; mural: MuralData }
   | { type: 'UNLOCK_OBJECT'; objId: string }
   | { type: 'INTERACTED_WITH'; objId: string }
   | { type: 'UNLOCK_DIRETORA_PHONE' }
@@ -58,6 +62,7 @@ export const initialContext: GameContext = {
   readHints: [],
   deductionGrid: {},
   deductionResult: null,
+  mural: EMPTY_MURAL,
   unlockedObjects: [],
   interactedItems: [],
   readInterviewClues: [],
@@ -143,6 +148,12 @@ export const gameMachine = createMachine({
             const grid = { ...context.deductionGrid };
             grid[event.location] = { ...grid[event.location], [event.category]: event.value };
             return { deductionGrid: grid };
+          }),
+        },
+        UPDATE_MURAL: {
+          actions: assign(({ event }) => {
+            if (event.type !== 'UPDATE_MURAL') return {};
+            return { mural: event.mural };
           }),
         },
         SET_DEDUCTION_RESULT: {

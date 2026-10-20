@@ -161,9 +161,6 @@
 .empty-board h2{font-family:var(--serif);font-size:30px;color:#766c4d;font-weight:500}
 .empty-board p{font-size:13px;color:#928665;line-height:1.9;margin:17px 0 25px}
 .empty-board .primary-button{font-size:12px}
-.inspector-header .eyebrow{font-size:7px;color:#94a37b;letter-spacing:1.2px}
-.inspector-section>.eyebrow, .inspector-section .eyebrow{font-size:7px;color:#98a885}
-.inspector-footer .primary-button{flex:1}
 .page-heading .eyebrow{font-size:7.3px;color:#a4b08f}
 .board-preview>.eyebrow{color:#a19269;font-size:7px}
 .event-card-top>.icon-button{height:20px;width:25px;color:#c1d1aa}
@@ -467,7 +464,6 @@
 .thread-save:hover{background: linear-gradient(#bb895e, #a7734c);}
 .cut-thread{display: flex; align-items: center; gap: 5px; padding: 5px 0; color: #bd9774; font-size: 8px;}
 .cut-thread:hover{color: #a06344;}
-.mural-overlay .inspector .eyebrow{color: #c1a680;}
 .mural-overlay .empty-board-mark{background: #efdfbb99; border-color: #baa170; color: #a38455; box-shadow: inset 0 1px #fff4ce80, 0 4px 5px #72543015;}
 .mural-overlay .empty-board h2{color: #9f7d50; font-size: 29px; text-shadow: 0 1px #f8e3b24d;}
 .mural-overlay .empty-board p{color: #b29469;}
@@ -607,3 +603,38 @@
 
 /* keyframes usados pelos componentes portados */
 @keyframes fade-in{from{opacity:0}to{opacity:1}}@keyframes toast-in{from{opacity:0;bottom:45px}to{opacity:1;bottom:51px}}@keyframes connection-pulse{0%,100%{outline-color:#a74c3e}50%{outline-color:#a74c3e55}}
+
+/* ————— Inspetor de pista (portado do protótipo Nexo; escopo .mural-overlay) ————— */
+.mural-overlay .inspector{position:absolute;top:0;bottom:0;right:0;width:311px;background:#fafbf5;border-left:1px solid #e0e6d3;box-shadow:-7px 0 24px #4e533c21;z-index:65;display:flex;flex-direction:column;animation:inspector-in .2s ease-out}
+.mural-overlay .inspector-header{height:51px;flex-shrink:0;padding:0 19px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e6ebdd}
+.mural-overlay .inspector-header .eyebrow{font-size:7px;color:#c1a680;letter-spacing:1.2px}
+.mural-overlay .inspector-scroll{overflow:auto;flex:1;padding:20px}
+.mural-overlay .inspector-image{height:153px;position:relative;margin-bottom:19px;background:#e2e7d6;border:1px solid #dce4ce;overflow:hidden;border-radius:3px}
+.mural-overlay .inspector-image img{width:100%;height:100%;object-fit:cover;filter:grayscale(.9) sepia(.15)}
+.mural-overlay .inspector-image>span{position:absolute;bottom:8px;left:8px;display:flex;align-items:center;gap:5px;background:#f8f9efed;color:#819369;font-size:8px;padding:4px 7px;border-radius:2px}
+.mural-overlay .inspector-type{display:flex;align-items:center;gap:6px;font-size:8.5px;color:#82956d}
+.mural-overlay .inspector-type>span{margin-left:auto;font-family:var(--mono);font-size:8px;color:#b0bd9a}
+.mural-overlay .inspector h2{font-family:var(--serif);font-size:24px;line-height:1.35;font-weight:500;color:#607c4e;letter-spacing:-.5px;margin:12px 0 8px}
+.mural-overlay .inspector-subtitle{font-family:var(--mono);font-size:7px;letter-spacing:.5px;line-height:1.8;color:#9eb78a}
+.mural-overlay .inspector-section{border-top:1px solid #e5eadb;padding-top:19px;margin-top:22px}
+.mural-overlay .inspector-section>.eyebrow,.mural-overlay .inspector-section .eyebrow{font-size:7px;color:#c1a680}
+.mural-overlay .inspector-section p{font-size:11px;line-height:1.95;color:#859c6e;margin-top:12px;white-space:pre-line}
+.mural-overlay .inspector-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:16px}
+.mural-overlay .inspector-tags>span{padding:4px 7px;background:#edf1e3;border:1px solid #e2e9d5;border-radius:3px;font-size:7px;color:#98a97d}
+.mural-overlay .inspector-connection{display:flex;align-items:center;gap:8px;width:100%;padding:12px 0;border-bottom:1px solid #edf0e5;text-align:left}
+.mural-overlay .connection-type-icon{display:flex;align-items:center;justify-content:center;width:29px;height:29px;flex-shrink:0;background:#edf1e3;border-radius:4px;color:#93a77a}
+.mural-overlay .inspector-connection>span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mural-overlay .inspector-connection b{font-size:9px;font-weight:500;color:#7e9d64}
+.mural-overlay .inspector-connection small{font-size:7.6px;color:#a2bb8e;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mural-overlay .inspector-connection>svg{color:#b5c1a2;flex-shrink:0}
+.mural-overlay .inspector-checklist{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.mural-overlay .inspector-checklist>div{display:flex;gap:7px;color:#97ab7c;font-size:9px}
+.mural-overlay .inspector-date{text-align:center;font-size:7px;color:#bac6a8;margin:18px 0 0}
+.mural-overlay .inspector-footer{padding:15px 19px;border-top:1px solid #e4ead9;display:flex;gap:8px;background:#f7f9f0}
+.mural-overlay .inspector-footer .primary-button{flex:1}
+.mural-overlay .delete-button{display:flex;align-items:center;justify-content:center;width:35px;height:34px;border:1px solid #eeded0;color:#b67e66;background:#f7ede3;border-radius:5px}
+.mural-overlay .delete-button:hover{background:#f0e1d2;color:#a7644b}
+.mural-overlay .panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mural-overlay .count-badge{font-family:var(--mono);font-size:7px;color:#a4b68c;background:#edf3e1;border-radius:3px;padding:4px 5px}
+.mural-overlay .muted{color:#94998a;font-size:11px;line-height:1.8}
+@keyframes inspector-in{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}

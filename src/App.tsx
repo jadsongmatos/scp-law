@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogB
 import { Toaster } from 'sonner';
 import { DevInspector } from '@/components/DevInspector';
 import DetectiveBoard from '@/components/DetectiveBoard';
+import { MuralOverlay } from '@/components/board/MuralOverlay';
 import { resolveItemUse, INTERACT } from '@/lib/itemUse';
 import { createEugineNier } from '@/lib/eugineNier';
 import { HardProber, C, D } from '@/lib/hardProber';
@@ -36,6 +37,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const [documentData, setDocumentData] = useState<{ title: string; content: string[] } | null>(null);
   const [objMenu, setObjMenu] = useState<{ x: number; y: number; obj: Interactable } | null>(null);
   const [deductionOpen, setDeductionOpen] = useState(false);
+  const [muralOpen, setMuralOpen] = useState(false);
   const [phoneAgendaOpen, setPhoneAgendaOpen] = useState(false);
   const [activePhoneCall, setActivePhoneCall] = useState<{
     contactId: string; nodeId: string; linesShown: number; visitedNodes: string[];
@@ -75,6 +77,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const readHints = state.readHints;
   const deductionGrid = state.deductionGrid;
   const deductionResult = state.deductionResult;
+  const mural = state.mural;
   const unlockedObjects = new Set(state.unlockedObjects);
   const interactedItems = state.interactedItems;
   const readInterviewClues = state.readInterviewClues;
@@ -129,6 +132,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       readHints: state.readHints,
       deductionGrid: state.deductionGrid,
       deductionResult: state.deductionResult,
+      mural: state.mural,
       unlockedObjects: state.unlockedObjects,
       interactedItems: state.interactedItems,
       readInterviewClues: state.readInterviewClues,
@@ -197,12 +201,18 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       deductionAttempts,
     };
   };
-
-  useEffect(() => { saveGame(); }, [
+  // Ao continuar um save, o snapshot do primeiro commit ainda não reflete o
+  // RESTORE_STATE — pular a primeira escrita evita sobrescrever o save com o
+  // contexto inicial; o commit seguinte grava o estado já restaurado.
+  const firstSaveSkipRef = useRef(loadFromSave);
+  useEffect(() => {
+    if (firstSaveSkipRef.current) { firstSaveSkipRef.current = false; return; }
+    saveGame();
+  }, [
     state.currentRoomId, state.inventory, state.visitedRooms,
     state.discoveredContacts, state.calledContacts, state.pdCutoffContacts,
     state.pdChoiceHistory, state.phoneRecordings, state.readHints,
-    state.deductionGrid, state.deductionResult, state.unlockedObjects,
+    state.deductionGrid, state.deductionResult, state.mural, state.unlockedObjects,
     state.interactedItems, state.readInterviewClues, state.deductionAttempts,
     state.murphyCommentaryMap, state.gameCompleted, state.diretoraPhoneUnlocked,
   ]);
@@ -491,7 +501,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       if (obj.interviewGate && pdCutoffContacts.includes(obj.interviewGate)) {
         Audio.playDenied();
         addLog(`[ACESSO NEGADO] Entrevista com ${obj.interviewGate} falhou. Documento selado.`);
-      } else if (obj.id === 'puzzle_deduction_terminal' || obj.id === 'detective_board') {
+      } else if (obj.id === 'puzzle_deduction_terminal') {
         Audio.playTerminal();
         setDeductionOpen(true);
         send({ type: 'SET_DEDUCTION_RESULT', result: null });
@@ -510,8 +520,14 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
         }
       }
     } else if (obj.type === 'inspect') {
-      Audio.playTypewriter();
-      addLog(`[${obj.label}] ${obj.description}`);
+      if (obj.id === 'detective_board') {
+        Audio.playTypewriter();
+        setMuralOpen(true);
+        addLog('[MURAL] Você se inclina sobre o quadro de investigações. Fotos, recortes e fios vermelhos.');
+      } else {
+        Audio.playTypewriter();
+        addLog(`[${obj.label}] ${obj.description}`);
+      }
     } else if (obj.type === 'phone_call') {
       if (obj.phoneCallId === 'seu_jonas') {
         const contact = PHONE_CONTACTS[obj.phoneCallId];
@@ -1490,6 +1506,14 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
           onClose={() => { Audio.playHover(); setDeductionOpen(false); Audio.stopSpeak(); }}
           playHover={Audio.playHover}
           playTypewriter={Audio.playTypewriter}
+        />
+      )}
+
+      {muralOpen && (
+        <MuralOverlay
+          mural={mural}
+          onChange={next => send({ type: 'UPDATE_MURAL', mural: next })}
+          onClose={() => setMuralOpen(false)}
         />
       )}
 
