@@ -2,11 +2,13 @@
 // src/game_data.json back into a structured form, so the independent CSP
 // solver in puzzleSolver.ts can verify the shipped game is 100% solvable.
 //
-// Three sources inside game_data.json:
-//  - puzzle_deduction_terminal : the 5 positions + the 5 category value lists
-//  - puzzle_solution_terminal  : the declared solution (the envelope)
-//  - puzzle_hint_*             : the 18 hint sentences (+ "[Tipo de restrição:]")
-//  - interview_clue_*          : the 5 interview clue constraints
+// Two sources inside game_data.json (the 5x5 deduction grid UI was removed —
+// the schema now derives from the envelope itself, which stays the narrative
+// ground truth of the case):
+//  - puzzle_solution_terminal : the declared solution (the envelope LÖSUNG) —
+//                               also the 5 positions + the 5 category values
+//  - puzzle_hint_*            : the 18 hint sentences (+ "[Tipo de restrição:]")
+//  - interview_clue_*         : the 5 interview clue constraints
 //
 // The hint sentence templates come from enumerate_all_hints() in
 // scripts/puzzle/noir_generator.py and are deterministic; category values are
@@ -40,10 +42,42 @@ function content(it: Interactable | undefined): string[] {
   return it?.documentData?.content ?? [];
 }
 
-function listAfter(lines: string[], label: RegExp): string[] {
-  const line = lines.find((l) => label.test(l));
-  if (!line) throw new Error(`game_data puzzle: missing line for ${label}`);
-  return line.replace(label, '').split(',').map((s) => s.trim()).filter(Boolean);
+
+const SOL_LABEL_TO_CAT: Record<string, string> = {
+  Suspeito: 'suspeito',
+  Local: 'local',
+  Arma: 'arma',
+  Motivo: 'motivo',
+  Horario: 'horario',
+  Horário: 'horario',
+};
+
+/**
+ * Parses the envelope LÖSUNG (puzzle_solution_terminal): each "► Room:" block
+ * contributes one position and one value per category, so the envelope itself
+ * carries the full 5x5 schema (positions + category domains) plus the
+ * declared solution — no separate deduction terminal is needed.
+ */
+function parseSchemaAndSolution(solutionTerminal: Interactable | undefined): { rooms: string[]; categories: Record<string, string[]>; solution: Assignment } {
+  const rooms: string[] = [];
+  const categories: Record<string, string[]> = { suspeito: [], local: [], arma: [], motivo: [], horario: [] };
+  const sol: Assignment = {};
+  let roomIdx = -1;
+  for (const raw of content(solutionTerminal)) {
+    const header = raw.match(/^►\s*(.+?):\s*$/);
+    if (header) {
+      roomIdx = rooms.push(header[1].trim()) - 1;
+      continue;
+    }
+    const kv = raw.match(/^\s*(Suspeito|Local|Arma|Motivo|Hor[áa]rio):\s*(.+?)\s*$/);
+    if (kv && roomIdx >= 0) {
+      const cat = SOL_LABEL_TO_CAT[kv[1]];
+      const val = kv[2].trim();
+      (sol[cat] ??= {})[val] = roomIdx;
+      if (!categories[cat].includes(val)) categories[cat].push(val);
+    }
+  }
+  return { rooms, categories, solution: sol };
 }
 
 /** Resolve a (possibly verbose) room label to its position index. */
@@ -59,46 +93,6 @@ function resolveRoom(label: string, rooms: string[]): number {
     .filter(({ r }) => t.startsWith(r) || r.startsWith(t));
   if (cand.length === 1) return cand[0].i;
   throw new Error(`game_data puzzle: cannot resolve room "${label}" against ${JSON.stringify(rooms)}`);
-}
-
-function parseCategoriesAndRooms(deductionTerminal: Interactable | undefined) {
-  const lines = content(deductionTerminal);
-  const rooms = listAfter(lines, /^\s*Locais:\s*/);
-  const categories: Record<string, string[]> = {
-    suspeito: listAfter(lines, /^\s*Suspeitos:\s*/),
-    local: listAfter(lines, /^\s*Locais do crime:\s*/),
-    arma: listAfter(lines, /^\s*Armas:\s*/),
-    motivo: listAfter(lines, /^\s*Motivos:\s*/),
-    horario: listAfter(lines, /^\s*Hor[áa]rios:\s*/),
-  };
-  return { rooms, categories };
-}
-
-const SOL_LABEL_TO_CAT: Record<string, string> = {
-  Suspeito: 'suspeito',
-  Local: 'local',
-  Arma: 'arma',
-  Motivo: 'motivo',
-  Horario: 'horario',
-  Horário: 'horario',
-};
-
-function parseSolution(solutionTerminal: Interactable | undefined, rooms: string[]): Assignment {
-  const sol: Assignment = {};
-  let roomIdx = -1;
-  for (const raw of content(solutionTerminal)) {
-    const header = raw.match(/^►\s*(.+?):\s*$/);
-    if (header) {
-      roomIdx = resolveRoom(header[1], rooms);
-      continue;
-    }
-    const kv = raw.match(/^\s*(Suspeito|Local|Arma|Motivo|Hor[áa]rio):\s*(.+?)\s*$/);
-    if (kv && roomIdx >= 0) {
-      const cat = SOL_LABEL_TO_CAT[kv[1]];
-      (sol[cat] ??= {})[kv[2].trim()] = roomIdx;
-    }
-  }
-  return sol;
 }
 
 function parseHint(lines: string[], rooms: string[]): Hint {
@@ -135,8 +129,7 @@ export function loadGameDataPuzzle(gd: GameData): ParsedPuzzle {
   const its = allInteractables(gd);
   const byId = (id: string) => its.find((i) => i.id === id);
 
-  const { rooms, categories } = parseCategoriesAndRooms(byId('puzzle_deduction_terminal'));
-  const solution = parseSolution(byId('puzzle_solution_terminal'), rooms);
+  const { rooms, categories, solution } = parseSchemaAndSolution(byId('puzzle_solution_terminal'));
 
   const hints = its
     .filter((i) => /^(puzzle_hint_\d+|interview_clue_)/.test(i.id))

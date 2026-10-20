@@ -2555,40 +2555,6 @@
           }
         },
         {
-          "id": "puzzle_deduction_terminal",
-          "x": 45.0,
-          "y": 36.0,
-          "icon": "Terminal",
-          "type": "terminal_read",
-          "label": "Quadro de Dedução — Caso Helena",
-          "width": 12.0,
-          "height": 12.0,
-          "description": "O quadro de cortiça na delegacia. Fios vermelhos conectam fotos e recortes. Um terminal de fósforo verde exibe os dados do caso.",
-          "documentData": {
-            "title": "SISTEMA DE DEDUÇÃO",
-            "content": [
-              "═══════════════════════════════════════",
-              " MURPHY LAW — DEDUKTIONSSYSTEM",
-              "═══════════════════════════════════════",
-              "",
-              "Determine qual suspeito, local, arma,",
-              "motivo e horário se conectam.",
-              "",
-              "Locais: Escritório Murphy, Rua Sieben, Gasthof Vila Nova, Volksschule, Volkspolizeistation 8º",
-              "Suspeitos: Kommissar Mendes, Diretora Elvira, Seu Jonas, Zeca do Gasthof, Dra. Cunha",
-              "Locais do crime: Lagerhaus 7, Beco da Rua Sieben, Volksschule Vila Nova, Volkspolizeistation 8º, Gasthof Vila Nova",
-              "Armas: Revólver .38, Faca de Cozinha, Arame de Piano, Chave Inglesa, Veneno Injetável",
-              "Motivos: Dívida de Jogo, Vingança Pessoal, Tráfico de Crianças, Extorsão, Cobertura de Crime",
-              "Horários: 22:00, 23:30, 01:00, 02:30, 04:00",
-              "",
-              "Total de pistas coletadas: 18",
-              "Solução única: SIM",
-              "",
-              "═══════════════════════════════════════"
-            ]
-          }
-        },
-        {
           "id": "interview_clue_santos",
           "x": 5.0,
           "y": 20.0,
