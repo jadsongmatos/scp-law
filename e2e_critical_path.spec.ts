@@ -1,496 +1,301 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+// E2E do caminho crítico — UX atual:
+//  - interactables invisíveis: clique na hitbox (button[aria-label]) abre o menu
+//    de contexto → "▸ Interagir" ou usar um item do inventário;
+//  - itens permanentes iniciais: isqueiro + gravador_cassete;
+//  - objetos com `requiredItem` destravam ao selecionar o item certo no menu;
+//  - escola exige cartão E visita prévia à casa de Maria (casa_mae);
+//  - modais base-ui fecham com Escape; modal de documento fecha com FECHAR.
 
 const BASE = 'http://localhost:3000';
 
-test.describe('Murphy Law — Full Critical Path E2E', () => {
-  test.setTimeout(120000);
+const ROOM = {
+  escritorio: 'Escritório de Murphy Law',
+  rua: 'Rua Sieben',
+  casaMae: 'Casa de Maria Kraft',
+  escola: 'Volksschule Vila Nova',
+  diretoria: 'Diretoria',
+  delegacia: 'Volkspolizeistation 8º',
+  beco: 'Beco da Rua Sieben',
+  bar: 'Gasthof Vila Nova',
+  armazem: 'Lagerhaus 7',
+} as const;
 
-  test('complete critical path walkthrough', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
+const ITEM = {
+  isqueiro: 'Isqueiro de Prata',
+  gravador: 'Gravador de Fita Cassete',
+  cartao: 'Cartão de Visita — Vila Nova',
+  fita: 'Fita Magnética Recuperada',
+  foto: 'Fotografia Amassada',
+  cedula: 'Cédula de 500 Marks',
+} as const;
 
-    // === START SCREEN ===
-    const startBtn = page.getByRole('button', { name: 'ACEITAR O CASO' });
-    await expect(startBtn).toBeVisible();
-    await startBtn.click();
-    await page.waitForTimeout(800);
+async function startGame(page: Page) {
+  await page.goto(BASE);
+  const btn = page.getByRole('button', { name: 'ACEITAR O CASO' });
+  await expect(btn).toBeVisible();
+  await btn.click();
+  await expectRoom(page, ROOM.escritorio);
+}
 
-    // Verify we're in escritorio by checking the HUD location
-    const locationText = page.locator('header').locator('p.text-sm.font-bold');
-    await expect(locationText).toContainText('Escritório de Murphy Law');
+async function expectRoom(page: Page, room: string) {
+  await expect(page.locator('header')).toContainText(room, { timeout: 10_000 });
+}
 
-    // Interactable items are opacity-0 until hovered.
-    // We need to hover first, then click. Let's use a helper.
-    // Actually, the items have pointer-events:auto and the parent div handles click.
-    // The opacity is on the icon/image inside, but the button wrapper handles clicks.
-    // So clicking the position should work.
+async function openObjMenu(page: Page, label: string) {
+  await page.getByRole('button', { name: label, exact: true }).click();
+  await expect(page.getByRole('button', { name: '▸ Interagir' })).toBeVisible();
+}
 
-    // Helper: click at percentage of viewport
-    const vp = page.locator('.flex-1.bg-zinc-950.relative');
-    const vpBox = await vp.boundingBox();
-    expect(vpBox).toBeTruthy();
+async function interact(page: Page, label: string) {
+  await openObjMenu(page, label);
+  await page.getByRole('button', { name: '▸ Interagir' }).click();
+}
 
-    const clickAt = async (xPct: number, yPct: number) => {
-      const box = await vp.boundingBox()!;
-      const x = box.x + box.width * (xPct / 100);
-      const y = box.y + box.height * (yPct / 100);
-      await page.mouse.click(x, y);
-      await page.waitForTimeout(300);
-    };
+async function useItem(page: Page, label: string, item: string) {
+  await openObjMenu(page, label);
+  await page.getByRole('button', { name: item, exact: true }).click();
+}
 
-  // === ESCRITÓRIO: Pick up isqueiro (center: x:36.5%, y:86.5%) ===
-  await clickAt(36.5, 86.5);
+async function readDocument(page: Page, title: string) {
+  const modal = page.locator('.bg-black\\/90');
+  await expect(modal.getByRole('heading', { name: title, exact: true })).toBeVisible({ timeout: 5_000 });
+  await modal.getByRole('button', { name: 'FECHAR' }).click();
+  await expect(modal).toBeHidden();
+}
 
-  // Check inventory panel for isqueiro
-  const invPanel = page.locator('.w-56.bg-black.p-4');
-  await expect(invPanel.getByText('Isqueiro')).toBeVisible({ timeout: 2000 });
+async function expectEvidence(page: Page, item: string) {
+  await expect(page.locator('.w-56.bg-black').getByText(item, { exact: true })).toBeVisible({ timeout: 5_000 });
+}
 
-  // Pick up gravador_cassete (center: x:41.5%, y:78%)
-  await clickAt(41.5, 78);
-  await expect(invPanel.getByText('Gravador')).toBeVisible({ timeout: 2000 });
+test.describe('Murphy Law — caminho crítico E2E', () => {
+  test.setTimeout(120_000);
 
-  // Travel to rua via porta_rua (center: x:53%, y:61%)
-  await clickAt(53, 61);
+  test('walkthrough: itens, portas trancadas e terminais até a resolução', async ({ page }) => {
+    await startGame(page);
 
-    // === RUA CHUVA ===
-    await expect(locationText).toContainText('Rua Sieben', { timeout: 3000 });
+    // Itens permanentes já presentes; evidências vazias.
+    await expectEvidence(page, ITEM.isqueiro);
+    await expectEvidence(page, ITEM.gravador);
+    await expect(page.locator('.w-56.bg-black').getByText('VAZIO')).toBeVisible();
 
-  // Pick up chave_escritorio (center: x:12.7%, y:89%)
-  await clickAt(12.7, 89);
-  await expect(invPanel.getByText('Chave do Escritório')).toBeVisible({ timeout: 2000 });
+    // Rua: cartão de visita.
+    await interact(page, 'Sair para a Rua');
+    await expectRoom(page, ROOM.rua);
+    await interact(page, 'Cartão no Asfalto');
+    await expectEvidence(page, ITEM.cartao);
 
-  // Pick up cartao_visita (center: x:35%, y:86%)
-  await clickAt(35, 86);
-  await expect(invPanel.getByText('Cartão de Visita')).toBeVisible({ timeout: 2000 });
+    // Casa de Maria primeiro — a escola exige motivo (gate casa_mae).
+    await interact(page, 'Casa de Maria Kraft');
+    await expectRoom(page, ROOM.casaMae);
+    await interact(page, 'Voltar para a Rua Sieben');
+    await expectRoom(page, ROOM.rua);
 
-  // Enter escola (center: x:42%, y:70%) — requires cartao_visita
-  await clickAt(42, 70);
+    // Escola: fachada trancada por cartão — usar o item no menu destrava e viaja.
+    await interact(page, 'Volksschule Vila Nova');
+    await expectRoom(page, ROOM.rua); // negado: ainda na rua
+    await useItem(page, 'Volksschule Vila Nova', ITEM.cartao);
+    await expectRoom(page, ROOM.escola);
 
-    // === ESCOLA ===
-    await expect(locationText).toContainText('Volksschule', { timeout: 3000 });
+    // Fita magnética no chão da escola.
+    await interact(page, 'Fita Magnética no Chão');
+    await expectEvidence(page, ITEM.fita);
 
-  // Pick up fita_magnetica (center: x:62.6%, y:75.3%)
-  await clickAt(62.6, 75.3);
-  await expect(invPanel.getByText('Fita Magnética')).toBeVisible({ timeout: 2000 });
+    // Diretoria: gaveta (isqueiro), terminal de fósforo (fita) e cédulas.
+    await interact(page, 'Entrar na Diretoria');
+    await expectRoom(page, ROOM.diretoria);
 
-  // Enter diretoria (center: x:50%, y:55%)
-  await clickAt(50, 55);
+    await interact(page, 'Gaveta Trancada'); // negado: trancada
+    await expect(page.locator('.bg-black\\/90')).toBeHidden();
+    await useItem(page, 'Gaveta Trancada', ITEM.isqueiro);
+    await readDocument(page, 'ENVELOPE — FOTOS DE VIGILÂNCIA');
 
-    // === DIRETORIA ===
-    await expect(locationText).toContainText('Diretoria', { timeout: 3000 });
+    await useItem(page, 'Terminal de Fósforo Verde', ITEM.fita);
+    await readDocument(page, 'MENSAGENS RECUPERADAS — DIE WOHLTAT');
 
-  // Read terminal_fosforo (center: x:60%, y:76%) — requires fita_magnetica
-  await clickAt(60, 76);
+    await interact(page, 'Cédulas no Armário');
+    await expectEvidence(page, ITEM.cedula);
 
-    // Document modal should appear with Die Wohltat messages
-    const docModal = page.locator('[class*="bg-black/90"]');
-    await expect(docModal).toBeVisible({ timeout: 3000 });
-    await expect(docModal.getByRole('heading', { name: 'MENSAGENS RECUPERADAS — DIE' })).toBeVisible();
-    await docModal.getByRole('button', { name: 'FECHAR' }).click();
-    await page.waitForTimeout(300);
+    // De volta à rua e ao Gasthof: fotografia e porta dos fundos.
+    await interact(page, 'Sair da Diretoria');
+    await expectRoom(page, ROOM.escola);
+    await interact(page, 'Sair da Volksschule');
+    await expectRoom(page, ROOM.rua);
+    await interact(page, 'Gasthof Vila Nova');
+    await expectRoom(page, ROOM.bar);
+    await interact(page, 'Fotografia Amassada');
+    await expectEvidence(page, ITEM.foto);
 
-  // Pick up cedula_500 (center: x:91%, y:68%)
-  await clickAt(91, 68);
-  await expect(invPanel.getByText('Marks')).toBeVisible({ timeout: 2000 });
+    await useItem(page, 'Sair pelos Fundos — Lagerhaus 7', ITEM.foto);
+    await expectRoom(page, ROOM.armazem);
 
-  // Leave diretoria (center: x:55%, y:92%)
-  await clickAt(55, 92);
+    // Lagerhaus: caixas, porta de aço, terminal final e envelope da solução.
+    await interact(page, 'Caixas com Documentos');
+    await readDocument(page, 'DOKUMENTE — DIE WOHLTAT');
 
-    // === ESCOLA again ===
-    await expect(locationText).toContainText('Volksschule', { timeout: 3000 });
+    await useItem(page, 'Porta de Aço com Cadeado', ITEM.isqueiro);
+    await readDocument(page, 'ATRÁS DA PORTA DE AÇO');
 
-  // Leave escola (exit door bottom: x:55%, y:95% — avoid overlap with diretoria door)
-  await clickAt(55, 95.5);
+    await useItem(page, 'Terminal de Fósforo — A Verdade', ITEM.fita);
+    await readDocument(page, 'A ÚLTIMA PISTA — CONTAINER 14-B');
 
-    // === RUA CHUVA ===
-    await expect(locationText).toContainText('Rua Sieben', { timeout: 3000 });
+    await interact(page, 'Envelope Lacrado — Resolução do Caso'); // negado sem cédula
+    await expect(page.locator('.bg-black\\/90')).toBeHidden();
+    await useItem(page, 'Envelope Lacrado — Resolução do Caso', ITEM.cedula);
+    await readDocument(page, 'LÖSUNG VERTRAULICH');
 
-  // Enter bar (center: x:77%, y:81%) — bar_vila_nova interactable
-  await clickAt(77, 81);
-
-    // === BAR ===
-    await expect(locationText).toContainText('Gasthof', { timeout: 3000 });
-
-  // Pick up fotografia (center: x:80.5%, y:70.5%)
-  await clickAt(80.5, 70.5);
-  await expect(invPanel.getByText('Fotografia')).toBeVisible({ timeout: 2000 });
-
-  // Travel to armazem via bar back door (center: x:81%, y:64%) — requires fotografia
-  await clickAt(81, 64);
-
-    // === ARMAZEM ===
-    await expect(locationText).toContainText('Lagerhaus', { timeout: 3000 });
-
-  // Read caixas_documentos (center: x:19%, y:72%) — no gate
-  await clickAt(19, 72);
-  const caixasDoc = page.locator('[class*="bg-black/90"]');
-  if (await caixasDoc.isVisible()) {
-    await expect(caixasDoc.getByRole('heading', { name: /DIE WOHLTAT/ })).toBeVisible();
-    await caixasDoc.getByRole('button', { name: 'FECHAR' }).click();
-    await page.waitForTimeout(300);
-  }
-
-  // Read porta_aco (center: x:36%, y:70%) — requires isqueiro
-  await clickAt(36, 70);
-  const acoDoc = page.locator('[class*="bg-black/90"]');
-  if (await acoDoc.isVisible()) {
-    await expect(acoDoc.locator('p').filter({ hasText: 'GEHEIME' }).first()).toBeVisible();
-    await acoDoc.getByRole('button', { name: 'FECHAR' }).click();
-    await page.waitForTimeout(300);
-  }
-
-  // Read terminal_final (center: x:20%, y:65%) — requires fita_magnetica
-  await clickAt(20, 65);
-  const finalDoc = page.locator('[class*="bg-black/90"]');
-  await expect(finalDoc).toBeVisible({ timeout: 3000 });
-  await expect(finalDoc.locator('p').filter({ hasText: 'CONTAINER 14-B' }).first()).toBeVisible();
-  await finalDoc.getByRole('button', { name: 'FECHAR' }).click();
-
-  // Read puzzle_solution_terminal (center: x:35%, y:60%) — requires cedula_500
-  await clickAt(35, 60);
-  const solutionDoc = page.locator('[class*="bg-black/90"]');
-  if (await solutionDoc.isVisible()) {
-    await expect(solutionDoc.getByRole('heading', { name: /LÖSUNG/ })).toBeVisible();
-    await solutionDoc.getByRole('button', { name: 'FECHAR' }).click();
-  }
-
-    // Verify all 6 items in inventory
-    await expect(invPanel.getByText('Isqueiro')).toBeVisible();
-    await expect(invPanel.getByText('Chave')).toBeVisible();
-    await expect(invPanel.getByText('Cartão')).toBeVisible();
-    await expect(invPanel.getByText('Fita Magnética')).toBeVisible();
-    await expect(invPanel.getByText('Fotografia')).toBeVisible();
-    await expect(invPanel.getByText('Marks')).toBeVisible();
+    // Inventário final: 5 evidências.
+    for (const item of [ITEM.cartao, ITEM.fita, ITEM.cedula, ITEM.foto]) {
+      await expectEvidence(page, item);
+    }
   });
 
-  test('denied access: escola without cartao_visita', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
+  test('acesso negado: escola sem cartão (e item errado não destrava)', async ({ page }) => {
+    await startGame(page);
+    await interact(page, 'Sair para a Rua');
+    await expectRoom(page, ROOM.rua);
 
-    await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-    await page.waitForTimeout(800);
+    await interact(page, 'Volksschule Vila Nova');
+    await expectRoom(page, ROOM.rua);
 
-    // Pick isqueiro and go to rua
-    const vp = page.locator('.flex-1.bg-zinc-950.relative');
-    const vpBox = await vp.boundingBox()!;
-    const clickAt = async (xPct: number, yPct: number) => {
-      const box = await vp.boundingBox()!;
-      await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-      await page.waitForTimeout(300);
-    };
-
-  await clickAt(36.5, 86.5); // isqueiro
-  await clickAt(53, 61); // porta_rua
-
-  await page.waitForTimeout(500);
-
-  // Try escola without cartao_visita (center: x:42%, y:70%)
-  await clickAt(42, 70);
-
-    // Should NOT change room — still in rua
-    const locationText = page.locator('header').locator('p.text-sm.font-bold');
-    await expect(locationText).toContainText('Rua Sieben');
+    // Item errado: "não serve aqui" — também não viaja.
+    await useItem(page, 'Volksschule Vila Nova', ITEM.isqueiro);
+    await expectRoom(page, ROOM.rua);
   });
 
-  test('denied access: armazem via beco without fita_magnetica', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
+  test('acesso negado: porta do armazém pelo beco sem fita', async ({ page }) => {
+    await startGame(page);
+    await interact(page, 'Sair para a Rua');
+    await expectRoom(page, ROOM.rua);
+    await interact(page, 'Entrar no Beco');
+    await expectRoom(page, ROOM.beco);
 
-    await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-    await page.waitForTimeout(800);
-
-    const clickAt = async (xPct: number, yPct: number) => {
-      const box = await page.locator('.flex-1.bg-zinc-950.relative').boundingBox()!;
-      await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-      await page.waitForTimeout(300);
-    };
-
-  await clickAt(36.5, 86.5); // isqueiro
-  await clickAt(53, 61); // → rua
-
-  await page.waitForTimeout(500);
-
-  // Go to beco (center: x:62%, y:75%)
-  await clickAt(62, 75);
-  await page.waitForTimeout(500);
-
-  const locationText = page.locator('header').locator('p.text-sm.font-bold');
-  await expect(locationText).toContainText('Beco');
-
-  // Try porta_armazem_beco without fita_magnetica (center: x:46%, y:62%)
-  await clickAt(46, 62);
-
-    // Should NOT change room — still in beco
-    await expect(locationText).toContainText('Beco');
+    await interact(page, 'Porta dos Fundos do Lagerhaus');
+    await expectRoom(page, ROOM.beco);
   });
 
-  test('map opens and shows visited rooms', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
-
-    await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-    await page.waitForTimeout(800);
-
-    // Open map
-    const mapBtn = page.locator('.w-56.bg-black.p-4').getByRole('button', { name: 'MAPA DA CIDADE' });
-    await mapBtn.click();
-    await page.waitForTimeout(500);
-
-    // Map heading visible
+  test('mapa: abre, conta locais visitados e fecha', async ({ page }) => {
+    await startGame(page);
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
     await expect(page.getByRole('heading', { name: 'MAPA DA CIDADE' })).toBeVisible();
-
-  // Should show "LOCAIS: 1 / 8" since we only visited escritorio
-  await expect(page.getByText(/LOCAIS: 1 \/ 8/)).toBeVisible();
-
-  // Close map
-  const closeBtn = page.locator('[class*="bg-black/90"]').getByRole('button', { name: 'FECHAR' });
-  await closeBtn.click();
-  await page.waitForTimeout(300);
-});
-
-test('phone call: open agenda from escritorio phone', async ({ page }) => {
-  await page.goto(BASE);
-  await page.waitForTimeout(1000);
-
-  await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-  await page.waitForTimeout(800);
-
-  const locationText = page.locator('header').locator('p.text-sm.font-bold');
-  await expect(locationText).toContainText('Escritório');
-
-  const vp = page.locator('.flex-1.bg-zinc-950.relative');
-  const clickAt = async (xPct: number, yPct: number) => {
-    const box = await vp.boundingBox()!;
-    await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-    await page.waitForTimeout(300);
-  };
-
-  // Click escritorio phone (no phoneCallId → opens agenda)
-  await clickAt(48.5, 76);
-
-  // Phone agenda modal should appear
-  const agendaModal = page.locator('.w-56.bg-black.p-4').locator('[class*="bg-black/90"]');
-  const agendaHeading = page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' });
-  await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-
-  // No contacts discovered yet
-  await expect(page.getByText('NENHUM CONTATO CONHECIDO')).toBeVisible();
-
-  // Close agenda
-  const closeAgendaBtn = page.locator('[class*="bg-black/90"]').getByRole('button', { name: 'FECHAR' });
-  await closeAgendaBtn.click();
-  await page.waitForTimeout(300);
-
-  // Verify we're still in escritorio
-  await expect(locationText).toContainText('Escritório');
-});
-
-test('phone call: discover contact via cartao_visita and call diretora', async ({ page }) => {
-  await page.goto(BASE);
-  await page.waitForTimeout(1000);
-
-  await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-  await page.waitForTimeout(800);
-
-  const locationText = page.locator('header').locator('p.text-sm.font-bold');
-  const invPanel = page.locator('.w-56.bg-black.p-4');
-  const vp = page.locator('.flex-1.bg-zinc-950.relative');
-  const clickAt = async (xPct: number, yPct: number) => {
-    const box = await vp.boundingBox()!;
-    await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-    await page.waitForTimeout(300);
-  };
-
-  // Pick up isqueiro and go to rua
-  await clickAt(36.5, 86.5);
-  await clickAt(53, 61);
-  await page.waitForTimeout(500);
-
-  // Pick up cartao_visita — this discovers diretora_elvira
-  await clickAt(35, 86);
-  await expect(invPanel.getByText('Cartão de Visita')).toBeVisible({ timeout: 2000 });
-
-  // Open phone agenda via sidebar button
-  const agendaBtn = invPanel.getByRole('button', { name: 'AGENDA' });
-  await agendaBtn.click();
-  await page.waitForTimeout(500);
-
-  // Agenda should show diretora_elvira
-  const agendaHeading = page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' });
-  await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-  const agendaModal = agendaHeading.locator('..').locator('..');
-  await expect(agendaModal.getByText('Diretora Elvira Campos')).toBeVisible();
-
-  // Click to call diretora
-  const diretoraBtn = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-  await diretoraBtn.click();
-  await page.waitForTimeout(500);
-
-  // Phone call modal should appear
-  await expect(page.getByRole('heading', { name: /314-7721/ })).toBeVisible({ timeout: 3000 });
-  await expect(page.getByText('VERBUNDEN')).toBeVisible();
-
-  // End call
-  const hangupBtn = page.getByRole('button', { name: 'DESLIGAR' });
-  if (await hangupBtn.isVisible()) {
-    await hangupBtn.click();
-  } else {
-    const closeCallBtn = page.getByRole('button', { name: 'FECHAR' });
-    await closeCallBtn.click();
-  }
-  await page.waitForTimeout(300);
+    await expect(page.getByText('LOCAIS: 1 / 12')).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('heading', { name: 'MAPA DA CIDADE' })).toBeHidden();
   });
 
-  test('cassette: repeated call blocked (Linha ocupada), replay with gravador, blocked without gravador', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
+  test('mural: criar pista persiste no contexto ao fechar e reabrir', async ({ page }) => {
+    await startGame(page);
+    await interact(page, 'Quadro de Investigações');
 
-    await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-    await page.waitForTimeout(800);
+    const overlay = page.locator('.mural-overlay');
+    await expect(overlay).toBeVisible();
+    await expect(overlay.locator('.board-plaque')).toContainText('MURAL PRINCIPAL');
 
-    const locationText = page.locator('header').locator('p.text-sm.font-bold');
-    const invPanel = page.locator('.w-56.bg-black.p-4');
-    const vp = page.locator('.flex-1.bg-zinc-950.relative');
-    const clickAt = async (xPct: number, yPct: number) => {
-      const box = await vp.boundingBox()!;
-      await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-      await page.waitForTimeout(300);
-    };
+    // Criar uma nota.
+    await page.keyboard.press('n');
+    const input = overlay.getByRole('textbox', { name: 'Título da pista' });
+    await expect(input).toBeVisible();
+    await input.fill('Pista do promotor.sum');
+    await overlay.locator('.modal-footer .primary-button').click();
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista do promotor.sum');
+    await expect(overlay.locator('.board-plaque')).toContainText('1 PISTAS');
 
-    // Pick up isqueiro, gravador_cassete, go to rua, pick cartao_visita
-    await clickAt(36.5, 86.5); // isqueiro
-    await clickAt(41.5, 78);   // gravador_cassete
-    await expect(invPanel.getByText('Gravador')).toBeVisible({ timeout: 2000 });
-
-    await clickAt(53, 61); // → rua
-    await page.waitForTimeout(500);
-
-    await clickAt(35, 86); // cartao_visita — discovers diretora_elvira
-    await expect(invPanel.getByText('Cartão de Visita')).toBeVisible({ timeout: 2000 });
-
-    // Open agenda and call diretora (first call)
-    const agendaBtn = invPanel.getByRole('button', { name: 'AGENDA' });
-    await agendaBtn.click();
-    await page.waitForTimeout(500);
-
-    const agendaHeading = page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' });
-    await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-    const agendaModal = agendaHeading.locator('..').locator('..');
-    const diretoraBtn = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-    await diretoraBtn.click();
-    await page.waitForTimeout(500);
-
-    // Phone call modal — hang up
-    await expect(page.getByRole('heading', { name: /314-7721/ })).toBeVisible({ timeout: 3000 });
-    const hangupBtn = page.getByRole('button', { name: 'DESLIGAR' });
-    if (await hangupBtn.isVisible()) {
-      await hangupBtn.click();
-    } else {
-      await page.getByRole('button', { name: 'FECHAR' }).click();
-    }
-    await page.waitForTimeout(500);
-
-    // Now open agenda again — should show "OUVIR FITA" since we have gravador + recording
-    await agendaBtn.click();
-    await page.waitForTimeout(500);
-    await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-
-    // Contact button should show OUVIR FITA
-    const diretoraBtnAfter = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-    await expect(diretoraBtnAfter.getByText('OUVIR FITA')).toBeVisible({ timeout: 3000 });
-
-    // Click to replay cassette
-    await diretoraBtnAfter.click();
-    await page.waitForTimeout(500);
-
-    // Cassette playback modal should appear with KASSETTE/ABGESPIELT
-    await expect(page.getByText('KASSETTE')).toBeVisible({ timeout: 3000 });
-    await expect(page.getByText('ABGESPIELT')).toBeVisible();
-
-    // Close cassette modal
-    const pararBtn = page.getByRole('button', { name: 'PARAR' });
-    await pararBtn.click();
-    await page.waitForTimeout(500);
-
-    // Try calling directly from the room phone (should show "Linha ocupada" in log)
-    // Go back to escritorio first
-    await clickAt(20, 90); // leave rua to escritorio (approximate)
-    await page.waitForTimeout(500);
-
-    // Try clicking phone in escritorio — should open agenda, contact shows GETRENNT if we already called
-    // Actually let's test: try calling from a phone that has phoneCallId=directora_elvira
-    // The bar phone has phoneCallId=zeca, not diretora. Let's test via agenda again.
-    // Re-open agenda — still shows OUVIR FITA (gravador present)
-    await agendaBtn.click();
-    await page.waitForTimeout(500);
-    await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-    const diretoraBtnAgain = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-    await expect(diretoraBtnAgain.getByText('OUVIR FITA')).toBeVisible({ timeout: 3000 });
-
-    // Close agenda
-    await page.locator('[class*="bg-black/90"]').getByRole('button', { name: 'FECHAR' }).first().click();
-    await page.waitForTimeout(300);
+    // Fechar e reabrir: pista continua (contexto da máquina).
+    // (Um único Escape só deseleciona a pista criada — UX de canvas.)
+    await page.getByRole('button', { name: 'Fechar o mural' }).click();
+    await expect(overlay).toBeHidden();
+    await interact(page, 'Quadro de Investigações');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista do promotor.sum');
+    await page.getByRole('button', { name: 'Fechar o mural' }).click();
   });
 
-  test('cassette: call without gravador shows GETRENNT after hanging up', async ({ page }) => {
-    await page.goto(BASE);
-    await page.waitForTimeout(1000);
+  test('agenda: descobrir Santos na delegacia, ligar e reouvir a fita', async ({ page }) => {
+    await startGame(page);
 
-    await page.getByRole('button', { name: 'ACEITAR O CASO' }).click();
-    await page.waitForTimeout(800);
+    // Agenda vazia no início.
+    await interact(page, 'Telefone de Discagem');
+    await expect(page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' })).toBeVisible();
+    await expect(page.getByText('NENHUM CONTATO CONHECIDO')).toBeVisible();
+    await page.keyboard.press('Escape');
 
-    const invPanel = page.locator('.w-56.bg-black.p-4');
-    const vp = page.locator('.flex-1.bg-zinc-950.relative');
-    const clickAt = async (xPct: number, yPct: number) => {
-      const box = await vp.boundingBox()!;
-      await page.mouse.click(box.x + box.width * (xPct / 100), box.y + box.height * (yPct / 100));
-      await page.waitForTimeout(300);
-    };
+    // Delegacia: telefone descobre Santos na agenda (sem ligar fora do escritório).
+    await interact(page, 'Sair para a Rua');
+    await interact(page, 'Volkspolizeistation 8º');
+    await expectRoom(page, ROOM.delegacia);
+    await interact(page, 'Telefone — Recado de Santos');
+    await expectRoom(page, ROOM.delegacia); // continua na delegacia
+    await expect(page.getByRole('button', { name: /AGENDA/ })).toContainText('1');
 
-    // Pick up isqueiro but NOT gravador_cassete
-    await clickAt(36.5, 86.5); // isqueiro only
-    await clickAt(53, 61); // → rua
-    await page.waitForTimeout(500);
+    // Volta ao escritório pelo mapa e liga.
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
+    await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
+    await expectRoom(page, ROOM.escritorio);
 
-    await clickAt(35, 86); // cartao_visita — discovers diretora_elvira
-    await expect(invPanel.getByText('Cartão de Visita')).toBeVisible({ timeout: 2000 });
+    await interact(page, 'Telefone de Discagem');
+    const santosBtn = page.getByRole('button').filter({ hasText: 'Polizist Santos' });
+    await expect(santosBtn).toBeVisible();
+    await santosBtn.click();
+    await expect(page.getByRole('heading', { name: /314-0089/ })).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('VERBUNDEN')).toBeVisible();
+    await page.keyboard.press('Escape'); // desliga
 
-    // Open agenda and call diretora
-    const agendaBtn = invPanel.getByRole('button', { name: 'AGENDA' });
-    await agendaBtn.click();
-    await page.waitForTimeout(500);
+    // Reabrir agenda: chamada já feita → OUVIR FITA (gravador é permanente).
+    await interact(page, 'Telefone de Discagem');
+    await expect(santosBtn).toContainText('OUVIR FITA');
+    await page.keyboard.press('Escape');
 
-    const agendaHeading = page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' });
-    await expect(agendaHeading).toBeVisible({ timeout: 3000 });
-    const agendaModal = agendaHeading.locator('..').locator('..');
-    const diretoraBtn = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-    await diretoraBtn.click();
-    await page.waitForTimeout(500);
+    // Fita cassete: reouvir a gravação.
+    await page.getByRole('button', { name: /FITA CASSETE/ }).click();
+    await expect(page.getByRole('heading', { name: 'FITA CASSETE' })).toBeVisible();
+    await santosBtn.click();
+    await expect(page.getByText('ABGESPIELT')).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('— FIM DA FITA —')).toBeVisible();
+    await page.keyboard.press('Escape');
+  });
 
-    // Phone call modal — hang up
-    await expect(page.getByRole('heading', { name: /314-7721/ })).toBeVisible({ timeout: 3000 });
-    const hangupBtn = page.getByRole('button', { name: 'DESLIGAR' });
-    if (await hangupBtn.isVisible()) {
-      await hangupBtn.click();
-    } else {
-      await page.getByRole('button', { name: 'FECHAR' }).click();
-    }
-    await page.waitForTimeout(500);
+  test('delegacia: arquivo negado sem cédula; quadro de dedução abre', async ({ page }) => {
+    await startGame(page);
+    await interact(page, 'Sair para a Rua');
+    await interact(page, 'Volkspolizeistation 8º');
+    await expectRoom(page, ROOM.delegacia);
 
-    // Re-open agenda — should show GETRENNT (no gravador, no recording)
-    await agendaBtn.click();
-    await page.waitForTimeout(500);
-    await expect(agendaHeading).toBeVisible({ timeout: 3000 });
+    await interact(page, 'Arquivo do Kommissar Mendes'); // negado sem cédula
+    await expect(page.locator('.bg-black\\/90')).toBeHidden();
+    await expectRoom(page, ROOM.delegacia);
 
-    const diretoraBtnAfter = agendaModal.locator('button').filter({ hasText: 'Diretora Elvira' });
-    await expect(diretoraBtnAfter.getByText('GETRENNT')).toBeVisible({ timeout: 3000 });
+    await interact(page, 'Quadro de Dedução — Caso Helena');
+    const board = page.locator('div.fixed.z-\\[200\\]');
+    await expect(board).toBeVisible();
+    await expect(board.getByRole('heading', { name: 'DETECTIVE BOARD — FALL HELENA KRAFT' })).toBeVisible();
+    await board.getByRole('button', { name: 'Fechar dedução' }).click();
+    await expect(board).toBeHidden();
+  });
 
-    // Clicking should deny (agenda stays open, no modal opens)
-    await diretoraBtnAfter.click();
-    await page.waitForTimeout(300);
+  test('persistência: CONTINUAR restaura sala e pista do mural', async ({ page }) => {
+    await startGame(page);
 
-    // Close agenda
-    await page.locator('[class*="bg-black/90"]').getByRole('button', { name: 'FECHAR' }).first().click();
-    await page.waitForTimeout(300);
+    // Pista no mural.
+    await interact(page, 'Quadro de Investigações');
+    const overlay = page.locator('.mural-overlay');
+    await page.keyboard.press('n');
+    await overlay.getByRole('textbox', { name: 'Título da pista' }).fill('Sobrevive ao reload');
+    await overlay.locator('.modal-footer .primary-button').click();
+    await page.getByRole('button', { name: 'Fechar o mural' }).click();
+    await expect(overlay).toBeHidden();
+
+    // Viaja para a rua e recarrega: CONTINUAR deve restaurar sala + mural.
+    await interact(page, 'Sair para a Rua');
+    await expectRoom(page, ROOM.rua);
+    await page.reload();
+    await page.getByRole('button', { name: 'CONTINUAR' }).click();
+    await expectRoom(page, ROOM.rua);
+
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
+    await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
+    await expectRoom(page, ROOM.escritorio);
+    await interact(page, 'Quadro de Investigações');
+    await expect(overlay.locator('.evidence-card h3')).toHaveText('Sobrevive ao reload');
+    await page.getByRole('button', { name: 'Fechar o mural' }).click();
   });
 });
