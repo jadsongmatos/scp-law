@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useMachine } from '@xstate/react';
+import { createPortal } from 'react-dom';
 import { GAME_ROOMS, Interactable, ITEM_NAMES, ITEM_IMAGES, Room, PHONE_CONTACTS } from './data';
 import { IconMap } from './Icons';
 import { Audio } from './audio';
@@ -901,7 +902,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
             </>
           )}
 
-          {objMenu && (
+          {objMenu && createPortal(
             <div ref={objMenuRef}
               className="fixed z-[9999] bg-zinc-900 border border-noir-amber/40 rounded shadow-xl py-1 min-w-[200px] max-h-[60vh] overflow-y-auto institutional"
               style={{ left: objMenu.x, top: objMenu.y }}
@@ -919,7 +920,8 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
                   onClick={(e) => { e.stopPropagation(); const o = objMenu.obj; setObjMenu(null); handleMenuSelect(o, it); }}
                 >{ITEM_NAMES[it] || it}</button>
               ))}
-            </div>
+            </div>,
+            document.body
           )}
         </div>
 
