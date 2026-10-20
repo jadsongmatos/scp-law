@@ -1,6 +1,6 @@
 # Murphy Law — Investigações Privadas
 
-Jogo de detetive em estilo film noir (React 19 + Vite 8 + TypeScript + Tailwind v4) com meta-lore da Fundação SCP. Explore 12 salas, descubra interactables ocultos clicando na cena, resolva um quebra-cabeça de dedução 5×5 (grid de Einstein) e negocie diálogos de Dilema do Prisioneiro Iterado com 9 contatos — cada um com sua própria estratégia de axelrod.
+Jogo de detetive em estilo film noir (React 19 + Vite 8 + TypeScript + Tailwind v4) com meta-lore da Fundação SCP. Explore 12 salas, descubra interactables ocultos clicando na cena, cole as pistas no mural de investigações com fios vermelhos e faça a denúncia para fechar o caso — e negocie diálogos de Dilema do Prisioneiro Iterado com 9 contatos, cada um com sua própria estratégia de axelrod.
 
 Produção: `scp-law.pages.dev` (Cloudflare Pages).
 
