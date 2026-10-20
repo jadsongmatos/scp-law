@@ -2215,7 +2215,7 @@
           "id": "gaveta_diretora",
           "icon": "FileText",
           "x": 54.2,
-          "y": 71.4,
+          "y": 80,
           "type": "terminal_read",
           "label": "Gaveta Trancada",
           "width": 10,
