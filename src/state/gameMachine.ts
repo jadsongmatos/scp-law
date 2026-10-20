@@ -14,13 +14,10 @@ export interface GameContext {
   pdChoiceHistory: Record<string, string[]>;
   phoneRecordings: Record<string, { speaker: string; lines: string[] }[]>;
   readHints: string[];
-  deductionGrid: Record<string, Record<string, string>>;
-  deductionResult: 'correct' | 'wrong' | null;
   mural: MuralData;
   unlockedObjects: string[];
   interactedItems: string[];
   readInterviewClues: string[];
-  deductionAttempts: number;
   murphyCommentaryMap: Record<string, string[]>;
   gameCompleted: boolean;
   diretoraPhoneUnlocked: boolean;
@@ -38,15 +35,12 @@ export type GameEvent =
   | { type: 'END_PHONE_CALL'; contactId: string; recording: { speaker: string; lines: string[] }[] }
   | { type: 'READ_HINT'; hintId: string }
   | { type: 'READ_INTERVIEW_CLUE'; clueId: string }
-  | { type: 'SET_DEDUCTION_RESULT'; result: 'correct' | 'wrong' | null }
-  | { type: 'UPDATE_DEDUCTION_GRID'; location: string; category: string; value: string }
   | { type: 'UPDATE_MURAL'; mural: MuralData }
   | { type: 'UNLOCK_OBJECT'; objId: string }
   | { type: 'INTERACTED_WITH'; objId: string }
   | { type: 'UNLOCK_DIRETORA_PHONE' }
   | { type: 'SET_COMPLETED' }
   | { type: 'SET_MURPHY_COMMENTARY'; contactId: string; commentary: string[] }
-  | { type: 'INCREMENT_DEDUCTION_ATTEMPTS' }
   | { type: 'RESTORE_STATE'; state: Partial<GameContext> }
   | { type: 'UPDATE_LOCAL_ROOMS'; updater: (prev: Record<string, Room>) => Record<string, Room> };
 
@@ -60,13 +54,10 @@ export const initialContext: GameContext = {
   pdChoiceHistory: {},
   phoneRecordings: {},
   readHints: [],
-  deductionGrid: {},
-  deductionResult: null,
   mural: EMPTY_MURAL,
   unlockedObjects: [],
   interactedItems: [],
   readInterviewClues: [],
-  deductionAttempts: 0,
   murphyCommentaryMap: {},
   gameCompleted: false,
   diretoraPhoneUnlocked: false,
@@ -142,24 +133,10 @@ export const gameMachine = createMachine({
             return { readInterviewClues: [...context.readInterviewClues, event.clueId] };
           }),
         },
-        UPDATE_DEDUCTION_GRID: {
-          actions: assign(({ context, event }) => {
-            if (event.type !== 'UPDATE_DEDUCTION_GRID') return {};
-            const grid = { ...context.deductionGrid };
-            grid[event.location] = { ...grid[event.location], [event.category]: event.value };
-            return { deductionGrid: grid };
-          }),
-        },
         UPDATE_MURAL: {
           actions: assign(({ event }) => {
             if (event.type !== 'UPDATE_MURAL') return {};
             return { mural: event.mural };
-          }),
-        },
-        SET_DEDUCTION_RESULT: {
-          actions: assign(({ event }) => {
-            if (event.type !== 'SET_DEDUCTION_RESULT') return {};
-            return { deductionResult: event.result };
           }),
         },
         UNLOCK_OBJECT: {
@@ -181,9 +158,6 @@ export const gameMachine = createMachine({
         },
         SET_COMPLETED: {
           actions: assign({ gameCompleted: true }),
-        },
-        INCREMENT_DEDUCTION_ATTEMPTS: {
-          actions: assign(({ context }) => ({ deductionAttempts: context.deductionAttempts + 1 })),
         },
         SET_MURPHY_COMMENTARY: {
           actions: assign(({ context, event }) => {

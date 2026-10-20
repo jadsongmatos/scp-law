@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  BOARD_HEIGHT, BOARD_WIDTH, EMPTY_MURAL, MAX_MURAL_BYTES,
-  addConnection, attachmentSize, createClue, newId, typeLabels,
-  type Clue, type ClueType, type MuralData,
+  BOARD_HEIGHT, BOARD_WIDTH,
+  addConnection, clueFromHint, newId, typeLabels,
+  type Clue, type HintSource, type MuralData,
 } from './data';
 
 const clue = (id: string, overrides: Partial<Clue> = {}): Clue => ({
@@ -11,45 +11,6 @@ const clue = (id: string, overrides: Partial<Clue> = {}): Clue => ({
 });
 
 const mural = (clues: Clue[]): MuralData => ({ clues, connections: [] });
-
-describe('createClue', () => {
-  it('usa o tamanho fixo de cada tipo', () => {
-    const types: ClueType[] = ['person', 'location', 'note', 'document', 'recording', 'checklist'];
-    for (const type of types) {
-      const c = createClue(type);
-      expect(c.type).toBe(type);
-      expect(c.width).toBeGreaterThan(0);
-      expect(c.height).toBeGreaterThan(0);
-    }
-  });
-
-  it('inicia com valores padrão coerentes', () => {
-    const note = createClue('note');
-    expect(note.title).toBe('');
-    expect(note.color).toBe('yellow');
-    expect(note.tags).toEqual([]);
-    expect(note.items).toBeUndefined();
-    expect(note.rotation).toBeGreaterThanOrEqual(-3);
-    expect(note.rotation).toBeLessThanOrEqual(3);
-    expect(new Date(note.createdAt).getTime()).not.toBeNaN();
-    const list = createClue('checklist');
-    expect(list.items).toEqual([]);
-  });
-
-  it('posiciona dentro do quadro quando recebe um ponto', () => {
-    const c = createClue('person', { x: 0, y: 0 });
-    expect(c.x).toBeGreaterThanOrEqual(25);
-    expect(c.y).toBeGreaterThanOrEqual(30);
-    expect(c.x + c.width).toBeLessThanOrEqual(BOARD_WIDTH - 25);
-    expect(c.y + c.height).toBeLessThanOrEqual(BOARD_HEIGHT - 25);
-  });
-
-  it('centraliza a pista no ponto recebido', () => {
-    const c = createClue('note', { x: 400, y: 300 });
-    expect(c.x).toBe(400 - c.width / 2);
-    expect(c.y).toBe(300 - c.height / 2);
-  });
-});
 
 describe('newId', () => {
   it('gera ids únicos em rajada', () => {
@@ -89,25 +50,46 @@ describe('addConnection', () => {
   });
 });
 
-describe('attachmentSize', () => {
-  it('soma image e fileData de todas as pistas', () => {
-    const clues = [
-      clue('a', { image: 'x'.repeat(100) }),
-      clue('b', { fileData: 'y'.repeat(50) }),
-      clue('c'),
-    ];
-    expect(attachmentSize(clues)).toBe(150);
-    expect(attachmentSize(EMPTY_MURAL.clues)).toBe(0);
-  });
-
-  it('orçamento do mural cabe no save sem estourar a quota', () => {
-    expect(MAX_MURAL_BYTES).toBeLessThan(4 * 1024 * 1024);
-  });
-});
 
 describe('typeLabels', () => {
   it('cobre todos os tipos em PT-BR', () => {
     expect(Object.keys(typeLabels)).toEqual(['person', 'location', 'note', 'document', 'recording', 'checklist']);
     expect(typeLabels.note).toBe('Anotação');
+  });
+});
+
+describe('clueFromHint', () => {
+  it('usa o id da pista como id do cartão (sincronização idempotente)', () => {
+    const clue = clueFromHint({ id: 'puzzle_hint_1', label: 'Pista Confidencial #1', roomName: 'Escritório de Murphy Law — Rua Sieben, 314', lines: [], index: 0 });
+    expect(clue.id).toBe('puzzle_hint_1');
+  });
+
+  it('filtra linhas decorativas do documento, mantendo o texto do fragmento', () => {
+    const clue = clueFromHint({
+      id: 'puzzle_hint_1', label: 'Pista Confidencial #1', roomName: 'Escritório de Murphy Law — Rua Sieben, 314', index: 0,
+      lines: ['> FRAGMENTO RECUPERADO DO ARQUIVO DO CASO', '', 'O motivo X está entre o suspeito Y e a arma Z.', '', '[Tipo de restrição: between_ordered]'],
+    });
+    expect(clue.content).toBe('O motivo X está entre o suspeito Y e a arma Z.');
+  });
+
+  it('subtítulo é a sala sem o complemento pós travessão', () => {
+    const clue = clueFromHint({ id: 'interview_clue_santos', label: 'Pista de Santos — Entrevista', roomName: 'Volkspolizeistation 8º — A Estação que Não Vê', lines: [], index: 21 });
+    expect(clue.subtitle).toBe('Volkspolizeistation 8º');
+  });
+
+  it('posição é determinística: mesmo índice, mesmo lugar no quadro', () => {
+    const source: HintSource = { id: 'puzzle_hint_4', label: 'Pista Confidencial #4', roomName: 'Volksschule Vila Nova — Corredores Vazios', lines: [], index: 3 };
+    expect(clueFromHint(source)).toEqual(clueFromHint(source));
+  });
+
+  it('posição e rotação ficam dentro do quadro', () => {
+    for (let index = 0; index < 23; index++) {
+      const clue = clueFromHint({ id: `puzzle_hint_${index + 1}`, label: `Pista ${index + 1}`, roomName: 'X', lines: [], index });
+      expect(clue.x).toBeGreaterThanOrEqual(30);
+      expect(clue.x).toBeLessThanOrEqual(BOARD_WIDTH - clue.width - 30);
+      expect(clue.y).toBeGreaterThanOrEqual(30);
+      expect(clue.y).toBeLessThanOrEqual(BOARD_HEIGHT - clue.height - 30);
+      expect(Math.abs(clue.rotation)).toBeLessThanOrEqual(3);
+    }
   });
 });

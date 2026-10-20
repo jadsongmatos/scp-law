@@ -1,12 +1,13 @@
 // MURAL DE PISTAS — quadro de cortiça interativo (portado do protótipo Nexo).
 // Diferenças em relação ao protótipo: os dados vêm de MuralData (não há
-// conceito de "casos"); o jogo injeta o botão Fechar via optionsExtra; e os
-// easter eggs do caso de demonstração (ids 'boletim', 'camera', 'elisa',
-// 'marcos') foram removidos.
+// conceito de "casos"); o jogo injeta o botão Fechar e o bloco de denúncia
+// via optionsExtra; os cartões nascem das pistas descobertas no jogo — não
+// há criação/edição manual aqui; e os easter eggs do caso de demonstração
+// (ids 'boletim', 'camera', 'elisa', 'marcos') foram removidos.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, FormEvent, PointerEvent as ReactPointerEvent, ReactNode } from 'react';
-import { ArrowUpRight, Check, Eye, EyeOff, FileText, Fingerprint, Hand, ImagePlus, Link2, MapPin, Maximize, Minus, MousePointer2, Pencil, Plus, Redo2, Scan, Scissors, StickyNote, Undo2, Video, X } from 'lucide-react';
-import { BOARD_HEIGHT, BOARD_WIDTH, type Clue, type ClueType, type Connection, type MuralData, type ToolMode } from './data';
+import { ArrowUpRight, Check, Eye, EyeOff, FileText, Fingerprint, Hand, Link2, MapPin, Maximize, Minus, MousePointer2, Plus, Redo2, Scan, Scissors, Undo2, Video, X } from 'lucide-react';
+import { BOARD_HEIGHT, BOARD_WIDTH, type Clue, type Connection, type MuralData, type ToolMode } from './data';
 
 type Point = { x: number; y: number };
 interface BoardProps {
@@ -15,20 +16,20 @@ interface BoardProps {
   setMode: (mode: ToolMode) => void;
   selectedId: string | null;
   onSelect: (id: string | null) => void;
-  onEdit: (clue: Clue) => void;
   onDetails: (clue: Clue) => void;
   onMove: (id: string, x: number, y: number) => void;
   onConnect: (from: string, to: string, color?: string) => Connection | null;
   onUpdateConnection: (connection: Connection) => void;
   onDeleteConnection: (id: string) => void;
   onCheck: (clueId: string, itemId: string) => void;
-  onAdd: (type: ClueType, point?: Point) => void;
   onUndo: () => void;
   onRedo: () => void;
   canUndo: boolean;
   canRedo: boolean;
   filter: string;
   optionsExtra?: ReactNode;
+  /** Slot junto ao histórico (bandeja): denúncia + status do grafo. */
+  actionsExtra?: ReactNode;
 }
 const THREAD_COLORS = [
   { color: '#a13d35', label: 'Vermelho', meaning: 'Ligação' },
@@ -101,7 +102,7 @@ function ThreadEditor({ connection, data, onSave, onCut, onClose, position }: { 
 }
 
 export default function Board(props: BoardProps) {
-  const { data, mode, setMode, selectedId, onSelect, onEdit, onDetails, onMove, onConnect, onUpdateConnection, onDeleteConnection, onCheck, onAdd, onUndo, onRedo, canUndo, canRedo, filter, optionsExtra } = props;
+  const { data, mode, setMode, selectedId, onSelect, onDetails, onMove, onConnect, onUpdateConnection, onDeleteConnection, onCheck, onUndo, onRedo, canUndo, canRedo, filter, optionsExtra, actionsExtra } = props;
   const viewport = useRef<HTMLDivElement>(null);
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 });
   const [preview, setPreview] = useState<{ id: string; x: number; y: number } | null>(null);
@@ -302,10 +303,6 @@ export default function Board(props: BoardProps) {
     e.currentTarget.setPointerCapture(e.pointerId);
     pan.current = { startX: e.clientX, startY: e.clientY, x: view.x, y: view.y, moved: false };
   };
-  const addAtCenter = (type: ClueType) => {
-    const el = viewport.current!;
-    onAdd(type, { x: (el.clientWidth / 2 - view.x) / view.scale, y: ((el.clientHeight - 65) / 2 - view.y) / view.scale });
-  };
   const changeTool = (tool: ToolMode) => { cancelWire(); setActiveConnectionId(null); setMode(tool); if (tool === 'connect') onSelect(null); };
   const source = data.clues.find(c => c.id === (firstConnection || wire?.from));
   const target = data.clues.find(c => c.id === wire?.targetId);
@@ -348,8 +345,8 @@ export default function Board(props: BoardProps) {
           className={`evidence-card evidence-${clue.type} color-${clue.color || 'yellow'} ${selectedId === clue.id ? 'selected' : ''} ${source?.id === clue.id ? 'connection-source' : ''} ${wire?.targetId === clue.id ? 'wire-target' : ''} ${preview?.id === clue.id ? 'dragging' : ''} ${!matches(clue) ? 'filtered-out' : ''}`}
           style={{ left: clue.x, top: clue.y, width: clue.width, height: clue.height, '--rotation': `${clue.rotation}deg` } as CSSProperties}
           onPointerDown={e => cardDown(e, clue)} onPointerMove={cardMove} onPointerUp={e => cardUp(e, clue)} onPointerCancel={() => { drag.current = null; setPreview(null); }}
-          onDoubleClick={e => { e.stopPropagation(); if (!isLinking) onEdit(clue); }}
-          onKeyDown={e => { if (e.target !== e.currentTarget) return; if (e.key === 'Enter') clickClue(clue); if (e.key === 'F2') onEdit(clue); }}>
+          onDoubleClick={e => e.stopPropagation()}
+          onKeyDown={e => { if (e.target !== e.currentTarget) return; if (e.key === 'Enter') clickClue(clue); }}>
           {['person', 'location', 'recording'].includes(clue.type) && <span className="card-tape" />}
           {clue.type === 'checklist' && <span className="paper-clip" aria-hidden="true" />}
           {['note', 'document', 'checklist'].includes(clue.type) && <span className="paper-fold" aria-hidden="true" />}
@@ -359,7 +356,6 @@ export default function Board(props: BoardProps) {
           <ClueContent clue={clue} onCheck={itemId => onCheck(clue.id, itemId)} />
           <span className="evidence-index">{String(index + 1).padStart(2, '0')}</span>
           {selectedId === clue.id && !isLinking && <div className="card-quick-actions floating-ui" onPointerDown={e => e.stopPropagation()} onPointerUp={e => e.stopPropagation()} onDoubleClick={e => e.stopPropagation()}>
-            <button onClick={e => { e.stopPropagation(); onEdit(clue); }} aria-label={`Editar ${clue.title}`}><Pencil size={13} /><span>Editar</span></button>
             <button className="quick-link" onClick={e => { e.stopPropagation(); startFrom(clue); }} aria-label={`Ligar ${clue.title} a outra pista`}><Link2 size={14} /><span>Ligar</span></button>
             <button onClick={e => { e.stopPropagation(); onDetails(clue); }} aria-label={`Detalhes de ${clue.title}`}><ArrowUpRight size={14} /><span>Detalhes</span></button>
           </div>}
@@ -367,7 +363,7 @@ export default function Board(props: BoardProps) {
         {livePath && wire && <svg className="live-thread-layer" width={BOARD_WIDTH} height={BOARD_HEIGHT} overflow="visible" aria-hidden="true"><path d={livePath.d} fill="none" stroke="#3d271b66" strokeWidth="5" transform="translate(1,3)" /><path d={livePath.d} fill="none" stroke={threadColor} strokeWidth="3.8" /><path d={livePath.d} fill="none" stroke="#f5c4a5" strokeWidth=".9" strokeDasharray="5 3" transform="translate(0,-.7)" opacity=".7" /><circle cx={wire.point.x} cy={wire.point.y} r={target ? 13 : 7} fill={target ? '#f9edc7a6' : '#f7e6cc'} stroke={threadColor} strokeWidth="2" /><circle cx={wire.point.x} cy={wire.point.y} r="2.5" fill={threadColor} /></svg>}
       </div>
       {activeConnection && <ThreadEditor key={activeConnection.id} connection={activeConnection} data={data} position={editorPosition} onSave={connection => { onUpdateConnection(connection); setActiveConnectionId(null); }} onCut={() => { onDeleteConnection(activeConnection.id); setActiveConnectionId(null); }} onClose={() => setActiveConnectionId(null)} />}
-      {data.clues.length === 0 && <div className="empty-board floating-ui"><div className="empty-board-mark"><Fingerprint size={52} strokeWidth={1} /></div><h2>Todo mistério começa com uma pista.</h2><p>Prenda uma fotografia, um documento ou uma ideia.<br />Depois, puxe um fio para conectar os pontos.</p><button className="primary-button" onClick={() => addAtCenter('note')}><Plus size={17} />Adicionar a primeira pista</button></div>}
+      {data.clues.length === 0 && <div className="empty-board floating-ui"><div className="empty-board-mark"><Fingerprint size={52} strokeWidth={1} /></div><h2>Todo mistério começa com uma pista.</h2><p>As pistas aparecem aqui quando você as descobrir investigando.<br />Depois, puxe um fio para conectar os pontos.</p></div>}
       <div className="board-toolbox floating-ui" aria-label="Ferramentas do quadro">
         <span className="tray-screw" />
         <button className={`tray-tool ${mode === 'select' && !spaceDown ? 'active' : ''}`} onClick={() => changeTool('select')} title="Selecionar e mover (V)" aria-label="Selecionar e mover"><MousePointer2 size={20} /><span>Mover</span></button>
@@ -376,9 +372,7 @@ export default function Board(props: BoardProps) {
         <button className={`tray-tool spool-tool ${isLinking ? 'active connect-active' : ''}`} onClick={() => changeTool(mode === 'connect' ? 'select' : 'connect')} title="Clique em duas pistas ou arraste um alfinete (C)" aria-label="Conectar pistas"><SpoolIcon color={threadColor} /><span>Puxar fio</span></button>
         <div className="thread-palette"><span>COR DO FIO</span><div>{THREAD_COLORS.map(color => <button key={color.color} className={threadColor === color.color ? 'chosen' : ''} style={{ '--thread-color': color.color } as CSSProperties} onClick={() => setThreadColor(color.color)} title={`${color.label} · ${color.meaning}`} aria-label={`Usar fio ${color.label}`} aria-pressed={threadColor === color.color}><i />{threadColor === color.color && <Check size={9} />}</button>)}</div></div>
         <span className="tool-divider" />
-        <button className="tray-tool" onClick={() => addAtCenter('note')} title="Nova anotação (N)" aria-label="Nova anotação"><span className="tool-paper tool-sticky"><StickyNote size={18} /></span><span>Nota</span></button>
-        <button className="tray-tool" onClick={() => addAtCenter('person')} title="Adicionar fotografia" aria-label="Adicionar fotografia"><span className="tool-paper tool-polaroid"><ImagePlus size={18} /></span><span>Foto</span></button>
-        <button className="tray-tool" onClick={() => addAtCenter('document')} title="Adicionar documento" aria-label="Adicionar documento"><span className="tool-paper tool-document"><FileText size={18} /></span><span>Documento</span></button>
+        {actionsExtra}
         <span className="tool-divider" />
         <div className="tray-history"><button onClick={onUndo} disabled={!canUndo} title="Desfazer (Ctrl+Z)" aria-label="Desfazer"><Undo2 size={17} /></button><button onClick={onRedo} disabled={!canRedo} title="Refazer (Ctrl+Shift+Z)" aria-label="Refazer"><Redo2 size={17} /></button></div>
         <span className="tray-screw" />

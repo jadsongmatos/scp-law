@@ -14,8 +14,9 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipTitle, TooltipBody } fr
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody, DialogClose } from '@/components/ui/dialog';
 import { Toaster } from 'sonner';
 import { DevInspector } from '@/components/DevInspector';
-import DetectiveBoard from '@/components/DetectiveBoard';
 import { MuralOverlay } from '@/components/board/MuralOverlay';
+import { clueFromHint, type HintSource } from '@/components/board/data';
+import { BONUS_CONNECTED, POINTS_PER_CLUE, POINTS_PER_CONNECTION, scoreMural, type MuralScore } from '@/lib/muralScore';
 import { resolveItemUse, INTERACT } from '@/lib/itemUse';
 import { createEugineNier } from '@/lib/eugineNier';
 import { HardProber, C, D } from '@/lib/hardProber';
@@ -25,6 +26,22 @@ import { gameMachine } from './state/gameMachine';
 
 const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
 const SAVE_KEY = 'scp_law_save';
+
+// Catálogo das 23 pistas dedutivas do jogo (18 puzzle_hint_* + 5
+// interview_clue_*): fonte dos cartões do mural. O índice é estável (ordem de
+// declaração em game_data.json) e define a posição determinística do cartão.
+const HINT_CATALOG: Map<string, HintSource> = (() => {
+  const catalog = new Map<string, HintSource>();
+  for (const room of Object.values(GAME_ROOMS)) {
+    for (const obj of room.interactables) {
+      if (!/^puzzle_hint_\d+$|^interview_clue_/.test(obj.id)) continue;
+      catalog.set(obj.id, { id: obj.id, label: obj.label, roomName: room.name, lines: obj.documentData?.content ?? [], index: catalog.size });
+    }
+  }
+  return catalog;
+})();
+// Total de itens de investigação: 18 pistas + 5 docs de entrevista + 9 contatos.
+const INVESTIGATION_TOTAL = HINT_CATALOG.size + Object.keys(PHONE_CONTACTS).length;
 
 function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const [snapshot, send] = useMachine(gameMachine);
@@ -37,7 +54,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const [selectedObjId, setSelectedObjId] = useState<string | null>(null);
   const [documentData, setDocumentData] = useState<{ title: string; content: string[] } | null>(null);
   const [objMenu, setObjMenu] = useState<{ x: number; y: number; obj: Interactable } | null>(null);
-  const [deductionOpen, setDeductionOpen] = useState(false);
   const [muralOpen, setMuralOpen] = useState(false);
   const [phoneAgendaOpen, setPhoneAgendaOpen] = useState(false);
   const [activePhoneCall, setActivePhoneCall] = useState<{
@@ -76,13 +92,10 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const pdChoiceHistory = state.pdChoiceHistory;
   const phoneRecordings = state.phoneRecordings;
   const readHints = state.readHints;
-  const deductionGrid = state.deductionGrid;
-  const deductionResult = state.deductionResult;
   const mural = state.mural;
   const unlockedObjects = new Set(state.unlockedObjects);
   const interactedItems = state.interactedItems;
   const readInterviewClues = state.readInterviewClues;
-  const deductionAttempts = state.deductionAttempts;
   const murphyCommentaryMap = state.murphyCommentaryMap;
   const gameCompleted = state.gameCompleted;
   const diretoraPhoneUnlocked = state.diretoraPhoneUnlocked;
@@ -101,22 +114,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const addons = React.useMemo(() => [fitAddon.current], []);
   const { ref: xtermRef, instance: xtermInstance } = useXTerm({ options, addons });
 
-  const DEDUCTION_LOCATIONS = ['Escritório Murphy', 'Rua Sieben', 'Gasthof Vila Nova', 'Volksschule', 'Volkspolizeistation 8º'] as const;
-  const DEDUCTION_CATEGORIES = {
-    suspeito: ['Kommissar Mendes', 'Diretora Elvira', 'Seu Jonas', 'Zeca do Gasthof', 'Dra. Cunha'],
-    local_crime: ['Lagerhaus 7', 'Beco da Rua Sieben', 'Volksschule Vila Nova', 'Volkspolizeistation 8º', 'Gasthof Vila Nova'],
-    arma: ['Revólver .38', 'Faca de Cozinha', 'Arame de Piano', 'Chave Inglesa', 'Veneno Injetável'],
-    motivo: ['Dívida de Jogo', 'Vingança Pessoal', 'Tráfico de Crianças', 'Extorsão', 'Cobertura de Crime'],
-    horario: ['22:00', '23:30', '01:00', '02:30', '04:00'],
-  } as const;
-  type DeductionCategory = keyof typeof DEDUCTION_CATEGORIES;
-  const DEDUCTION_SOLUTION: Record<string, Record<DeductionCategory, string>> = {
-    'Escritório Murphy': { suspeito: 'Dra. Cunha', local_crime: 'Gasthof Vila Nova', arma: 'Chave Inglesa', motivo: 'Extorsão', horario: '04:00' },
-    'Rua Sieben': { suspeito: 'Zeca do Gasthof', local_crime: 'Volkspolizeistation 8º', arma: 'Arame de Piano', motivo: 'Tráfico de Crianças', horario: '02:30' },
-    'Gasthof Vila Nova': { suspeito: 'Seu Jonas', local_crime: 'Volksschule Vila Nova', arma: 'Faca de Cozinha', motivo: 'Vingança Pessoal', horario: '01:00' },
-    'Volksschule': { suspeito: 'Diretora Elvira', local_crime: 'Beco da Rua Sieben', arma: 'Revólver .38', motivo: 'Dívida de Jogo', horario: '23:30' },
-    'Volkspolizeistation 8º': { suspeito: 'Kommissar Mendes', local_crime: 'Lagerhaus 7', arma: 'Veneno Injetável', motivo: 'Cobertura de Crime', horario: '22:00' },
-  };
 
   const currentRoom: Room = localRooms[currentRoomId] || localRooms['escritorio'];
 
@@ -131,13 +128,10 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       pdChoiceHistory: state.pdChoiceHistory,
       phoneRecordings: state.phoneRecordings,
       readHints: state.readHints,
-      deductionGrid: state.deductionGrid,
-      deductionResult: state.deductionResult,
       mural: state.mural,
       unlockedObjects: state.unlockedObjects,
       interactedItems: state.interactedItems,
       readInterviewClues: state.readInterviewClues,
-      deductionAttempts: state.deductionAttempts,
       murphyCommentaryMap: state.murphyCommentaryMap,
       gameCompleted: state.gameCompleted,
       diretoraPhoneUnlocked: state.diretoraPhoneUnlocked,
@@ -147,10 +141,8 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   };
 
   const calculateGameCompletion = () => {
-    const deductionCorrect = deductionResult === 'correct';
-    if (!deductionCorrect) {
-      return { percent: 0, zdgtft2Compliant: false, deductionCorrect: false, hintsFound: readHints.length, interviewsCompleted: 0, cluesRead: 0, deductionAttempts };
-    }
+    // Conformidade ZD-GTFT-2: replay de cada contato contra sua estratégia;
+    // trair diante de cooperação quebra o selo (badge informativo no final).
     let zdgtft2Compliant = true;
     const contactIds = Object.keys(PHONE_CONTACTS);
     let anyInteraction = false;
@@ -194,12 +186,12 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
     }
     if (!anyInteraction) zdgtft2Compliant = false;
     return {
-      percent: zdgtft2Compliant ? 100 : 50,
-      zdgtft2Compliant, deductionCorrect,
+      percent: Math.round(100 * (readHints.length + readInterviewClues.length + calledContacts.length) / INVESTIGATION_TOTAL),
+      zdgtft2Compliant,
       hintsFound: readHints.length,
-      interviewsCompleted: calledContacts.filter(c => c !== 'agente_scp' && !pdCutoffContacts.includes(c)).length,
+      interviewsCompleted: calledContacts.length,
       cluesRead: readInterviewClues.length,
-      deductionAttempts,
+      muralScore: scoreMural(mural),
     };
   };
   // Ao continuar um save, o snapshot do primeiro commit ainda não reflete o
@@ -213,10 +205,22 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
     state.currentRoomId, state.inventory, state.visitedRooms,
     state.discoveredContacts, state.calledContacts, state.pdCutoffContacts,
     state.pdChoiceHistory, state.phoneRecordings, state.readHints,
-    state.deductionGrid, state.deductionResult, state.mural, state.unlockedObjects,
-    state.interactedItems, state.readInterviewClues, state.deductionAttempts,
+    state.mural, state.unlockedObjects,
+    state.interactedItems, state.readInterviewClues,
     state.murphyCommentaryMap, state.gameCompleted, state.diretoraPhoneUnlocked,
   ]);
+
+  // Sincroniza pistas descobertas → cartões do mural. Idempotente pelo id
+  // (o id do cartão É o id da pista), seguro sob StrictMode e reloads.
+  useEffect(() => {
+    const discovered = [...readHints, ...readInterviewClues];
+    const known = new Set(mural.clues.map(c => c.id));
+    const fresh = discovered
+      .filter(id => HINT_CATALOG.has(id) && !known.has(id))
+      .map(id => clueFromHint(HINT_CATALOG.get(id)!));
+    if (!fresh.length) return;
+    send({ type: 'UPDATE_MURAL', mural: { ...mural, clues: [...mural.clues, ...fresh] } });
+  }, [readHints, readInterviewClues, mural]);
 
   const didLogRoom = useRef<string | null>(null);
   const objMenuRef = useRef<HTMLDivElement>(null);
@@ -474,6 +478,17 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
     return () => { window.removeEventListener('click', close); window.removeEventListener('keydown', onKey); };
   }, []);
 
+  // FAZER A DENÚNCIA (mural): encerra o caso a qualquer momento — o botão
+  // está sempre disponível; os pontos dependem de quanto o jogador investigou
+  // e conectou antes de assinar o relatório final.
+  const handleAccuse = (score: MuralScore) => {
+    Audio.playTerminal();
+    send({ type: 'SET_COMPLETED' });
+    addLog(`[DENÚNCIA] Relatório assinado e enviado à redação. ${score.points} pontos no mural — ${score.clues} pista${score.clues === 1 ? '' : 's'}, ${score.connections} fio${score.connections === 1 ? '' : 's'}${score.singleComponent ? ', grafo conexo' : ''}.`);
+    Audio.stopSpeak();
+    setMuralOpen(false);
+  };
+
   const handleInteract = (obj: Interactable, e?: React.MouseEvent) => {
     if (devMode) {
       if (e) e.stopPropagation();
@@ -502,12 +517,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       if (obj.interviewGate && pdCutoffContacts.includes(obj.interviewGate)) {
         Audio.playDenied();
         addLog(`[ACESSO NEGADO] Entrevista com ${obj.interviewGate} falhou. Documento selado.`);
-      } else if (obj.id === 'puzzle_deduction_terminal') {
-        Audio.playTerminal();
-        setDeductionOpen(true);
-        send({ type: 'SET_DEDUCTION_RESULT', result: null });
-        addLog('Acessando quadro de dedução...');
-        Audio.speak(obj.id);
       } else {
         Audio.playTerminal();
         setDocumentData(obj.documentData);
@@ -1474,53 +1483,18 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
         </DialogContent>
       </Dialog>
 
-      {deductionOpen && (
-        <DetectiveBoard grid={deductionGrid}
-          onGridChange={(grid) => send({ type: 'RESTORE_STATE', state: { deductionGrid: grid } })}
-          readHints={readHints}
-          result={deductionResult}
-          onSubmit={() => {
-            Audio.playTerminal();
-            send({ type: 'INCREMENT_DEDUCTION_ATTEMPTS' });
-            let allFilled = true;
-            let allCorrect = true;
-            for (const loc of DEDUCTION_LOCATIONS) {
-              for (const cat of Object.keys(DEDUCTION_CATEGORIES) as DeductionCategory[]) {
-                if (!deductionGrid[loc][cat]) { allFilled = false; break; }
-                if (deductionGrid[loc][cat] !== DEDUCTION_SOLUTION[loc][cat]) allCorrect = false;
-              }
-              if (!allFilled) break;
-            }
-            setDeductionOpen(false);
-            if (!allFilled) {
-              addLog('[DEDUÇÃO] Campos incompletos.');
-              Audio.playDenied();
-            } else if (allCorrect) {
-              addLog('[DEDUÇÃO] ✓ Dedução confirmada! O caso está resolvido.');
-              Audio.playTerminal();
-              send({ type: 'SET_COMPLETED' });
-            } else {
-              addLog('[DEDUÇÃO] × Dedução rejeitada. Reveja as pistas.');
-              Audio.playDenied();
-              send({ type: 'INCREMENT_DEDUCTION_ATTEMPTS' });
-            }
-          }}
-          onClose={() => { Audio.playHover(); setDeductionOpen(false); Audio.stopSpeak(); }}
-          playHover={Audio.playHover}
-          playTypewriter={Audio.playTypewriter}
-        />
-      )}
-
       {muralOpen && (
         <MuralOverlay
           mural={mural}
           onChange={next => send({ type: 'UPDATE_MURAL', mural: next })}
           onClose={() => setMuralOpen(false)}
+          onAccuse={handleAccuse}
         />
       )}
 
       {gameCompleted && (() => {
         const completion = calculateGameCompletion();
+        const score = completion.muralScore;
         return (
           <div className="absolute inset-0 bg-black/95 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
             <div className="crt-overlay" /><div className="scanline" />
@@ -1530,27 +1504,29 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
                 <p className="text-zinc-500 text-xs tracking-widest">ARQUIVO FECHADO</p>
               </div>
               <div className="p-8 text-center space-y-6">
-                <div>
-                  <p className="text-noir-amber text-6xl font-bold tracking-widest" style={{ fontFamily: 'Playfair Display, serif' }}>{completion.percent}%</p>
-                  <p className="text-zinc-500 text-xs tracking-widest mt-2">CONCLUSÃO DO CASO</p>
+                <div className="flex items-end justify-center gap-8">
+                  <div>
+                    <p className="text-noir-amber text-6xl font-bold tracking-widest" style={{ fontFamily: 'Playfair Display, serif' }}>{completion.percent}%</p>
+                    <p className="text-zinc-500 text-xs tracking-widest mt-2">CONCLUSÃO DO CASO</p>
+                  </div>
+                  <div>
+                    <p className="text-noir-amber text-6xl font-bold tracking-widest" style={{ fontFamily: 'Playfair Display, serif' }}>{score.points}</p>
+                    <p className="text-zinc-500 text-xs tracking-widest mt-2">PONTOS DO MURAL</p>
+                  </div>
                 </div>
                 <div className="space-y-3 text-left border border-zinc-800 p-4 bg-black/50">
                   <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Pistas</span><span className="text-zinc-300 text-xs font-bold">{completion.hintsFound}/18</span></div>
-                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Entrevistas</span><span className="text-zinc-300 text-xs font-bold">{completion.interviewsCompleted}/5</span></div>
+                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Entrevistas</span><span className="text-zinc-300 text-xs font-bold">{completion.interviewsCompleted}/9</span></div>
                   <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Docs lidos</span><span className="text-zinc-300 text-xs font-bold">{completion.cluesRead}/5</span></div>
-                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Dedução correta</span><span className={`text-xs font-bold ${completion.deductionCorrect ? 'text-green-500' : 'text-noir-red'}`}>{completion.deductionCorrect ? 'SIM' : 'NÃO'}</span></div>
-                  {completion.deductionCorrect && completion.deductionAttempts > 1 && (
-                    <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Tentativas</span><span className="text-noir-amber text-xs font-bold">{completion.deductionAttempts}</span></div>
-                  )}
+                  <div className="flex justify-between items-center border-t border-zinc-800 pt-3"><span className="text-zinc-400 text-xs tracking-wide">Pistas no mural ×{POINTS_PER_CLUE}</span><span className="text-zinc-300 text-xs font-bold">{score.clues} × {POINTS_PER_CLUE} = {score.clues * POINTS_PER_CLUE}</span></div>
+                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Fios no mural ×{POINTS_PER_CONNECTION}</span><span className="text-zinc-300 text-xs font-bold">{score.connections} × {POINTS_PER_CONNECTION} = {score.connections * POINTS_PER_CONNECTION}</span></div>
+                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Grafo conexo</span><span className={`text-xs font-bold ${score.singleComponent ? 'text-green-500' : 'text-zinc-600'}`}>{score.singleComponent ? `+${BONUS_CONNECTED}` : 'NÃO'}</span></div>
                   <div className="flex justify-between items-center border-t border-zinc-800 pt-3">
                     <span className="text-zinc-400 text-xs tracking-wide">ZD-GTFT-2</span>
                     <span className={`text-xs font-bold ${completion.zdgtft2Compliant ? 'text-noir-amber' : 'text-noir-red'}`}>{completion.zdgtft2Compliant ? 'CONFORME' : 'NÃO CONFORME'}</span>
                   </div>
                 </div>
-                {!completion.zdgtft2Compliant && (
-                  <p className="text-zinc-600 text-[10px] tracking-wider italic border-t border-zinc-900 pt-4">50% do caso resolvido. Para 100%, o investigador deve agir como ZD-GTFT-2.</p>
-                )}
-                {completion.zdgtft2Compliant && completion.percent === 100 && (
+                {completion.zdgtft2Compliant && (
                   <p className="text-noir-amber text-xs tracking-widest font-bold border-t border-noir-amber pt-4">INVESTIGADOR EXEMPLAR — ZD-GTFT-2</p>
                 )}
               </div>
@@ -1653,7 +1629,7 @@ export default function App() {
               }} className="relative z-50 w-full border border-noir-amber text-noir-amber px-6 py-4 hover:bg-noir-amber hover:text-black font-bold tracking-widest transition-colors text-left flex items-center justify-between">
                 <span>CONTINUAR</span>
                 <span className="text-[10px] opacity-60 normal-case font-normal">
-                  {savedGame.currentRoomId ? GAME_ROOMS[savedGame.currentRoomId]?.name : ''} · {savedGame.deductionResult === 'correct' ? '100%' : savedGame.visitedRooms?.length || 0}/{Object.keys(GAME_ROOMS).length}
+                  {savedGame.currentRoomId ? GAME_ROOMS[savedGame.currentRoomId]?.name : ''} · {savedGame.gameCompleted ? `${scoreMural(savedGame.mural ?? { clues: [], connections: [] }).points} PTS` : `${savedGame.visitedRooms?.length || 0}/${Object.keys(GAME_ROOMS).length}`}
                 </span>
               </button>
             )}

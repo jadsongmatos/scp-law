@@ -55,30 +55,51 @@ const CLUE_SIZES: Record<ClueType, [number, number]> = {
   person: [224, 288], location: [282, 268], note: [237, 246], document: [276, 283], recording: [202, 145], checklist: [253, 277],
 };
 
+/** Entrada do catálogo de pistas dedutivas do jogo (game_data.json). */
+export interface HintSource {
+  id: string;
+  label: string;
+  /** Nome da sala, usado como subtítulo do cartão. */
+  roomName: string;
+  /** Linhas do documento exibido no terminal (documentData.content). */
+  lines: string[];
+  /** Posição estável no catálogo (índice); define o lugar do cartão no quadro. */
+  index: number;
+}
 
-export function createClue(type: ClueType, point?: { x: number; y: number }): Clue {
-  const [width, height] = CLUE_SIZES[type];
-  const clue: Clue = {
-    id: newId(),
-    type,
-    title: '',
-    subtitle: '',
-    content: '',
-    x: 510 + rand() * 70,
-    y: 230 + rand() * 70,
+/**
+ * Converte uma pista dedutiva descoberta (puzzle_hint_* / interview_clue_*)
+ * em cartão do mural. O id do cartão É o id da pista: sincronizar pistas
+ * descobertas ↔ mural é idempotente (seguro sob StrictMode / re-render).
+ * Posição determinística via mulberry32(index+1) — nunca Math.random.
+ */
+export function clueFromHint(hint: HintSource): Clue {
+  const [width, height] = CLUE_SIZES.note;
+  const rng = mulberry32(hint.index + 1);
+  const x = 30 + rng() * (BOARD_WIDTH - width - 60);
+  const y = 30 + rng() * (BOARD_HEIGHT - height - 60);
+  // Cabeçalhos decorativos do terminal (═══, linhas vazias, marcações '>' e '[...]')
+  // não dizem nada ao jogador no mural; fica só o texto do fragmento.
+  const content = hint.lines
+    .map(line => line.trim())
+    .filter(line => line.length > 0 && !line.startsWith('═') && !line.startsWith('>') && !line.startsWith('['))
+    .join('\n');
+  const createdAt = new Date(2026, 9, 20, 12, 0, hint.index).toISOString();
+  return {
+    id: hint.id,
+    type: 'note',
+    title: hint.label,
+    subtitle: hint.roomName.split('—')[0].trim(),
+    content,
+    x: Math.round(x),
+    y: Math.round(y),
     width,
     height,
-    rotation: rand() * 6 - 3,
+    rotation: rng() * 6 - 3,
     color: 'yellow',
     tags: [],
-    createdAt: new Date().toISOString(),
-    ...(type === 'checklist' ? { items: [] as ChecklistItem[] } : {}),
+    createdAt,
   };
-  if (point) {
-    clue.x = Math.min(Math.max(point.x - width / 2, 25), BOARD_WIDTH - width - 25);
-    clue.y = Math.min(Math.max(point.y - height / 2, 30), BOARD_HEIGHT - height - 25);
-  }
-  return clue;
 }
 
 export interface AddConnectionResult {
@@ -105,13 +126,5 @@ export function addConnection(
   return { data: { ...data, connections: [...data.connections, connection] }, connection, existed: false };
 }
 
-// Anexos viram dataURL no save (localStorage ~5 MB, compartilhado com todo o
-// progresso). LIMITes em caracteres de dataURL — ver data.test.ts.
-export const MAX_FILE_BYTES = 1536 * 1024;
-export const MAX_MURAL_BYTES = 2560 * 1024;
-
-export function attachmentSize(clues: Clue[]): number {
-  return clues.reduce((total, clue) => total + (clue.image?.length ?? 0) + (clue.fileData?.length ?? 0), 0);
-}
-
 export const EMPTY_MURAL: MuralData = { clues: [], connections: [] };
+

@@ -416,6 +416,12 @@
 .tool-paper{display: flex; align-items: center; justify-content: center; width: 22px; height: 25px; transform: rotate(-6deg); box-shadow: 1px 2px 2px #76593833;}
 .tool-sticky{background: linear-gradient(#f4e6ae, #e7cd8d); border: 1px solid #dec394; color: #b1945e;}
 .tool-polaroid{border: 3px solid #faf3df; border-bottom-width: 5px; background: #bfc1aa; color: #798672; transform: rotate(5deg); box-shadow: 0 0 0 .5px #cebfa1, 1px 2px 2px #76593833;}
+
+/* Denúncia + status do grafo (injetados via actionsExtra na bandeja). */
+.tray-score{font-family:var(--mono);font-size:7.5px;letter-spacing:.8px;color:#b09c76;white-space:nowrap;padding:0 4px;text-shadow:0 1px #fff6e8;}
+.tray-score.connected{color:#5c7a4e;font-weight:700;}
+.mural-overlay .board-toolbox > .accuse-button{min-height:0;height:42px;padding:8px 12px;font-size:9.5px;letter-spacing:.6px;background:linear-gradient(#b3402f,#8f2f22);border-color:#7a2a1f;color:#fbeee0;box-shadow:inset 0 1px #d3705b66,0 2px 4px #5d2f2038;border-radius:4px;text-transform:uppercase;}
+.mural-overlay .board-toolbox > .accuse-button:hover{background:linear-gradient(#c04a37,#9c3527);}
 .tool-polaroid svg{width: 15px; height: 15px;}
 .tool-document{background: #fbf5e6; border: .5px solid #d4c2a0; color: #b4a07c; transform: rotate(-4deg);}
 .tray-history{display: flex; flex-direction: column; gap: 4px;}
