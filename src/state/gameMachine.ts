@@ -13,7 +13,6 @@ export interface GameContext {
   pdCutoffContacts: string[];
   pdChoiceHistory: Record<string, string[]>;
   phoneRecordings: Record<string, { speaker: string; lines: string[] }[]>;
-  readHints: string[];
   mural: MuralData;
   unlockedObjects: string[];
   interactedItems: string[];
@@ -33,7 +32,6 @@ export type GameEvent =
   | { type: 'RECORD_PD_ACTION'; contactId: string; action: string }
   | { type: 'START_PHONE_CALL'; contactId: string; nodeId?: string }
   | { type: 'END_PHONE_CALL'; contactId: string; recording: { speaker: string; lines: string[] }[] }
-  | { type: 'READ_HINT'; hintId: string }
   | { type: 'READ_INTERVIEW_CLUE'; clueId: string }
   | { type: 'UPDATE_MURAL'; mural: MuralData }
   | { type: 'UNLOCK_OBJECT'; objId: string }
@@ -53,7 +51,6 @@ export const initialContext: GameContext = {
   pdCutoffContacts: [],
   pdChoiceHistory: {},
   phoneRecordings: {},
-  readHints: [],
   mural: EMPTY_MURAL,
   unlockedObjects: [],
   interactedItems: [],
@@ -117,13 +114,6 @@ export const gameMachine = createMachine({
             if (event.type !== 'RECORD_PD_ACTION') return {};
             const history = context.pdChoiceHistory[event.contactId] || [];
             return { pdChoiceHistory: { ...context.pdChoiceHistory, [event.contactId]: [...history, event.action] } };
-          }),
-        },
-        READ_HINT: {
-          actions: assign(({ context, event }) => {
-            if (event.type !== 'READ_HINT') return {};
-            if (context.readHints.includes(event.hintId)) return {};
-            return { readHints: [...context.readHints, event.hintId] };
           }),
         },
         READ_INTERVIEW_CLUE: {

@@ -68,9 +68,9 @@ export interface HintSource {
 }
 
 /**
- * Converte uma pista dedutiva descoberta (puzzle_hint_* / interview_clue_*)
- * em cartão do mural. O id do cartão É o id da pista: sincronizar pistas
- * descobertas ↔ mural é idempotente (seguro sob StrictMode / re-render).
+ * Converte um depoimento descoberto (interview_clue_*) em cartão do mural.
+ * O id do cartão É o id da pista: sincronizar depoimentos ↔ mural é
+ * idempotente (seguro sob StrictMode / re-render).
  * Posição determinística via mulberry32(index+1) — nunca Math.random.
  */
 export function clueFromHint(hint: HintSource): Clue {

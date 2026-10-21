@@ -27,20 +27,21 @@ import { gameMachine } from './state/gameMachine';
 const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
 const SAVE_KEY = 'scp_law_save';
 
-// Catálogo das 23 pistas dedutivas do jogo (18 puzzle_hint_* + 5
-// interview_clue_*): fonte dos cartões do mural. O índice é estável (ordem de
-// declaração em game_data.json) e define a posição determinística do cartão.
+// Catálogo das 5 pistas dedutivas do jogo (os depoimentos interview_clue_*,
+// um por contato entrevistado): fonte dos cartões do mural. O índice é
+// estável (ordem de declaração em game_data.json) e define a posição
+// determinística do cartão.
 const HINT_CATALOG: Map<string, HintSource> = (() => {
   const catalog = new Map<string, HintSource>();
   for (const room of Object.values(GAME_ROOMS)) {
     for (const obj of room.interactables) {
-      if (!/^puzzle_hint_\d+$|^interview_clue_/.test(obj.id)) continue;
+      if (!/^interview_clue_/.test(obj.id)) continue;
       catalog.set(obj.id, { id: obj.id, label: obj.label, roomName: room.name, lines: obj.documentData?.content ?? [], index: catalog.size });
     }
   }
   return catalog;
 })();
-// Total de itens de investigação: 18 pistas + 5 docs de entrevista + 9 contatos.
+// Total de itens de investigação: 5 depoimentos + 9 contatos.
 const INVESTIGATION_TOTAL = HINT_CATALOG.size + Object.keys(PHONE_CONTACTS).length;
 
 function Game({ loadFromSave }: { loadFromSave?: boolean }) {
@@ -91,7 +92,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   const pdCutoffContacts = state.pdCutoffContacts;
   const pdChoiceHistory = state.pdChoiceHistory;
   const phoneRecordings = state.phoneRecordings;
-  const readHints = state.readHints;
   const mural = state.mural;
   const unlockedObjects = new Set(state.unlockedObjects);
   const interactedItems = state.interactedItems;
@@ -127,7 +127,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       pdCutoffContacts: state.pdCutoffContacts,
       pdChoiceHistory: state.pdChoiceHistory,
       phoneRecordings: state.phoneRecordings,
-      readHints: state.readHints,
       mural: state.mural,
       unlockedObjects: state.unlockedObjects,
       interactedItems: state.interactedItems,
@@ -186,9 +185,8 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
     }
     if (!anyInteraction) zdgtft2Compliant = false;
     return {
-      percent: Math.round(100 * (readHints.length + readInterviewClues.length + calledContacts.length) / INVESTIGATION_TOTAL),
+      percent: Math.round(100 * (readInterviewClues.length + calledContacts.length) / INVESTIGATION_TOTAL),
       zdgtft2Compliant,
-      hintsFound: readHints.length,
       interviewsCompleted: calledContacts.length,
       cluesRead: readInterviewClues.length,
       muralScore: scoreMural(mural),
@@ -204,23 +202,22 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   }, [
     state.currentRoomId, state.inventory, state.visitedRooms,
     state.discoveredContacts, state.calledContacts, state.pdCutoffContacts,
-    state.pdChoiceHistory, state.phoneRecordings, state.readHints,
+    state.pdChoiceHistory, state.phoneRecordings,
     state.mural, state.unlockedObjects,
     state.interactedItems, state.readInterviewClues,
     state.murphyCommentaryMap, state.gameCompleted, state.diretoraPhoneUnlocked,
   ]);
 
-  // Sincroniza pistas descobertas → cartões do mural. Idempotente pelo id
-  // (o id do cartão É o id da pista), seguro sob StrictMode e reloads.
+  // Sincroniza depoimentos descobertos → cartões do mural. Idempotente pelo
+  // id (o id do cartão É o id da pista), seguro sob StrictMode e reloads.
   useEffect(() => {
-    const discovered = [...readHints, ...readInterviewClues];
     const known = new Set(mural.clues.map(c => c.id));
-    const fresh = discovered
+    const fresh = readInterviewClues
       .filter(id => HINT_CATALOG.has(id) && !known.has(id))
       .map(id => clueFromHint(HINT_CATALOG.get(id)!));
     if (!fresh.length) return;
     send({ type: 'UPDATE_MURAL', mural: { ...mural, clues: [...mural.clues, ...fresh] } });
-  }, [readHints, readInterviewClues, mural]);
+  }, [readInterviewClues, mural]);
 
   const didLogRoom = useRef<string | null>(null);
   const objMenuRef = useRef<HTMLDivElement>(null);
@@ -687,10 +684,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
     } else {
       Audio.playTypewriter();
       addLog(`[${obj.label}] Não há nada aqui.`);
-    }
-
-    if (obj.id.startsWith('puzzle_hint_')) {
-      send({ type: 'READ_HINT', hintId: obj.id });
     }
 
     if (obj.hideAfterInteract && !interactedItems.includes(obj.id)) {
@@ -1515,7 +1508,6 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
                   </div>
                 </div>
                 <div className="space-y-3 text-left border border-zinc-800 p-4 bg-black/50">
-                  <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Pistas</span><span className="text-zinc-300 text-xs font-bold">{completion.hintsFound}/18</span></div>
                   <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Entrevistas</span><span className="text-zinc-300 text-xs font-bold">{completion.interviewsCompleted}/9</span></div>
                   <div className="flex justify-between items-center"><span className="text-zinc-400 text-xs tracking-wide">Docs lidos</span><span className="text-zinc-300 text-xs font-bold">{completion.cluesRead}/5</span></div>
                   <div className="flex justify-between items-center border-t border-zinc-800 pt-3"><span className="text-zinc-400 text-xs tracking-wide">Pistas no mural ×{POINTS_PER_CLUE}</span><span className="text-zinc-300 text-xs font-bold">{score.clues} × {POINTS_PER_CLUE} = {score.clues * POINTS_PER_CLUE}</span></div>

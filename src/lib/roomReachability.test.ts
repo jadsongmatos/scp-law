@@ -75,7 +75,7 @@ describe('room graph reachability — the 12-room design', () => {
     expect(missing, `unreachable rooms: ${missing.join(', ')}`).toEqual([]);
   });
 
-  it('all puzzle hints, interview clues and pickups live in reachable rooms', () => {
+  it('all interview clues and pickups live in reachable rooms', () => {
     const visited = reachableRooms();
     expect(visited.has('casa_mae'), 'escola gate requires casa_mae to be visitable').toBe(true);
 
@@ -83,7 +83,7 @@ describe('room graph reachability — the 12-room design', () => {
     const pickupRooms = new Set<string>();
     for (const [rid, room] of Object.entries(rooms)) {
       for (const o of room.interactables ?? []) {
-        if (/^puzzle_hint_\d+$/.test(o.id) || o.id.startsWith('interview_clue_')) content.push(`${rid}:${o.id}`);
+        if (o.id.startsWith('interview_clue_')) content.push(`${rid}:${o.id}`);
         if (o.type === 'pickup' && o.pickupItem) pickupRooms.add(rid);
       }
     }
