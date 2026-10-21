@@ -2,18 +2,17 @@
 // src/game_data.json back into a structured form, so the independent CSP
 // solver in puzzleSolver.ts can verify the shipped game is 100% solvable.
 //
-// Two sources inside game_data.json (the 5x5 deduction grid UI was removed —
-// the schema now derives from the envelope itself, which stays the narrative
-// ground truth of the case):
+// Two sources inside game_data.json (the 5x5 deduction grid UI and the 18
+// archive hints were removed — the schema derives from the envelope itself,
+// which stays the narrative ground truth of the case; only the interview
+// clues remain as embedded constraints):
 //  - puzzle_solution_terminal : the declared solution (the envelope LÖSUNG) —
 //                               also the 5 positions + the 5 category values
-//  - puzzle_hint_*            : the 18 hint sentences (+ "[Tipo de restrição:]")
 //  - interview_clue_*         : the 5 interview clue constraints
 //
-// The hint sentence templates come from enumerate_all_hints() in
-// scripts/puzzle/noir_generator.py and are deterministic; category values are
-// always single-quoted, which makes extraction unambiguous.
-
+// The interview clue sentences are deterministic; category values are always
+// single-quoted, which makes extraction unambiguous. With only 5 constraints
+// the system is NOT uniquely solvable — by design: the envelope is canonical.
 import type { Assignment, Hint } from './puzzleSolver';
 
 const CAT_KW = 'suspeito|local|arma|motivo|horario';
@@ -132,7 +131,7 @@ export function loadGameDataPuzzle(gd: GameData): ParsedPuzzle {
   const { rooms, categories, solution } = parseSchemaAndSolution(byId('puzzle_solution_terminal'));
 
   const hints = its
-    .filter((i) => /^(puzzle_hint_\d+|interview_clue_)/.test(i.id))
+    .filter((i) => /^interview_clue_/.test(i.id))
     .sort((a, b) => {
       const aNum = a.id.startsWith('puzzle') ? parseInt(a.id.split('_')[2]) : 100 + (a.id.split('_')[2]?.charCodeAt(0) || 0);
       const bNum = b.id.startsWith('puzzle') ? parseInt(b.id.split('_')[2]) : 100 + (b.id.split('_')[2]?.charCodeAt(0) || 0);

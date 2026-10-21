@@ -49,8 +49,8 @@ function hintCells(h: Hint): Cell[] {
   }
 }
 
-/** Evaluate a hint. Only call once every cell it references is assigned. */
-function satisfied(h: Hint, a: Assignment): boolean {
+/** Evaluate a hint against a full assignment. Only call once every cell it references is assigned. */
+export function isHintSatisfied(h: Hint, a: Assignment): boolean {
   const at = (c: string, v: string) => a[c][v];
   switch (h.type) {
     case 'exact':
@@ -83,6 +83,7 @@ function satisfied(h: Hint, a: Assignment): boolean {
       return true; // unknown constraint type → no-op (matches generator)
   }
 }
+
 
 /**
  * Enumerate solutions of the hint system by backtracking, stopping once
@@ -118,7 +119,7 @@ export function solvePuzzle(
       const refs = cellsOf[i];
       if (!refs.some(([c, v]) => c === jc && v === jv)) continue;
       if (!refs.every(([c, v]) => bound(c, v))) continue;
-      if (!satisfied(hints[i], assign)) return false;
+      if (!isHintSatisfied(hints[i], assign)) return false;
     }
     return true;
   };
