@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { BONUS_CONNECTED, POINTS_PER_CLUE, POINTS_PER_CONNECTION, countComponents, scoreMural, type MuralScore } from './muralScore';
+import { BONUS_CONNECTED, POINTS_PER_CLUE, POINTS_PER_CONNECTION, canAccuse, countComponents, scoreMural, type MuralScore } from './muralScore';
 import type { Clue, MuralData } from '@/components/board/data';
 
 function clue(id: string): Clue {
@@ -75,5 +75,32 @@ describe('scoreMural', () => {
     const score = scoreMural(mural(['a', 'b'], [['a', 'b'], ['a', 'fantasma']]));
     expect(score.connections).toBe(2);
     expect(score.points).toBe(2 * POINTS_PER_CLUE + 2 * POINTS_PER_CONNECTION + BONUS_CONNECTED);
+  });
+});
+
+describe('canAccuse — a denúncia exige a decisão de conexão', () => {
+  it('mural vazio não permite denunciar', () => {
+    expect(canAccuse(scoreMural({ clues: [], connections: [] }))).toBe(false);
+  });
+
+  it('uma pista sozinha não permite denunciar (não há decisão de conexão)', () => {
+    expect(canAccuse(scoreMural(mural(['a'], [])))).toBe(false);
+  });
+
+  it('duas pistas soltas não permitem denunciar', () => {
+    expect(canAccuse(scoreMural(mural(['a', 'b'], [])))).toBe(false);
+  });
+
+  it('pistas em grupos separados não permitem denunciar', () => {
+    const data = mural(['a', 'b', 'c', 'd'], [['a', 'b'], ['c', 'd']]);
+    expect(canAccuse(scoreMural(data))).toBe(false);
+  });
+
+  it('todas as pistas amarradas em um único grafo liberam a denúncia', () => {
+    expect(canAccuse(scoreMural(mural(['a', 'b'], [['a', 'b']])))).toBe(true);
+  });
+
+  it('fio órfão não engana o gate (contam só pontas reais)', () => {
+    expect(canAccuse(scoreMural(mural(['a'], [['a', 'fantasma']])))).toBe(false);
   });
 });

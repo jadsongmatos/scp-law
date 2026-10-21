@@ -422,6 +422,7 @@
 .tray-score.connected{color:#5c7a4e;font-weight:700;}
 .mural-overlay .board-toolbox > .accuse-button{min-height:0;height:42px;padding:8px 12px;font-size:9.5px;letter-spacing:.6px;background:linear-gradient(#b3402f,#8f2f22);border-color:#7a2a1f;color:#fbeee0;box-shadow:inset 0 1px #d3705b66,0 2px 4px #5d2f2038;border-radius:4px;text-transform:uppercase;}
 .mural-overlay .board-toolbox > .accuse-button:hover{background:linear-gradient(#c04a37,#9c3527);}
+.mural-overlay .board-toolbox > .accuse-button:disabled{background:linear-gradient(#6e4a42,#5b3a34);border-color:#4a2e29;color:#c9a79b;box-shadow:none;cursor:not-allowed;filter:saturate(.5);}
 .tool-polaroid svg{width: 15px; height: 15px;}
 .tool-document{background: #fbf5e6; border: .5px solid #d4c2a0; color: #b4a07c; transform: rotate(-4deg);}
 .tray-history{display: flex; flex-direction: column; gap: 4px;}

@@ -4,13 +4,14 @@
 // local (com desfazer/refazer próprio) e commita cada alteração de volta para
 // a máquina, que persiste no save.
 // Os cartões nascem das pistas descobertas no jogo (sync no App): aqui não há
-// criação, edição nem exclusão — o jogador organiza (arrasta, liga com fios) e,
-// quando decidir, faz a denúncia que encerra o caso (onAccuse, sempre disponível).
+// criação, edição nem exclusão — o jogador organiza (arrasta, liga com fios) e
+// só pode denunciar depois de decidir quais pistas conectar: a denúncia exige
+// o grafo conexo (canAccuse), não fica disponível o tempo todo.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Siren, X } from 'lucide-react';
 import Board from './Board';
-import { BONUS_CONNECTED, scoreMural, type MuralScore } from '@/lib/muralScore';
+import { BONUS_CONNECTED, canAccuse, scoreMural, type MuralScore } from '@/lib/muralScore';
 import { Inspector } from './Inspector';
 import { addConnection, type Connection, type MuralData, type ToolMode } from './data';
 
@@ -131,7 +132,7 @@ export function MuralOverlay({ mural, onChange, onClose, onAccuse }: { mural: Mu
         optionsExtra={<button onClick={onClose} title="Voltar ao jogo (Esc)" aria-label="Fechar o mural"><X size={14} /><span>Fechar</span></button>}
         actionsExtra={<>
           <span className={`tray-score ${score.singleComponent ? 'connected' : ''}`} role="status">{graphStatus}</span>
-          <button className="primary-button accuse-button" onClick={() => onAccuse(score)} aria-label="Fazer a denúncia e encerrar o caso">
+          <button className="primary-button accuse-button" onClick={() => onAccuse(score)} disabled={!canAccuse(score)} title={canAccuse(score) ? 'Encerrar o caso com esta configuração do mural' : 'Conecte todas as pistas no quadro (grafo conexo) antes de fazer a denúncia'} aria-label="Fazer a denúncia e encerrar o caso">
             <Siren size={14} /><span>FAZER A DENÚNCIA</span>
           </button>
         </>}

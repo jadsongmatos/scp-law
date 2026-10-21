@@ -6,7 +6,6 @@ import type { Clue, MuralData } from '@/components/board/data';
 export const POINTS_PER_CLUE = 10;
 export const POINTS_PER_CONNECTION = 5;
 export const BONUS_CONNECTED = 50;
-
 export interface MuralScore {
   clues: number;
   connections: number;
@@ -57,4 +56,14 @@ export function scoreMural(mural: MuralData): MuralScore {
   const singleComponent = clues >= 2 && components === 1;
   const points = clues * POINTS_PER_CLUE + connections * POINTS_PER_CONNECTION + (singleComponent ? BONUS_CONNECTED : 0);
   return { clues, connections, components, singleComponent, points };
+}
+
+/**
+ * A denúncia exige a decisão de conexão: todas as pistas descobertas
+ * (≥2) amarradas em um único grafo. O jogador decide quais informações
+ * dos depoimentos serão conectadas no quadro antes de fechar o caso —
+ * mesmo critério do bônus de grafo conexo.
+ */
+export function canAccuse(score: MuralScore): boolean {
+  return score.singleComponent;
 }

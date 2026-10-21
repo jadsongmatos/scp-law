@@ -205,7 +205,8 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista de Jonas — Entrevista');
     await expect(overlay.locator('.board-plaque')).toContainText('1 PISTAS');
     await expect(overlay.getByText('1 PISTA', { exact: true })).toBeVisible(); // status do grafo
-    await expect(overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' })).toBeVisible();
+    // Uma pista sozinha não é decisão de conexão: a denúncia fica bloqueada.
+    await expect(overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' })).toBeDisabled();
 
     // Fechar e reabrir: cartão persiste no contexto da máquina.
     await page.getByRole('button', { name: 'Fechar o mural' }).click();
@@ -299,32 +300,53 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await page.getByRole('button', { name: 'Fechar o mural' }).click();
   });
 
-  test('denúncia: botão encerra o caso e mostra os pontos do mural', async ({ page }) => {
+  test('denúncia: exige conectar os depoimentos no quadro antes de encerrar', async ({ page }) => {
     await startGame(page);
 
-    // Um depoimento descoberto = 10 pontos (1 × 10; bônus exige ≥2 pistas).
+    // Dois depoimentos: Seu Jonas (beco) e Zeca do Gasthof (bar).
     await interact(page, 'Sair para a Rua');
     await interact(page, 'Entrar no Beco');
     await expectRoom(page, ROOM.beco);
     await interact(page, 'Pista de Jonas — Entrevista');
     await readDocument(page, 'ENTREVISTA: SEU JONAS');
+    await interact(page, 'Voltar para a Rua');
+    await expectRoom(page, ROOM.rua);
+    await interact(page, 'Gasthof Vila Nova');
+    await expectRoom(page, ROOM.bar);
+    await interact(page, 'Pista de Gasthof — Entrevista');
+    await readDocument(page, 'ENTREVISTA: ZECA DO GASTHOF');
 
     await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
     await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
     await expectRoom(page, ROOM.escritorio);
     await interact(page, 'Quadro de Investigações');
     const overlay = page.locator('.mural-overlay');
-    await expect(overlay.locator('.evidence-card h3')).toHaveText('Pista de Jonas — Entrevista');
-    await overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' }).click();
+    const accuse = overlay.getByRole('button', { name: 'Fazer a denúncia e encerrar o caso' });
 
-    // Tela final: arquivo fechado com percentual de investigação + pontos.
-    // 1 depoimento de 14 itens (5 docs + 9 contatos) → 7%.
+    // Duas pistas soltas: o jogador ainda não decidiu as conexões.
+    await expect(overlay.locator('.board-plaque')).toContainText('2 PISTAS · 0 FIOS');
+    await expect(overlay.getByText('2 GRUPOS SOLTOS', { exact: true })).toBeVisible();
+    await expect(accuse).toBeDisabled();
+
+    // Conecta os dois depoimentos: alfinete de um, alfinete do outro.
+    await overlay.getByRole('button', { name: 'Puxar fio de Pista de Jonas — Entrevista' }).click();
+    await overlay.getByRole('button', { name: 'Puxar fio de Pista de Gasthof — Entrevista' }).click();
+    await expect(overlay.locator('.board-plaque')).toContainText('2 PISTAS · 1 FIO');
+    await expect(overlay.getByText('GRAFO CONEXO ✓ (+50)', { exact: true })).toBeVisible();
+    await expect(accuse).toBeEnabled();
+    await overlay.getByRole('button', { name: 'Fechar edição do fio' }).click();
+
+    // Encerra o caso: 2 de 14 itens → 14%; 2×10 + 1×5 + 50 = 75 pontos.
+    await accuse.click();
     await expect(overlay).toBeHidden();
     await expect(page.getByText('ARQUIVO FECHADO')).toBeVisible();
     await expect(page.getByText('CONCLUSÃO DO CASO')).toBeVisible();
-    await expect(page.getByText('7%')).toBeVisible();
+    await expect(page.getByText('14%')).toBeVisible();
     await expect(page.getByText('PONTOS DO MURAL')).toBeVisible();
-    await expect(page.getByText('1 × 10 = 10')).toBeVisible();
-    await expect(page.getByText('Grafo conexo')).toBeVisible();
+    await expect(page.getByText('75', { exact: true })).toBeVisible();
+    await expect(page.getByText('2 × 10 = 20')).toBeVisible();
+    await expect(page.getByText('1 × 5 = 5')).toBeVisible();
+    await expect(page.getByText('Grafo conexo', { exact: true })).toBeVisible();
+    await expect(page.getByText('+50', { exact: true })).toBeVisible();
   });
 });
