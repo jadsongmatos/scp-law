@@ -1,1 +1,20 @@
-["bilhete_anonimo", "guardanapo_endereco", "puzzle_hint_1", "puzzle_hint_11", "puzzle_hint_12", "puzzle_hint_13", "puzzle_hint_16", "puzzle_hint_17", "puzzle_hint_18", "puzzle_hint_2", "puzzle_hint_3", "puzzle_hint_6", "puzzle_hint_7", "puzzle_hint_8"]
+[
+  "arquivo_mendes",
+  "caixas_documentos",
+  "carta_jonas",
+  "ficheiro_helena",
+  "gaveta_diretora",
+  "interview_clue_diretora_elvira",
+  "interview_clue_dra_cunha",
+  "interview_clue_santos",
+  "interview_clue_seu_jonas",
+  "interview_clue_zeca",
+  "porta_aco",
+  "puzzle_solution_terminal",
+  "quadro_horarios",
+  "telefone_diretora",
+  "telefone_santos",
+  "telefone_zeca",
+  "terminal_final",
+  "terminal_fosforo"
+]

@@ -5,90 +5,6 @@
     "label": "Ficheiro do Caso Helena",
     "room": "escritorio"
   },
-  "bilhete_anonimo": {
-    "voice": "s2-pro",
-    "text_length": 139,
-    "label": "Carta Anônima",
-    "room": "escritorio"
-  },
-  "puzzle_hint_1": {
-    "voice": "s2-pro",
-    "text_length": 181,
-    "label": "Pista Confidencial #1",
-    "room": "escritorio"
-  },
-  "puzzle_hint_6": {
-    "voice": "s2-pro",
-    "text_length": 139,
-    "label": "Pista Confidencial #6",
-    "room": "escritorio"
-  },
-  "puzzle_hint_11": {
-    "voice": "s2-pro",
-    "text_length": 113,
-    "label": "Pista Confidencial #11",
-    "room": "escritorio"
-  },
-  "puzzle_hint_16": {
-    "voice": "s2-pro",
-    "text_length": 149,
-    "label": "Pista Confidencial #16",
-    "room": "escritorio"
-  },
-  "puzzle_hint_2": {
-    "voice": "s2-pro",
-    "text_length": 134,
-    "label": "Pista Confidencial #2",
-    "room": "rua_chuva"
-  },
-  "puzzle_hint_7": {
-    "voice": "s2-pro",
-    "text_length": 141,
-    "label": "Pista Confidencial #7",
-    "room": "rua_chuva"
-  },
-  "puzzle_hint_12": {
-    "voice": "s2-pro",
-    "text_length": 146,
-    "label": "Pista Confidencial #12",
-    "room": "rua_chuva"
-  },
-  "puzzle_hint_17": {
-    "voice": "s2-pro",
-    "text_length": 161,
-    "label": "Pista Confidencial #17",
-    "room": "rua_chuva"
-  },
-  "guardanapo_endereco": {
-    "voice": "s2-pro",
-    "text_length": 201,
-    "label": "Guardanapo com Endereço",
-    "room": "bar"
-  },
-  "puzzle_hint_3": {
-    "voice": "s2-pro",
-    "text_length": 145,
-    "label": "Pista Confidencial #3",
-    "room": "bar"
-  },
-  "puzzle_hint_8": {
-    "voice": "s2-pro",
-    "text_length": 146,
-    "label": "Pista Confidencial #8",
-    "room": "bar"
-  },
-  "puzzle_hint_13": {
-    "voice": "s2-pro",
-    "text_length": 154,
-    "label": "Pista Confidencial #13",
-    "room": "bar"
-  },
-  "puzzle_hint_18": {
-    "voice": "s2-pro",
-    "text_length": 164,
-    "label": "Pista Confidencial #18",
-    "room": "bar"
-  },
   "interview_clue_zeca": {
     "voice": "s2-pro",
     "text_length": 382,
@@ -99,24 +15,6 @@
     "voice": "s2-pro",
     "text_length": 350,
     "label": "Quadro de Horários Rasurado",
-    "room": "escola"
-  },
-  "puzzle_hint_4": {
-    "voice": "s2-pro",
-    "text_length": 194,
-    "label": "Pista Confidencial #4",
-    "room": "escola"
-  },
-  "puzzle_hint_9": {
-    "voice": "s2-pro",
-    "text_length": 190,
-    "label": "Pista Confidencial #9",
-    "room": "escola"
-  },
-  "puzzle_hint_14": {
-    "voice": "s2-pro",
-    "text_length": 151,
-    "label": "Pista Confidencial #14",
     "room": "escola"
   },
   "interview_clue_diretora_elvira": {
@@ -147,30 +45,6 @@
     "voice": "s2-pro",
     "text_length": 508,
     "label": "Arquivo do Kommissar Mendes",
-    "room": "delegacia"
-  },
-  "puzzle_hint_5": {
-    "voice": "s2-pro",
-    "text_length": 185,
-    "label": "Pista Confidencial #5",
-    "room": "delegacia"
-  },
-  "puzzle_hint_10": {
-    "voice": "s2-pro",
-    "text_length": 150,
-    "label": "Pista Confidencial #10",
-    "room": "delegacia"
-  },
-  "puzzle_hint_15": {
-    "voice": "s2-pro",
-    "text_length": 141,
-    "label": "Pista Confidencial #15",
-    "room": "delegacia"
-  },
-  "puzzle_deduction_terminal": {
-    "voice": "s2-pro",
-    "text_length": 663,
-    "label": "Quadro de Dedução — Caso Helena",
     "room": "delegacia"
   },
   "interview_clue_santos": {
