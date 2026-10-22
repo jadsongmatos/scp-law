@@ -72,7 +72,10 @@ KNOWN_ROOMS = {
     "delegacia": "Delegacia [Volkspolizei]",
     "beco": "Beco dos Fundos",
     "bar": "Bar Vila Nova",
-    "armazem": "Armazém [Lagerhaus]",
+    "casa_mae": "Casa de Maria Kraft",
+    "igreja": "Kapelle Vila Nova",
+    "fazenda": "Fazenda do Caseiro",
+    "hospital": "Posto de Saúde [Bezirksgesundheitsposten]",
 }
 
 
