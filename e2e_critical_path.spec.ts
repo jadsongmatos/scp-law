@@ -219,10 +219,13 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
   test('agenda: descobrir Santos na delegacia, ligar e reouvir a fita', async ({ page }) => {
     await startGame(page);
 
-    // Agenda vazia no início.
+    // Agenda começa com os contatos automáticos (P0: Stern e Wohltat eram
+    // inalcançáveis — agora têm caminho de descoberta desde o início).
     await interact(page, 'Telefone de Discagem');
     await expect(page.getByRole('heading', { name: 'AGENDA TELEFÔNICA' })).toBeVisible();
-    await expect(page.getByText('NENHUM CONTATO CONHECIDO')).toBeVisible();
+    await expect(page.getByRole('button').filter({ hasText: 'Agente Stern' })).toBeVisible();
+    await expect(page.getByRole('button').filter({ hasText: 'Wohltat' })).toBeVisible();
+    await expect(page.getByText('NENHUM CONTATO CONHECIDO')).toBeHidden();
     await page.keyboard.press('Escape');
 
     // Delegacia: telefone descobre Santos na agenda (sem ligar fora do escritório).
@@ -231,7 +234,7 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await expectRoom(page, ROOM.delegacia);
     await interact(page, 'Telefone — Recado de Santos');
     await expectRoom(page, ROOM.delegacia); // continua na delegacia
-    await expect(page.getByRole('button', { name: /AGENDA/ })).toContainText('1');
+    await expect(page.getByRole('button', { name: /AGENDA/ })).toContainText('5'); // 4 auto + Santos
 
     // Volta ao escritório pelo mapa e liga.
     await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
@@ -258,6 +261,15 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await expect(page.getByText('ABGESPIELT')).toBeVisible({ timeout: 5_000 });
     await expect(page.getByText('— FIM DA FITA —')).toBeVisible();
     await page.keyboard.press('Escape');
+  });
+
+  test('P0: contatos automáticos ligáveis do início (Agente Stern)', async ({ page }) => {
+    await startGame(page);
+    await interact(page, 'Telefone de Discagem');
+    const sternBtn = page.getByRole('button').filter({ hasText: 'Agente Stern' });
+    await sternBtn.click();
+    await expect(page.getByText('VERBUNDEN')).toBeVisible({ timeout: 5_000 });
+    await page.keyboard.press('Escape'); // desliga
   });
 
   test('delegacia: arquivo negado sem cédula; pistas continuam legíveis', async ({ page }) => {

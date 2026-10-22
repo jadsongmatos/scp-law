@@ -31,4 +31,23 @@ describe('gameMachine — RESTORE_STATE', () => {
     actor.send({ type: 'UPDATE_MURAL', mural });
     expect(actor.getSnapshot().context.mural).toBe(mural);
   });
+
+  it('save antigo sem contatos auto ganha a descoberta automática no restore', () => {
+    const actor = createActor(gameMachine);
+    actor.start();
+    actor.send({ type: 'RESTORE_STATE', state: { ...initialContext, discoveredContacts: [] } });
+    const restored = actor.getSnapshot().context.discoveredContacts;
+    expect(restored).toContain('agente_scp');
+    expect(restored).toContain('wohltat');
+  });
+
+  it('discovery automática não duplica contatos já descobertos no save', () => {
+    const actor = createActor(gameMachine);
+    actor.start();
+    const salvos = ['wohltat', 'zeca'];
+    actor.send({ type: 'RESTORE_STATE', state: { ...initialContext, discoveredContacts: salvos } });
+    const restored = actor.getSnapshot().context.discoveredContacts;
+    expect(restored.filter((c) => c === 'wohltat')).toHaveLength(1);
+    expect(restored).toEqual(expect.arrayContaining(salvos));
+  });
 });

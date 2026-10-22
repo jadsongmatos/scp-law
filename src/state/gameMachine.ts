@@ -1,6 +1,7 @@
 import { createMachine, assign } from 'xstate';
 import type { Room } from '../data';
-import { GAME_ROOMS } from '../data';
+import { GAME_ROOMS, PHONE_CONTACTS } from '../data';
+import { contactsDiscoveredAtStart } from '../lib/contactDiscovery';
 import type { MuralData } from '../components/board/data';
 import { EMPTY_MURAL } from '../components/board/data';
 
@@ -46,7 +47,7 @@ export const initialContext: GameContext = {
   currentRoomId: 'escritorio',
   inventory: ['isqueiro', 'gravador_cassete'],
   visitedRooms: ['escritorio'],
-  discoveredContacts: [],
+  discoveredContacts: contactsDiscoveredAtStart(PHONE_CONTACTS),
   calledContacts: [],
   pdCutoffContacts: [],
   pdChoiceHistory: {},
@@ -60,6 +61,7 @@ export const initialContext: GameContext = {
   diretoraPhoneUnlocked: false,
   localRooms: { ...GAME_ROOMS },
 };
+
 
 export const gameMachine = createMachine({
   id: 'detetive',
@@ -156,9 +158,18 @@ export const gameMachine = createMachine({
           }),
         },
         RESTORE_STATE: {
+          // Saves antigos podem não ter os contatos `discoveredFrom: 'auto'`
+          // (bug P0: investigação nunca chegava a 100%) — merge idempotente.
           actions: assign(({ context, event }) => {
             if (event.type !== 'RESTORE_STATE') return {};
-            return { ...context, ...event.state };
+            const restored = event.state.discoveredContacts ?? context.discoveredContacts;
+            return {
+              ...context,
+              ...event.state,
+              discoveredContacts: [
+                ...new Set([...contactsDiscoveredAtStart(PHONE_CONTACTS), ...restored]),
+              ],
+            };
           }),
         },
         UPDATE_LOCAL_ROOMS: {
@@ -209,7 +220,14 @@ export const gameMachine = createMachine({
         RESTORE_STATE: {
           actions: assign(({ context, event }) => {
             if (event.type !== 'RESTORE_STATE') return {};
-            return { ...context, ...event.state };
+            const restored = event.state.discoveredContacts ?? context.discoveredContacts;
+            return {
+              ...context,
+              ...event.state,
+              discoveredContacts: [
+                ...new Set([...contactsDiscoveredAtStart(PHONE_CONTACTS), ...restored]),
+              ],
+            };
           }),
         },
         UPDATE_LOCAL_ROOMS: {

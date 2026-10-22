@@ -22,6 +22,9 @@ import { createEugineNier } from '@/lib/eugineNier';
 import { HardProber, C, D } from '@/lib/hardProber';
 import { SneakyTitForTat, ZDGTFT2, Detective } from '@/lib/axelrod';
 import { rng42 } from '@/lib/rng';
+import { DIALOGUE_REVEALS, contactRevealedByItem } from '@/lib/contactDiscovery';
+import gameData from './game_data.json';
+import { buildGameDataExport } from '@/lib/devExport';
 import { gameMachine } from './state/gameMachine';
 
 const PERMANENT_ITEMS = ['isqueiro', 'gravador_cassete'];
@@ -419,32 +422,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
   }, [dragState, currentRoomId]);
 
   const handleDownloadJSON = useCallback(() => {
-    const exportData = {
-      ITEM_NAMES,
-      GAME_ROOMS: Object.fromEntries(
-        Object.entries(localRooms).map(([id, room]) => [id, {
-          id: (room as Room).id,
-          name: (room as Room).name,
-          description: (room as Room).description,
-          interactables: (room as Room).interactables.map(({ id, icon, x, y, width, height, hideIcon, type, label, description, requiredItem, failedMessage, successMessage, targetRoom, pickupItem, phoneCallId, documentData, hideAfterInteract }) => {
-            const obj: Record<string, unknown> = { id, icon, x, y, type, label };
-            if (width !== undefined) obj.width = width;
-            if (height !== undefined) obj.height = height;
-            if (hideIcon !== undefined) obj.hideIcon = hideIcon;
-            if (description !== undefined) obj.description = description;
-            if (requiredItem !== undefined) obj.requiredItem = requiredItem;
-            if (failedMessage !== undefined) obj.failedMessage = failedMessage;
-            if (successMessage !== undefined) obj.successMessage = successMessage;
-            if (targetRoom !== undefined) obj.targetRoom = targetRoom;
-            if (pickupItem !== undefined) obj.pickupItem = pickupItem;
-            if (phoneCallId !== undefined) obj.phoneCallId = phoneCallId;
-            if (documentData !== undefined) obj.documentData = documentData;
-            if (hideAfterInteract !== undefined) obj.hideAfterInteract = hideAfterInteract;
-            return obj;
-          }),
-        }])
-      ),
-    };
+    const exportData = buildGameDataExport(gameData, localRooms);
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -509,6 +487,8 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       if (!inventory.includes(obj.pickupItem)) {
         send({ type: 'PICKUP_ITEM', itemKey: obj.pickupItem, objId: obj.id });
         addLog(obj.description || `Você pegou: ${ITEM_NAMES[obj.pickupItem] || obj.pickupItem}`);
+        const revealedContact = contactRevealedByItem(PHONE_CONTACTS, obj.pickupItem);
+        if (revealedContact) discoverContact(revealedContact);
       }
     } else if (obj.type === 'terminal_read' && obj.documentData) {
       if (obj.interviewGate && pdCutoffContacts.includes(obj.interviewGate)) {
@@ -1218,6 +1198,12 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
                   if (isCutoff) send({ type: 'CUT_OFF_CONTACT', contactId: activePhoneCall.contactId });
                 }
               }
+              for (const [revealedId, cfg] of Object.entries(DIALOGUE_REVEALS)) {
+                if (cfg.speakerId === activePhoneCall.contactId && choice.goto === cfg.nodeId) {
+                  discoverContact(revealedId);
+                }
+              }
+
               if (activePhoneCall.contactId === 'diretora_elvira' && activePhoneCall.nodeId === 'de_confirma' && choice.goto === 'de_end_e') {
                 if (!diretoraPhoneUnlocked) {
                   send({ type: 'UNLOCK_DIRETORA_PHONE' });
