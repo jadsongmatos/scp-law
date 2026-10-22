@@ -41,7 +41,11 @@ export default defineConfig(({ mode }) => {
           manualChunks(id) {
             if (id.includes('node_modules/lucide-react')) return 'lucide';
             if (id.includes('/src/game_data.json')) return 'game-data';
-            if (id.includes('node_modules/motion')) return 'motion';
+            if (id.includes('node_modules/@xterm')) return 'xterm';
+            if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/scheduler')) return 'react-vendor';
+            if (id.includes('node_modules/@base-ui')) return 'base-ui';
+            if (id.includes('node_modules/xstate') || id.includes('node_modules/@xstate')) return 'xstate';
+            if (id.includes('node_modules/motion') || id.includes('node_modules/framer-motion')) return 'motion';
             if (id.includes('node_modules/sonner')) return 'sonner';
             return undefined;
           },

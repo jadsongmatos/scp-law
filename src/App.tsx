@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef, useCallback } from 'react';
 import { useMachine } from '@xstate/react';
 import { createPortal } from 'react-dom';
 import { GAME_ROOMS, Interactable, ITEM_NAMES, ITEM_IMAGES, Room, PHONE_CONTACTS } from './data';
@@ -13,8 +13,10 @@ import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipTitle, TooltipBody } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogBody, DialogClose } from '@/components/ui/dialog';
 import { Toaster } from 'sonner';
-import { DevInspector } from '@/components/DevInspector';
-import { MuralOverlay } from '@/components/board/MuralOverlay';
+// Pesados e fora do caminho crítico: o DevInspector só existe no modo dev e
+// o MuralOverlay só abre no fim do jogo — chunks separados via import().
+const DevInspector = lazy(() => import('@/components/DevInspector').then(m => ({ default: m.DevInspector })));
+const MuralOverlay = lazy(() => import('@/components/board/MuralOverlay').then(m => ({ default: m.MuralOverlay })));
 import { clueFromHint, type HintSource } from '@/components/board/data';
 import { BONUS_CONNECTED, POINTS_PER_CLUE, POINTS_PER_CONNECTION, scoreMural, type MuralScore } from '@/lib/muralScore';
 import { resolveItemUse, INTERACT } from '@/lib/itemUse';
@@ -909,10 +911,12 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
 
         <div className="hidden md:flex w-56 bg-black border-0 border-l border-noir-amber rounded-none z-20 flex-col">
           {devMode ? (
-            <DevInspector rooms={localRooms} currentRoomId={currentRoomId}
-              selectedObjId={selectedObjId} onSelectObj={setSelectedObjId}
-              onUpdateObj={handleUpdateObj} onAddObj={handleAddObj}
-              onRemoveObj={handleRemoveObj} onDownloadJSON={handleDownloadJSON} />
+            <Suspense fallback={null}>
+              <DevInspector rooms={localRooms} currentRoomId={currentRoomId}
+                selectedObjId={selectedObjId} onSelectObj={setSelectedObjId}
+                onUpdateObj={handleUpdateObj} onAddObj={handleAddObj}
+                onRemoveObj={handleRemoveObj} onDownloadJSON={handleDownloadJSON} />
+            </Suspense>
           ) : (
             <>
               <div className="p-4 pb-2">
@@ -984,10 +988,12 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
 
       {devMode ? (
         <footer className="hidden md:flex h-48 bg-zinc-950 border-t-2 border-noir-amber flex-col relative z-20">
-          <DevInspector rooms={localRooms} currentRoomId={currentRoomId}
-            selectedObjId={selectedObjId} onSelectObj={setSelectedObjId}
-            onUpdateObj={handleUpdateObj} onAddObj={handleAddObj}
-            onRemoveObj={handleRemoveObj} onDownloadJSON={handleDownloadJSON} />
+          <Suspense fallback={null}>
+            <DevInspector rooms={localRooms} currentRoomId={currentRoomId}
+              selectedObjId={selectedObjId} onSelectObj={setSelectedObjId}
+              onUpdateObj={handleUpdateObj} onAddObj={handleAddObj}
+              onRemoveObj={handleRemoveObj} onDownloadJSON={handleDownloadJSON} />
+          </Suspense>
         </footer>
       ) : (
         <footer className="h-32 md:h-48 bg-zinc-950 border-t-2 border-zinc-900 p-2 md:p-4 font-mono text-sm overflow-hidden flex flex-col relative z-20">
@@ -1463,12 +1469,14 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
       </Dialog>
 
       {muralOpen && (
-        <MuralOverlay
-          mural={mural}
-          onChange={next => send({ type: 'UPDATE_MURAL', mural: next })}
-          onClose={() => setMuralOpen(false)}
-          onAccuse={handleAccuse}
-        />
+        <Suspense fallback={null}>
+          <MuralOverlay
+            mural={mural}
+            onChange={next => send({ type: 'UPDATE_MURAL', mural: next })}
+            onClose={() => setMuralOpen(false)}
+            onAccuse={handleAccuse}
+          />
+        </Suspense>
       )}
 
       {gameCompleted && (() => {
