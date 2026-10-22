@@ -81,7 +81,6 @@ import imgIsqueiro from './assets/images/noir/items/item_isqueiro.png';
 import imgFitaMagnetica from './assets/images/noir/items/item_fita_magnetica.png';
 import imgCedula500 from './assets/images/noir/items/item_cedula_500.png';
 import imgGravadorCassete from './assets/images/noir/items/item_gravador_cassete.png';
-import imgChaveArmazem from './assets/images/noir/items/item_chave_armazem.png';
 
 export const ITEM_IMAGES: Record<string, string> = {
   cartao_visita: imgCartaoVisita,
@@ -90,7 +89,6 @@ export const ITEM_IMAGES: Record<string, string> = {
   fita_magnetica: imgFitaMagnetica,
   cedula_500: imgCedula500,
   gravador_cassete: imgGravadorCassete,
-  chave_armazem: imgChaveArmazem,
 };
 
 export const ITEM_NAMES: Record<string, string> = gameData.ITEM_NAMES;
