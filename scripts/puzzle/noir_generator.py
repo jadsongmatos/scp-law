@@ -653,6 +653,8 @@ def main():
     parser.add_argument("--rooms", "-n", type=int, default=None, help="Número de posições (sobrescreve o config; 0=auto)")
     parser.add_argument("--merge", "-m", metavar="GAME_JSON",
                         help="Mescla resultado no game_data.json existente")
+    parser.add_argument("--reembed-hints", action="store_true",
+                        help="Permite --merge mesmo em game_data sem puzzle_hint_* (estado pós-remoção)")
     parser.add_argument("--output", "-o", default="puzzle_output.json",
                         help="Arquivo JSON de saída (padrão: puzzle_output.json)")
     parser.add_argument("--dry-run", action="store_true",
@@ -723,6 +725,21 @@ def main():
     )
 
     if args.merge:
+        # Trava: os puzzle_hint_* saíram do jogo (só depoimentos interview_clue_*
+        # são pistas). Mesclar num game_data pós-remoção reintroduziria conteúdo
+        # morto por cima dos dados embarcados.
+        with open(args.merge, encoding="utf-8") as f:
+            target = json.load(f)
+        ids = {o.get("id", "") for r in target.get("GAME_ROOMS", {}).values()
+               for o in r.get("interactables", [])}
+        if (any(i.startswith("interview_clue_") for i in ids)
+                and not any(i.startswith("puzzle_hint_") for i in ids)
+                and not args.reembed_hints):
+            sys.exit(
+                "ERRO: alvo do --merge usa depoimentos (interview_clue_*) sem puzzle_hint_* "
+                "(estado pós-remoção das pistas de arquivo). O merge reintroduziria os "
+                "puzzle_hint_*. Use um game_data pré-remoção ou passe --reembed-hints para forçar."
+            )
         print(f"\nMesclando puzzle em {args.merge}...")
         merged = merge_puzzle_into_game_data(args.merge, puzzle_interactables, sol, values)
         with open(args.merge, "w", encoding="utf-8") as f:
