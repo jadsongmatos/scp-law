@@ -8,14 +8,15 @@ auditoria de diálogos, `npm test`) e marque a caixa.
 
 ## Estado do repositório
 
-A troca de arte de 22 de outubro de 2026 está só no working tree.
+A troca de arte de 22 de outubro de 2026 foi commitada em `826a04e`.
 
-- [ ] Commitar os 12 fundos novos (`src/assets/images/noir/bg_*.png`), o
+- [x] Commitar os 12 fundos novos (`src/assets/images/noir/bg_*.png`), o
       `src/game_data.json` reposicionado e as atualizações de `AGENTS.md` e
       `docs/plan-21-07-2026.md`.
-- [ ] Decidir o destino da folha original
+- [x] Decidir o destino da folha original
       `src/assets/images/gpt-image-2.5-sunburst_a_Tem_muita_luz_elétri.png`.
-      O jogo não a importa e ela não está no git.
+      O jogo não a importa e ela não está no git. → **Decisão (22/10/2026):
+      manter onde está, fora do git.**
 
 ## Bugs
 
@@ -36,12 +37,12 @@ agenda, então o máximo possível é 12/14 = 86%.
 
 Tarefas:
 
-- [ ] Escolher a correção: restaurar a descoberta automática no início, revelar
-      os contatos por diálogo (implementar `discoveredFrom`, o que também
-      resolve o item "contatos só via entrevista" do plano de julho) ou tirar
-      os dois contatos do total.
-- [ ] Adicionar um teste que falhe quando algum contato de `PHONE_CONTACTS` não
-      tiver caminho de descoberta.
+- [x] Escolher a correção → **implementado `discoveredFrom`** (revelar por
+      diálogo): 'auto' entra na agenda no contexto inicial da máquina (com
+      merge no `RESTORE_STATE` para saves antigos), `zeca_reveal` revela a
+      Dra. Cunha no nó `zc_clue`, o item `cartao_visita` revela a diretora.
+- [x] Adicionar um teste que falhe quando algum contato de `PHONE_CONTACTS` não
+      tiver caminho de descobertura. → `src/lib/contactDiscovery.test.ts`
 
 ### P1: exportar no modo dev apaga dados
 
@@ -50,10 +51,11 @@ O botão de exportar do modo dev (`src/App.tsx:425-455`) grava só `ITEM_NAMES` 
 de `src/game_data.json` apaga `PHONE_CONTACTS`, `_interviewClueMap`, `rain` e
 `interviewGate`. Isso aconteceu em 22 de outubro de 2026.
 
-- [ ] Exportar a partir do `game_data.json` completo, trocando só as posições
-      (ou exportar apenas um patch de posições).
-- [ ] Extrair a montagem do export para uma função pura em `src/lib/` e testar
-      que nenhum campo se perde.
+- [x] Exportar a partir do `game_data.json` completo, trocando só as posições
+      (ou exportar apenas um patch de posições). → `buildGameDataExport` em
+      `src/lib/devExport.ts`
+- [x] Extrair a montagem do export para uma função pura em `src/lib/` e testar
+      que nenhum campo se perde. → `src/lib/devExport.test.ts`
 
 ## Arte
 
@@ -150,10 +152,10 @@ As vozes ficam em `public/voice/` e tocam pelo id do objeto (`Audio.speak` em
 - [ ] Gerar voz para os 4 documentos sem MP3: `carta_maria_kraft`,
       `registro_paroquial`, `anotacoes_caseiro` e `arquivo_pacientes`
       (`npm run generate:voices`).
-- [ ] Decidir sobre os 21 MP3 órfãos (2,3 MB, que vão para o deploy) e as
-      entradas correspondentes em `_metadata.json` e `_done.json`:
-      `bilhete_anonimo`, `guardanapo_endereco`, `puzzle_deduction_terminal` e
-      `puzzle_hint_1` a `puzzle_hint_18`.
+- [x] Decidir sobre os 21 MP3 órfãos (2,3 MB, que vão para o deploy) e as
+      entradas correspondentes em `_metadata.json` e `_done.json` →
+      **removidos (autorizado, commit 3065d9c)**; checkpoint `_done.json`
+      reconstruído a partir dos 18 MP3s presentes.
 - [ ] Decidir o destino do campo `voice` (`feminine`/`masculine`) de
       `PHONE_CONTACTS`: nada o lê e os diálogos não têm voz.
 
@@ -161,11 +163,17 @@ As vozes ficam em `public/voice/` e tocam pelo id do objeto (`Audio.speak` em
 
 Problemas internos que o jogador não vê.
 
-- [ ] `src/data.ts:84` importa `item_chave_armazem.png`, mas o item
-      `chave_armazem` não existe em `ITEM_NAMES`.
-- [ ] `scripts/puzzle/noir_generator.py --merge` reinsere os `puzzle_hint_*`
-      removidos. Só o `AGENTS.md` avisa; falta uma trava no próprio script.
-- [ ] `KNOWN_ROOMS` em `scripts/vision/extract_positions.py` cobre só as 8 salas
-      originais; faltam `casa_mae`, `igreja`, `fazenda` e `hospital`.
-- [ ] O chunk principal do build tem 815 kB, acima do limite de aviso de 750 kB
-      (`vite.config.ts`). Dividir com `import()` dinâmico.
+- [x] `src/data.ts:84` importa `item_chave_armazem.png`, mas o item
+      `chave_armazem` não existe em `ITEM_NAMES`. → import e entrada
+      removidos (o png segue em `assets/`; scripts de geração ainda o usam).
+- [x] `scripts/puzzle/noir_generator.py --merge` reinsere os `puzzle_hint_*`
+      removidos. Só o AGENTS.md avisa; falta uma trava no próprio script.
+      → **trava adicionada** (aborta em game_data pós-remoção sem
+      `--reembed-hints`).
+- [x] `KNOWN_ROOMS` em `scripts/vision/extract_positions.py` cobre só as 8 salas
+      originais; faltam `casa_mae`, `igreja`, `fazenda` e `hospital`. → as 4
+      salas adicionadas (12/12).
+- [x] O chunk principal do build tem 815 kB, acima do limite de aviso de 750 kB
+      (`vite.config.ts`). → **dividido**: index agora 108 kB; chunks separados
+      para xterm (342), react-vendor (178), base-ui (124), game-data (82) e
+      lazy `MuralOverlay` (31) + `DevInspector` (6, dev only).
