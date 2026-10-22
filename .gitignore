@@ -44,6 +44,7 @@ openai-image-generation.openapi.yaml
 qwen-image-edit.openapi.yaml
 phaserjs-template-vite.txt
 doc_dialogos.dot
+doc_dialogos.svg
 
 # ===== grafos de análise (game_graph.dot vaza a solução; não vão para o deploy) =====
 public/game_graph.dot
