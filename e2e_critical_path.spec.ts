@@ -117,7 +117,7 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await interact(page, 'Cédulas no Armário');
     await expectEvidence(page, ITEM.cedula);
 
-    // De volta à rua e ao Gasthof: fotografia e porta dos fundos.
+    // De volta à rua e ao Gasthof: fotografia (prova) e porta dos fundos (livre).
     await interact(page, 'Sair da Diretoria');
     await expectRoom(page, ROOM.escola);
     await interact(page, 'Sair da Volksschule');
@@ -127,7 +127,7 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await interact(page, 'Fotografia Amassada');
     await expectEvidence(page, ITEM.foto);
 
-    await useItem(page, 'Sair pelos Fundos — Lagerhaus 7', ITEM.foto);
+    await interact(page, 'Sair pelos Fundos — Lagerhaus 7');
     await expectRoom(page, ROOM.armazem);
 
     // Lagerhaus: caixas, porta de aço, terminal final e envelope da solução.

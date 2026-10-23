@@ -1494,9 +1494,6 @@
           "label": "Sair pelos Fundos — Lagerhaus 7",
           "width": 5,
           "height": 26,
-          "requiredItem": "fotografia",
-          "failedMessage": "A porta no recuo da parede está trancada. Você precisa de uma prova para ir até lá — a foto pode ser o argumento.",
-          "successMessage": "Com a foto de Helena no bolso, você segue pelo recuo da parede até o Lagerhaus 7. A chuva engole seus passos.",
           "targetRoom": "armazem"
         },
         {
