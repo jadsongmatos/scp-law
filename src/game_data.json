@@ -2116,12 +2116,12 @@
           "icon": "Mail",
           "x": 14.5,
           "y": 30,
-          "type": "phone_call",
+          "type": "terminal_read",
           "label": "Carta de Seu Jonas",
           "width": 5,
           "height": 14,
           "phoneCallId": "seu_jonas",
-          "description": "Seu Jonas não aparece — ele deixou uma carta enfiada na fenda da parede. Letra trêmula, papel molhado da chuva. Seu Jonas vive no beco há 12 anos. Vê tudo. Ninguém vê ele.",
+          "description": "Na fenda da parede, uma carta enfiada às pressas. Letra trêmula, papel molhado da chuva. Levar para analisar com calma — Seu Jonas escreveu, mas a conversa continua pela agenda.",
           "documentData": {
             "title": "BRIEF — SEU JONAS",
             "content": [

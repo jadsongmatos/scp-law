@@ -504,8 +504,8 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
         if (obj.id.startsWith('interview_clue_')) {
           send({ type: 'READ_INTERVIEW_CLUE', clueId: obj.id });
         }
-        if (obj.id === 'carta_jonas') {
-          discoverContact('seu_jonas');
+        if (obj.phoneCallId && PHONE_CONTACTS[obj.phoneCallId]) {
+          discoverContact(obj.phoneCallId);
         }
       }
     } else if (obj.type === 'inspect') {
@@ -518,25 +518,7 @@ function Game({ loadFromSave }: { loadFromSave?: boolean }) {
         addLog(`[${obj.label}] ${obj.description}`);
       }
     } else if (obj.type === 'phone_call') {
-      if (obj.phoneCallId === 'seu_jonas') {
-        const contact = PHONE_CONTACTS[obj.phoneCallId];
-        if (!contact) return;
-        discoverContact(obj.phoneCallId);
-        if (pdCutoffContacts.includes(obj.phoneCallId)) {
-          Audio.playDenied();
-          addLog(`[CARTA] Seu Jonas se recusa a escrever mais. A correspondência foi cortada.`);
-          return;
-        }
-        if (calledContacts.includes(obj.phoneCallId)) {
-          Audio.playTerminal();
-          addLog(`[FITA] A fita cassete captou a leitura da carta de ${contact.name}. Use a agenda para ouvir.`);
-          return;
-        }
-        Audio.playTypewriter();
-        send({ type: 'START_PHONE_CALL', contactId: obj.phoneCallId });
-        setActivePhoneCall({ contactId: obj.phoneCallId, nodeId: 'initial', linesShown: 0, visitedNodes: [] });
-        addLog(`[CARTA] Lendo carta de ${contact.name}...`);
-      } else if (obj.phoneCallId === 'zeca' && currentRoomId === 'bar') {
+      if (obj.phoneCallId === 'zeca' && currentRoomId === 'bar') {
         const contact = PHONE_CONTACTS[obj.phoneCallId];
         if (!contact) return;
         discoverContact(obj.phoneCallId);
