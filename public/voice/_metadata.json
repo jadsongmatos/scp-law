@@ -1,13 +1,19 @@
 {
   "ficheiro_helena": {
     "voice": "s2-pro",
-    "text_length": 566,
+    "text_length": 729,
     "label": "Ficheiro do Caso Helena",
     "room": "escritorio"
   },
+  "telefone_zeca": {
+    "voice": "s2-pro",
+    "text_length": 348,
+    "label": "Telefone — Ligação de Zeca",
+    "room": "bar"
+  },
   "interview_clue_zeca": {
     "voice": "s2-pro",
-    "text_length": 382,
+    "text_length": 463,
     "label": "Pista de Gasthof — Entrevista",
     "room": "bar"
   },
@@ -19,9 +25,15 @@
   },
   "interview_clue_diretora_elvira": {
     "voice": "s2-pro",
-    "text_length": 427,
+    "text_length": 493,
     "label": "Pista de Campos — Entrevista",
     "room": "escola"
+  },
+  "telefone_diretora": {
+    "voice": "s2-pro",
+    "text_length": 455,
+    "label": "Telefone — Recado da Diretora",
+    "room": "diretoria"
   },
   "gaveta_diretora": {
     "voice": "s2-pro",
@@ -37,9 +49,15 @@
   },
   "interview_clue_dra_cunha": {
     "voice": "s2-pro",
-    "text_length": 370,
+    "text_length": 444,
     "label": "Pista de Cunha — Entrevista",
     "room": "diretoria"
+  },
+  "telefone_santos": {
+    "voice": "s2-pro",
+    "text_length": 447,
+    "label": "Telefone — Recado de Santos",
+    "room": "delegacia"
   },
   "arquivo_mendes": {
     "voice": "s2-pro",
@@ -49,13 +67,19 @@
   },
   "interview_clue_santos": {
     "voice": "s2-pro",
-    "text_length": 396,
+    "text_length": 485,
     "label": "Pista de Santos — Entrevista",
     "room": "delegacia"
   },
+  "carta_jonas": {
+    "voice": "s2-pro",
+    "text_length": 459,
+    "label": "Carta de Seu Jonas",
+    "room": "beco"
+  },
   "interview_clue_seu_jonas": {
     "voice": "s2-pro",
-    "text_length": 390,
+    "text_length": 479,
     "label": "Pista de Jonas — Entrevista",
     "room": "beco"
   },
@@ -82,5 +106,29 @@
     "text_length": 673,
     "label": "Envelope Lacrado — Resolução do Caso",
     "room": "armazem"
+  },
+  "carta_maria_kraft": {
+    "voice": "s2-pro",
+    "text_length": 423,
+    "label": "Carta de Maria Kraft",
+    "room": "casa_mae"
+  },
+  "registro_paroquial": {
+    "voice": "s2-pro",
+    "text_length": 396,
+    "label": "Registro Paroquial",
+    "room": "igreja"
+  },
+  "anotacoes_caseiro": {
+    "voice": "s2-pro",
+    "text_length": 431,
+    "label": "Caderneta do Caseiro",
+    "room": "fazenda"
+  },
+  "arquivo_pacientes": {
+    "voice": "s2-pro",
+    "text_length": 384,
+    "label": "Arquivo de Pacientes",
+    "room": "hospital"
   }
 }
