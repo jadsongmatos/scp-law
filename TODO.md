@@ -161,11 +161,12 @@ As vozes ficam em `public/voice/` e tocam pelo id do objeto (`Audio.speak` em
 
 - [ ] Gerar voz para os 4 documentos sem MP3: `carta_maria_kraft`,
       `registro_paroquial`, `anotacoes_caseiro` e `arquivo_pacientes`
-      (`npm run generate:voices`) → **1/4 feito (23/10/2026, 67f8a84):
-      `arquivo_pacientes` ok. As 3 restantes dependem do backend do codec:
-      com `--codec-cpu` o decode leva ~37 min por arquivo (RTF 77×) e o
-      timeout de 600 s do script nunca fecha; avaliando `--codec-auto`
-      (codec na GPU) antes de decidir.**
+      (`npm run generate:voices`) → **3/4 feitos (23/10/2026, 67f8a84 +
+      20eb5d6 + acb533a). Decode do codec fica na CPU de qualquer jeito:
+      `--codec-auto` e `--codec-follow-backend` testados — nenhum sobe o
+      codec para a GPU Vulkan (RTF ~80×, ~40-50 min por documento);
+      timeout do script corrigido para 5400 s (adf1cb1). Falta
+      `anotacoes_caseiro`, rodando em background.**
 - [x] Decidir sobre os 21 MP3 órfãos (2,3 MB, que vão para o deploy) e as
       entradas correspondentes em `_metadata.json` e `_done.json` →
       **removidos (autorizado, commit 3065d9c)**; checkpoint `_done.json`
