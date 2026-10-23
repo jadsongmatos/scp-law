@@ -85,12 +85,16 @@ def generate_with_s2(text: str, output_wav: str) -> bool:
         "--log-level", "info",
     ]
 
+    # Decode do codec roda na CPU (--codec-cpu): medido em ~3,6 s/frame
+    # nesta máquina (RTX 3050, RTF ~80x) — um documento de ~500 chars
+    # leva 40-50 min. --codec-auto e --codec-follow-backend não migram
+    # o codec para a GPU Vulkan (teste 23/10/2026).
     result = subprocess.run(
         cmd,
         env=env,
         capture_output=True,
         text=True,
-        timeout=600,
+        timeout=5400,
     )
 
     if result.returncode != 0:
