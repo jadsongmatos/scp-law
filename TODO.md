@@ -121,28 +121,37 @@ Estes itens não dependem dos textos.
       22 de outubro de 2026 estão em `scratch/2026-10-22-fundos-gpt-image/`
       (fora do git); mova-os para `scripts/` se a arte mudar de novo.
 
-## Plano de 21 de julho de 2026: itens em aberto
+## Plano de 21 de julho de 2026: encerrado (23/10/2026)
 
-Estes itens continuam abertos em `docs/plan-21-07-2026.md`. O estado abaixo foi
-conferido no código.
+Todos os itens foram fechados — resoluções abaixo, detalhes em
+`docs/plan-21-07-2026.md`.
 
-- [ ] `porta_armazem` (bar) ainda exige `fotografia` como `requiredItem`.
-- [ ] Contatos só via entrevista: Santos ainda entra na agenda pelo objeto
-      `telefone_santos` (recado na delegacia). Ligado ao bug P0.
-- [ ] `carta_jonas` deve exigir uma análise separada; hoje ela abre o diálogo
-      direto.
-- [ ] `grafite_parede` como pista falsa: o texto atual aponta para o carro
+- [x] `porta_armazem` (bar) ainda exige `fotografia` como `requiredItem` → **removida
+      (23/10/2026, a536ded): a porta é travel livre; foto segue como prova.**
+- [x] Contatos só via entrevista: Santos ainda entra na agenda pelo objeto
+      `telefone_santos` (recado na delegacia). Ligado ao bug P0 → **superseded:
+      P0 resolvido com descoberta orientada a dado (`discoveredFrom`), design
+      aprovado — ver `contactDiscovery.ts` e o plano.**
+- [x] `carta_jonas` deve exigir uma análise separada; hoje ela abre o diálogo
+      direto → **feito (23/10/2026, 8b915be): carta é `terminal_read`; análise
+      pela agenda (LER).**
+- [x] `grafite_parede` como pista falsa: o texto atual aponta para o carro
       preto, que é pista verdadeira. Veja também o item `beco` em
-      [Textos que não batem com a arte](#textos-que-não-batem-com-a-arte).
-- [ ] Entrevista com Zeca de duas formas: na prática só existe a presencial. O
+      [Textos que não batem com a arte](#textos-que-não-batem-com-a-arte) →
+      **feito (23/10/2026, 95aef40): grafite aponta para o carro enferrujado.**
+- [x] Entrevista com Zeca de duas formas: na prática só existe a presencial. O
       contato entra na agenda ao interagir no bar, o que já inicia a conversa;
       ao encerrar, `END_PHONE_CALL` marca Zeca como ligado e a agenda só
-      oferece "OUVIR FITA".
-- [ ] `banco_cantos` deve virar pergunta na entrevista com Zeca; hoje ainda é um
-      objeto `inspect` no bar.
-- [ ] Fechar no plano os itens obsoletos: os três sobre `puzzle_hint_*` e
+      oferece "OUVIR FITA" → **feito (23/10/2026): telefone do bar é o recado
+      (`terminal_read`); entrevista pelo encontro no balcão (`zeca_encontro`)
+      ou pela agenda do escritório — uma entrevista por contato.**
+- [x] `banco_cantos` deve virar pergunta na entrevista com Zeca; hoje ainda é um
+      objeto `inspect` no bar → **feito (23/10/2026): objeto removido; pergunta
+      no nó `zc_banco`; foto segue como pickup.**
+- [x] Fechar no plano os itens obsoletos: os três sobre `puzzle_hint_*` e
       `puzzle_deduction_terminal` (removidos do jogo) e "montar prompts de
-      geração de imagem" (substituído pela arte nova).
+      geração de imagem" (substituído pela arte nova) → **fechados no
+      `docs/plan-21-07-2026.md` (23/10/2026).**
 
 ## Áudio
 
@@ -151,13 +160,19 @@ As vozes ficam em `public/voice/` e tocam pelo id do objeto (`Audio.speak` em
 
 - [ ] Gerar voz para os 4 documentos sem MP3: `carta_maria_kraft`,
       `registro_paroquial`, `anotacoes_caseiro` e `arquivo_pacientes`
-      (`npm run generate:voices`).
+      (`npm run generate:voices`) → **1/4 feito (23/10/2026, 67f8a84):
+      `arquivo_pacientes` ok. As 3 restantes dependem do backend do codec:
+      com `--codec-cpu` o decode leva ~37 min por arquivo (RTF 77×) e o
+      timeout de 600 s do script nunca fecha; avaliando `--codec-auto`
+      (codec na GPU) antes de decidir.**
 - [x] Decidir sobre os 21 MP3 órfãos (2,3 MB, que vão para o deploy) e as
       entradas correspondentes em `_metadata.json` e `_done.json` →
       **removidos (autorizado, commit 3065d9c)**; checkpoint `_done.json`
       reconstruído a partir dos 18 MP3s presentes.
-- [ ] Decidir o destino do campo `voice` (`feminine`/`masculine`) de
-      `PHONE_CONTACTS`: nada o lê e os diálogos não têm voz.
+- [x] Decidir o destino do campo `voice` (`feminine`/`masculine`) de
+      `PHONE_CONTACTS`: nada o lê e os diálogos não têm voz → **mantido
+      (23/10/2026): metadado para o TTS futuro dos diálogos — as vozes
+      voltaram a ser pauta com os MP3s dos documentos.**
 
 ## Dívida técnica
 
