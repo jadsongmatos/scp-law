@@ -272,6 +272,62 @@ test.describe('Murphy Law — caminho crítico E2E', () => {
     await page.keyboard.press('Escape'); // desliga
   });
 
+  test('plano de julho: carta com análise separada; Zeca em duas formas', async ({ page }) => {
+    await startGame(page);
+
+    // Beco: a carta é documento lido no cenário; a análise/entrevista fica
+    // para a agenda (item 3 do plano de 21/07).
+    await interact(page, 'Sair para a Rua');
+    await interact(page, 'Entrar no Beco');
+    await expectRoom(page, ROOM.beco);
+    await interact(page, 'Carta de Seu Jonas');
+    await readDocument(page, 'BRIEF — SEU JONAS');
+
+    // Bar: o telefone é a secretária eletrônica (recado), não a entrevista.
+    await interact(page, 'Voltar para a Rua');
+    await expectRoom(page, ROOM.rua);
+    await interact(page, 'Gasthof Vila Nova');
+    await expectRoom(page, ROOM.bar);
+    await interact(page, 'Telefone — Ligação de Zeca');
+    await readDocument(page, 'RECADO TELEFÔNICO — ZECA');
+
+    // Escritório: agenda oferece LER (análise da carta) e LIGAR (Zeca por
+    // telefone — forma 1 da entrevista, disponível sem consumir).
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
+    await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
+    await expectRoom(page, ROOM.escritorio);
+    await interact(page, 'Telefone de Discagem');
+    const jonasBtn = page.getByRole('button').filter({ hasText: 'Seu Jonas' });
+    await expect(jonasBtn).toContainText('LER');
+    const zecaBtn = page.getByRole('button').filter({ hasText: 'Zeca do Gasthof' });
+    await expect(zecaBtn).toContainText('LIGAR');
+    await page.keyboard.press('Escape');
+
+    // Forma 2 (presencial): o encontro no balcão faz a entrevista — com a
+    // pergunta do banco escuro (ex-item de cenário, hoje tópico do Zeca).
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
+    await page.getByRole('dialog').getByText(ROOM.bar, { exact: true }).click();
+    await expectRoom(page, ROOM.bar);
+    await interact(page, 'Zeca do Gasthof — Balcão');
+    await expect(page.getByRole('heading', { name: /314-5502/ })).toBeVisible({ timeout: 5_000 });
+    await expect(page.getByText('VERBUNDEN')).toBeVisible();
+    await page.getByRole('button').filter({ hasText: 'Qual endereço, Zeca? Isso pode salvar uma vida.' }).click();
+    await page.getByRole('button').filter({ hasText: 'Ele voltou ao bar? Alguém mais perguntou por Helena?' }).click();
+    await page.getByRole('button').filter({ hasText: 'O que é aquele banco escuro no canto, Zeca?' }).click();
+    await expect(page.getByText('Apalpei na limpeza: papel. Uma foto, pelo peso.')).toBeVisible();
+    await page.getByRole('button').filter({ hasText: 'A foto no canto é minha agora. Obrigado, Zeca.' }).click();
+    await expect(page.getByText('GETRENNT')).toBeVisible();
+    await page.keyboard.press('Escape'); // encerra e grava
+
+    // Uma entrevista por contato: agenda passa a oferecer só reouvir.
+    await page.getByRole('button', { name: 'MAPA DA CIDADE' }).click();
+    await page.getByRole('dialog').getByText(ROOM.escritorio, { exact: true }).click();
+    await expectRoom(page, ROOM.escritorio);
+    await interact(page, 'Telefone de Discagem');
+    await expect(zecaBtn).toContainText('OUVIR FITA');
+    await page.keyboard.press('Escape');
+  });
+
   test('delegacia: arquivo negado sem cédula; pistas continuam legíveis', async ({ page }) => {
     await startGame(page);
     await interact(page, 'Sair para a Rua');

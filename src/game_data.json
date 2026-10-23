@@ -380,8 +380,8 @@
           ],
           "choices": [
             {
-              "text": "Dra. Cunha também perguntou? Onde encontro ela?",
-              "goto": "zc_clue",
+              "text": "O que é aquele banco escuro no canto, Zeca?",
+              "goto": "zc_banco",
               "pdAction": "C"
             },
             {
@@ -395,6 +395,42 @@
               "pdAction": "E"
             }
           ]
+        },
+        "zc_banco": {
+          "speaker": "Zeca",
+          "lines": [
+            "Aquele banco? Ninguém senta nele há meses.",
+            "O estofado rasgou e alguém enfiou coisa lá dentro.",
+            "Apalpei na limpeza: papel. Uma foto, pelo peso.",
+            "Não tirei. Prova dentro do meu bar sou eu que viro suspeito.",
+            "O canto tá liberado, Murphy. Só não me envolve depois."
+          ],
+          "choices": [
+            {
+              "text": "E a Dra. Cunha? Você disse que ela perguntou por Helena. Onde encontro ela?",
+              "goto": "zc_clue",
+              "pdAction": "C"
+            },
+            {
+              "text": "Um barman que apalpa os bancos dos clientes. O que mais você esconde aí?",
+              "goto": "zc_banco_d",
+              "pdAction": "D"
+            },
+            {
+              "text": "A foto no canto é minha agora. Obrigado, Zeca.",
+              "goto": "zc_end_e",
+              "pdAction": "E"
+            }
+          ]
+        },
+        "zc_banco_d": {
+          "speaker": "Zeca",
+          "lines": [
+            "Esconder?! Este bar foi honesto por três dias seguidos — recorde do distrito.",
+            "Se acha que eu misturo as provas do caso com as rodadas de schnapps, pode ir embora.",
+            "O Gasthof tá fechado pra você. *clic*"
+          ],
+          "choices": []
         },
         "zc_r3_d": {
           "speaker": "Zeca",
@@ -1421,12 +1457,12 @@
           "icon": "Phone",
           "x": 32.5,
           "y": 50,
-          "type": "phone_call",
+          "type": "terminal_read",
           "label": "Telefone — Ligação de Zeca",
           "width": 6,
           "height": 12.5,
           "phoneCallId": "zeca",
-          "description": "Um telefone de parede com secretária eletrônica de fita. Zeca deixou recado. A fita magnética range quando você aperta play. Zeca conhece todo mundo. E todo mundo deve favores a ele.",
+          "description": "Um telefone de parede com secretária eletrônica de fita. Zeca deixou recado. A fita magnética range quando você aperta play. A conversa fica para depois: no balcão, ou pelo telefone do escritório.",
           "documentData": {
             "title": "RECADO TELEFÔNICO — ZECA",
             "content": [
@@ -1475,15 +1511,16 @@
           "description": "Num vão estreito emoldurado em madeira, um telefone público embutido. Funciona quando a central estatal permite. Alguém colou um bilhete por dentro com fita adesiva. Diz: 'Eles levam crianças para o Lagerhaus 7'."
         },
         {
-          "id": "banco_cantos",
-          "icon": "Search",
-          "x": 85,
-          "y": 64,
-          "type": "inspect",
-          "label": "Banco Escuro",
+          "id": "zeca_encontro",
+          "icon": "User",
+          "x": 50,
+          "y": 45,
+          "type": "phone_call",
+          "label": "Zeca do Gasthof — Balcão",
           "width": 15,
-          "height": 35,
-          "description": "No canto mais escuro do gasthof. O estofado está rasgado e tem algo enfiado dentro — uma foto amassada de uma menina sorrindo. Helena?"
+          "height": 20,
+          "phoneCallId": "zeca",
+          "description": "Atrás do balcão, Zeca enxuga o mesmo copo há dez minutos. Ele faz um sinal de cabeça: senta."
         },
         {
           "id": "porta_armazem",
