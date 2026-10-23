@@ -115,8 +115,9 @@ Estes itens não dependem dos textos.
       `map_rua_chuva.png`, `map_bar.png` e `map_beco.png`
       (`src/assets/images/noir/maps/`). Os 12 mapas também misturam estilos
       (planta baixa, isométrico e 3D).
-- [ ] Atualizar ou arquivar `docs/image-prompts-21-07-2026.md`, que cobre só 8
-      salas e usa coordenadas da arte antiga.
+- [x] Atualizar ou arquivar `docs/image-prompts-21-07-2026.md`, que cobre só 8
+      salas e usa coordenadas da arte antiga → **arquivado (23/10/2026) com nota
+      de procedência; novos prompts devem nascer do `game_data.json` atual.**
 - [ ] Refazer as hitboxes após qualquer nova troca de arte. Os scripts usados em
       22 de outubro de 2026 estão em `scratch/2026-10-22-fundos-gpt-image/`
       (fora do git); mova-os para `scripts/` se a arte mudar de novo.

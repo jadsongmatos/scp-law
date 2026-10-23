@@ -1,4 +1,12 @@
 # Prompts de Geração de Imagem
+
+> **ARQUIVADO (23/10/2026):** este documento cobre a arte antiga (8 salas,
+> coordenadas pré-22/10/2026). Em 22/10/2026 os 12 fundos foram trocados pelos
+> painéis da folha `gpt-image-2.5-sunburst_a_Tem_muita_luz_elétri.png` e as
+> hitboxes foram reposicionadas por extração visual (`extract_positions.py` +
+> `fix:overlaps`). Se os fundos forem regenerados em alta resolução, monte os
+> novos prompts a partir do `game_data.json` atual — não destas coordenadas.
+
 Baseado no arquivo `game_data-21-07-2026.json` com posições ajustadas manualmente.
 
 ## escritorio — Escritório de Murphy Law — Rua Sieben, 314
