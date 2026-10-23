@@ -1204,7 +1204,7 @@
     "escritorio": {
       "id": "escritorio",
       "name": "Escritório de Murphy Law — Rua Sieben, 314",
-      "description": "O teto goteja. A placa na porta diz MURPHY LAW — PRIVATERMITTLER, mas o 'A' caiu. Cheira a schnapps velho e cigarro apagado na borda do cinzeiro. A chuva não para lá fora. Nunca para. No fichário, um espelho embaciado. No meio dos papéis, um telefone de discagem.",
+      "description": "O teto goteja sobre a máquina de escrever, onde um relatório que ninguém vai ler dorme enrolado na roldana. Três telefones de discagem enfileiram-se na escrivaninha — a estatal corta linhas por economia, e Murphy paga as três para nunca ter desculpa de ligação. Sobre o fichário metálico, uma garrafa escura sem rótulo faz companhia às pastas. Na parede, o cartaz do Partido — DIE PARTEI HÖRT MIT — mais novo do que qualquer papel deste escritório. Cheira a schnapps velho e cigarro apagado na borda da caneca. A chuva não para lá fora. Nunca para.",
       "interactables": [
         {
           "id": "porta_rua",
@@ -1266,7 +1266,7 @@
           "label": "Telefone de Discagem",
           "width": 26,
           "height": 15,
-          "description": "Um telefone preto de discagem, escondido entre os papéis do fichário. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
+          "description": "Um dos três telefones de discagem enfileirados na escrivaninha. A linha cai a cada cinco minutos — a companhia estatal não conserta nada. No ganchinho, um papel com número rabiscado: a delegacia, que nunca atende."
         },
         {
           "id": "detective_board",
@@ -1287,7 +1287,7 @@
     "rua_chuva": {
       "id": "rua_chuva",
       "name": "Rua Sieben — Chuva e Néon",
-      "description": "A chuva mascara tudo — passos, olhares, pecados. O letreiro do Gasthof pinga vermelho no asfalto rachado. Postes do Partido enferrujados. Um beco escuro respira do lado direito. Mais à frente, as silhuetas da Volksschule e da Volkspolizeistation recortam-se na névoa. Nenhum táxi. Nenhum ônibus. O transporte público parou há meses.",
+      "description": "A chuva mascara tudo — passos, olhares, pecados. As poças devolvem a luz amarela do poste em moedas molhadas. A placa pendurada balança no suporte de ferro, com um emblema que ninguém consegue ler de baixo. Na fachada da loja Konsum, a Volkspolizeistation 8º ocupa o balcão que já vendeu café por vales do Partido. Um beco escuro respira entre as fachadas. Ao fundo, a torre da Kapelle se dissolve na névoa. Nenhum táxi. Nenhum ônibus. O transporte público parou há meses.",
       "interactables": [
         {
           "id": "porta_escritorio",
@@ -1356,7 +1356,7 @@
           "label": "Poça Suspeita",
           "width": 14,
           "height": 20,
-          "description": "A chuva dilui, mas não apaga. O vermelho se mistura com a água e escorre pelo bueiro entupido. Alguém sangrou aqui recentemente. A rua não tem iluminação há semanas."
+          "description": "O bueiro entupido engole água escura demais para ser só chuva. A luz do poste quebra na película de óleo e, na borda da poça, algo que a chuva dilui mas não apaga. A rua vive há semanas de uma única lâmpada acesa no fundo — e foi ela que viu o que a poça agora tenta esquecer."
         },
         {
           "id": "cartao_chao",
@@ -1381,7 +1381,7 @@
           "width": 7.5,
           "height": 61,
           "targetRoom": "casa_mae",
-          "description": "Uma porta azul desbotada. O número 314-B está riscado com esparadrapo."
+          "description": "Porta dupla de madeira escura num arco de cantaria. O número 314-B está riscado com esparadrapo."
         },
         {
           "id": "igreja_porta",
@@ -1403,7 +1403,7 @@
     "bar": {
       "id": "bar",
       "name": "Gasthof Vila Nova — Fumaça e Segredos",
-      "description": "O toca-discos toca uma valsa que ninguém escolheu. O barman limpa um copo como se estivesse apagando pecados. Atrás do balcão, um telefone de parede com secretária eletrônica. Na parede lateral, outro telefone público que funciona quando quer.",
+      "description": "O Gasthof Vila Nova depois da última rodada. Cheiro de tabaco frio e cera de assoalho barata. Num armário encostado à parede, entre caixas de bebida, uma vitrola esquecida; num vão estreito da madeira, um telefone que a central ainda não cortou. No recuo da parede ao fundo, uma porta que não leva à cozinha.",
       "interactables": [
         {
           "id": "porta_rua_bar",
@@ -1426,7 +1426,7 @@
           "width": 6,
           "height": 12.5,
           "phoneCallId": "zeca",
-          "description": "Atrás do balcão, um telefone de parede com secretária eletrônica de fita. Zeca deixou recado. A fita magnética range quando você aperta play. Zeca conhece todo mundo. E todo mundo deve favores a ele.",
+          "description": "Um telefone de parede com secretária eletrônica de fita. Zeca deixou recado. A fita magnética range quando você aperta play. Zeca conhece todo mundo. E todo mundo deve favores a ele.",
           "documentData": {
             "title": "RECADO TELEFÔNICO — ZECA",
             "content": [
@@ -1461,7 +1461,7 @@
           "label": "Toca-Discos Velho",
           "width": 10.5,
           "height": 38,
-          "description": "Um vitrola com um LP arranhado. Toca sozinho à meia-noite — sempre a mesma valsa. Os frequentadores antigos dizem que é o fantasma de uma mulher que esperou alguém aqui até morrer."
+          "description": "Guardada num armário cinza, entre caixas de bebida, uma vitrola com um LP arranhado. Toca sozinha à meia-noite — sempre a mesma valsa. Os frequentadores antigos dizem que é o fantasma de uma mulher que esperou alguém aqui até morrer."
         },
         {
           "id": "cabine_telefone",
@@ -1472,7 +1472,7 @@
           "label": "Telefone Público",
           "width": 5,
           "height": 11,
-          "description": "Um telefone de parede ao lado do toca-discos. Funciona quando a central estatal permite. Alguém colou um bilhete por dentro com fita adesiva. Diz: 'Eles levam crianças para o Lagerhaus 7'."
+          "description": "Num vão estreito emoldurado em madeira, um telefone público embutido. Funciona quando a central estatal permite. Alguém colou um bilhete por dentro com fita adesiva. Diz: 'Eles levam crianças para o Lagerhaus 7'."
         },
         {
           "id": "banco_cantos",
@@ -1495,8 +1495,8 @@
           "width": 5,
           "height": 26,
           "requiredItem": "fotografia",
-          "failedMessage": "A porta dos fundos está trancada. Você precisa de uma prova para ir até lá — a foto pode ser o argumento.",
-          "successMessage": "Com a foto de Helena no bolso, você segue para o Lagerhaus 7. A chuva engole seus passos.",
+          "failedMessage": "A porta no recuo da parede está trancada. Você precisa de uma prova para ir até lá — a foto pode ser o argumento.",
+          "successMessage": "Com a foto de Helena no bolso, você segue pelo recuo da parede até o Lagerhaus 7. A chuva engole seus passos.",
           "targetRoom": "armazem"
         },
         {
@@ -1558,7 +1558,7 @@
     "escola": {
       "id": "escola",
       "name": "Volksschule Vila Nova — Corredores Vazios",
-      "description": "O vigia trancou a porta atrás de você. O cheiro de giz e desinfetante não mascara algo podre debaixo do assoalho. As salas estão escuras — a eletricidade foi cortada. O quadro na parede da diretoria tem um horário rasurado.",
+      "description": "O vigia trancou a porta atrás de você. O cheiro de giz e desinfetante não mascara algo podre debaixo do assoalho. As salas estão escuras; no corredor, uma única lâmpada acesa no teto zumbindo mantém o mínimo que a lei exige. O quadro na parede da diretoria tem um horário rasurado.",
       "interactables": [
         {
           "id": "porta_escola_saida",
@@ -1647,7 +1647,7 @@
           "label": "Corredor Principal",
           "width": 14,
           "height": 33,
-          "description": "Os passos ecoam como numa igreja vazia. O teto goteja em três pontos. Nenhuma lâmpada funciona. No fundo do corredor, uma porta entreaberta que não deveria estar assim."
+          "description": "Os passos ecoam como numa igreja vazia. O teto goteja em três pontos. A única lâmpada viva do prédio zumbi no alto, sustentada por um fio que pede aposentadoria. No fundo do corredor, uma porta entreaberta que não deveria estar assim."
         },
         {
           "id": "fita_magnetica_chao",
@@ -1720,7 +1720,7 @@
     "diretoria": {
       "id": "diretoria",
       "name": "Diretoria — Gavetas com Segredos",
-      "description": "A sala da Diretora Elvira Campos. Uma mulher que sabe demais e fala de menos. O escritório é arrumado demais — como se alguém limasse as arestas da verdade toda noite. Sob os papéis da escrivaninha, o brilho verde de um terminal de fósforo. No canto, atrás de uma divisória, o armário do vigia.",
+      "description": "A sala da Diretora Elvira Campos. Uma mulher que sabe demais e fala de menos. O escritório é arrumado demais — como se alguém limasse as arestas da verdade toda noite. Sob as pilhas de papel da escrivaninha, o brilho verde de um terminal de fósforo; sobre a mesa, um telefone preto de baquelite. Num móvel de madeira encostado à parede, o armário do vigia.",
       "interactables": [
         {
           "id": "porta_diretoria_saida",
@@ -1822,7 +1822,7 @@
           "label": "Armário do Vigia",
           "width": 18,
           "height": 23,
-          "description": "No canto escuro da sala, atrás de uma divisória, um armário de metal do vigia. Dentro há roupas limpas, um rádio quebrado e um envelope grosso com dinheiro — 5.000 Marks em cédulas usadas do Banco Estatal. No fundo, um papel: 'Entregue a menina e receba o resto.'"
+          "description": "Num móvel de madeira de porta dupla, encostado à parede, o armário do vigia. Dentro há roupas limpas, um rádio quebrado e um envelope grosso com dinheiro — 5.000 Marks em cédulas usadas do Banco Estatal. No fundo, um papel: 'Entregue a menina e receba o resto.'"
         },
         {
           "id": "cedulas_vigia",
@@ -2031,7 +2031,7 @@
           "label": "Mapa com Pinos Vermelhos",
           "width": 5.5,
           "height": 48,
-          "description": "Um mapa do bairro com três pinos vermelhos. Formam um triângulo. No centro: Rua 14, Lagerhaus 7. Alguém já sabia. Alguém sempre soube."
+          "description": "Entre papéis de plantão empilhados na borda da escrivaninha, um mapa do bairro com três furinhos vermelhos. Formam um triângulo. No centro: Rua 14, Lagerhaus 7. Alguém já sabia. Alguém sempre soube."
         },
         {
           "id": "quadro_desaparecidos",
@@ -2167,7 +2167,7 @@
           "label": "Grafite na Parede",
           "width": 11.5,
           "height": 50,
-          "description": "Um grafite recente: uma criança com asas quebradas dentro de uma gaiola. Embaixo, letras spray: 'ER KOMMT MIT SCHWARZEM WAGEN'. Ninguém denunciou. Ninguém viu."
+          "description": "Um cartaz de propaganda do Partido — DAMALS JETZT IMMER DIE PARTEI — colado por cima de um grafite mais antigo. O papel oficial já está puído; debaixo da borda descolada, sobra metade de um desenho de criança com asas e um rabisco em spray: 'ER KOMMT MIT...'. O resto o Partido cobriu. Ninguém denunciou. Ninguém viu."
         },
         {
           "id": "lata_lixo",
@@ -2240,7 +2240,7 @@
     "armazem": {
       "id": "armazem",
       "name": "Lagerhaus 7 — Rua 14 — O Fim da Trilha",
-      "description": "O cheiro de químico e medo é insuportável. Caixas empilhadas formam labirintos. No fundo, uma porta de aço com cadeado. O teto goteja. Entre as caixas, o brilho verde de um terminal quase escondido. Pela fresta da porta industrial, a silhueta de um carro preto.",
+      "description": "O registro estatal chama isto de Lagerhaus 7, Rua 14 — mas a rua acabou no asfalto e virou estrada de chão. Feno empilhado, um trator decaindo, um portão aberto para o campo escuro. Ao fundo da parede, embutida na alvenaria, uma porta de aço com cadeado novo — industrial demais para um celeiro. Cheiro de químico por baixo do feno. Entre os fardos, o brilho verde de um terminal quase escondido. Pela fresta da porta de aço, a silhueta de um carro preto.",
       "interactables": [
         {
           "id": "porta_armazem_saida",
@@ -2555,7 +2555,7 @@
           "label": "Quarto de Helena",
           "width": 7,
           "height": 52,
-          "description": "Cama arrumada com militar precisão — Maria faz isso todo dia. Livro aberto: 'Die Unendliche Geschichte'. Marcador de página em forma de borboleta. Gaveta entreaberta — faltam roupas de três dias."
+          "description": "Na estante da sala, um canto poupado do tempo: o livro de Helena aberto — 'Die Unendliche Geschichte' — com o marcador de página em forma de borboleta. Maria arruma tudo todo dia, com precisão militar, como se a ordem pudesse trazer a menina de volta. A gaveta de baixo fica trancada — faltam roupas de três dias."
         },
         {
           "id": "agenda_maria",
@@ -2599,7 +2599,7 @@
           "width": 15,
           "height": 13,
           "targetRoom": "fazenda",
-          "description": "Uma trilha de terra vermelha que desaparece entre eucaliptos. O caseiro mora no fim. Ninguém vai até lá sem motivo."
+          "description": "No canto atrás dos bancos, uma portinha de madeira entreaberta. Por ela, uma trilha de terra vermelha desaparece entre eucaliptos. O caseiro mora no fim. Ninguém vai até lá sem motivo."
         },
         {
           "id": "padre_miguel_encontro",
@@ -2674,7 +2674,7 @@
     "fazenda": {
       "id": "fazenda",
       "name": "Fazenda do Caseiro — Fim da Estrada",
-      "description": "Uma propriedade abandonada pelo governo, arrendada ao caseiro há vinte anos. Galinhas no quintal. Um celeiro com telhado meio caído. O caseiro surge da sombra do celeiro — chapéu de palha, olhos pequenos que leram muita coisa.",
+      "description": "No fim da estrada, um casarão conservado demais para esta região — telhas inteiras, janelas acesas contra a noite. O governo abandonou a terra, mas alguém cuida da casa. O caseiro surge da varanda: chapéu de palha, olhos pequenos que leram muita coisa.",
       "rain": {
         "volume": 0.1
       },
@@ -2711,7 +2711,7 @@
           "label": "Caderneta do Caseiro",
           "width": 8,
           "height": 16,
-          "description": "Uma caderneta de anotações. Datas, cargas e caminhões que passam pela estrada.",
+          "description": "Pendurada num prego da porta do casarão, uma caderneta de anotações. Datas, cargas e caminhões que passam pela estrada.",
           "documentData": {
             "title": "CADERNETA DO CASEIRO",
             "content": [
@@ -2768,7 +2768,7 @@
     "hospital": {
       "id": "hospital",
       "name": "Bezirksgesundheitsposten — Posto de Saúde",
-      "description": "Um corredor estreito com paredes verde-hospitalar desbotado. Cheiro de formol e papel. A Dra. Cunha está na sala do fundo, revisando prontuários com a expressão de alguém que sabe demais.",
+      "description": "Uma sala de espera com cadeiras duras enfileiradas, paredes verde-hospitalar desbotado. Cheiro de formol e papel. A Dra. Cunha está na sala do fundo, revisando prontuários com a expressão de alguém que sabe demais.",
       "rain": {
         "volume": 0.2
       },

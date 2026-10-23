@@ -66,42 +66,42 @@ antiga.
 
 ### Textos que não batem com a arte
 
-Para cada sala, decida entre regenerar a arte ou reescrever os textos (descrição
-da sala e dos objetos).
+Resolvido em 23/10/2026: decisão foi **reescrever os textos** (arte mantida);
+descrições das 12 salas reescritas em `src/game_data.json`.
 
-- [ ] `escritorio`: o texto cita a placa "MURPHY LAW — PRIVATERMITTLER" na
+- [x] `escritorio`: o texto cita a placa "MURPHY LAW — PRIVATERMITTLER" na
       porta, um espelho no fichário (objeto já removido) e um telefone
       "escondido entre os papéis do fichário". A arte não tem porta (a saída
       `porta_rua` ficou no rodapé) e mostra três telefones sobre a mesa.
-- [ ] `rua_chuva`: o texto cita letreiro vermelho do Gasthof, porta azul na casa
+- [x] `rua_chuva`: o texto cita letreiro vermelho do Gasthof, porta azul na casa
       de Maria e poça vermelha. A arte mostra uma placa pendurada e uma porta de
       madeira, e a delegacia ficou na fachada da loja "Konsum".
-- [ ] `bar`: o texto cita toca-discos, barman, dois telefones de parede e porta
+- [x] `bar`: o texto cita toca-discos, barman, dois telefones de parede e porta
       dos fundos. Nada disso aparece: `toca_discos` está num armário cinza,
       `cabine_telefone` num quadro pequeno e `porta_armazem` num recuo da
       parede.
-- [ ] `diretoria`: o texto cita terminal de fósforo verde, armário de metal
+- [x] `diretoria`: o texto cita terminal de fósforo verde, armário de metal
       atrás de divisória e telefone. Nenhum aparece: o terminal ficou na pilha
       de papéis, o armário num móvel de madeira e o telefone num objeto preto da
       mesa.
-- [ ] `escola`: o texto diz que "a eletricidade foi cortada" e que "nenhuma
+- [x] `escola`: o texto diz que "a eletricidade foi cortada" e que "nenhuma
       lâmpada funciona", mas a arte tem uma lâmpada acesa no teto.
-- [ ] `delegacia`: não há mapa visível para `mapa_pinos`; a hitbox ficou nos
+- [x] `delegacia`: não há mapa visível para `mapa_pinos`; a hitbox ficou nos
       papéis da borda direita.
-- [ ] `beco`: o texto de `grafite_parede` descreve uma criança numa gaiola com
+- [x] `beco`: o texto de `grafite_parede` descreve uma criança numa gaiola com
       "ER KOMMT MIT SCHWARZEM WAGEN". A arte mostra o cartaz de propaganda
       "DAMALS JETZT IMMER DIE PARTEI" e um carro enferrujado sem interação.
-- [ ] `armazem`: o texto descreve um Lagerhaus urbano na Rua 14, com porta de
+- [x] `armazem`: o texto descreve um Lagerhaus urbano na Rua 14, com porta de
       aço com cadeado, terminal verde e carro preto pela fresta. A arte é um
       celeiro rural com feno, trator e portão aberto para o campo.
-- [ ] `casa_mae`: "Quarto de Helena" fala de cama, livro e gaveta, mas a cena é
+- [x] `casa_mae`: "Quarto de Helena" fala de cama, livro e gaveta, mas a cena é
       só a sala de estar; `quarto_helena` ficou na estante.
-- [ ] `igreja`: não há saída visível para a estrada de chão;
+- [x] `igreja`: não há saída visível para a estrada de chão;
       `estrada_fazenda` ficou no canto dos bancos.
-- [ ] `fazenda`: o texto fala de propriedade abandonada, galinhas e celeiro com
+- [x] `fazenda`: o texto fala de propriedade abandonada, galinhas e celeiro com
       telhado caído. A arte mostra um casarão conservado, com janelas acesas;
       `anotacoes_caseiro` ficou na porta do casarão.
-- [ ] `hospital`: o texto diz "um corredor estreito", mas a arte é uma sala de
+- [x] `hospital`: o texto diz "um corredor estreito", mas a arte é uma sala de
       espera com cadeiras.
 
 ### Qualidade e consistência
